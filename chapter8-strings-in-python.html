@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 8 — Strings in Python | Interactive Teacher Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&family=Fira+Code:wght@400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F9FC;--white:#FFF;
+  --py:#1B6B35;--py2:#2E7D46;--py-lt:#E8F5E9;
+  --blue:#1565C0;--blue-lt:#E3F2FD;
+  --purple:#6A1B9A;--purple-lt:#F3E5F5;
+  --orange:#E65100;--orange-lt:#FFF3E0;
+  --red:#C62828;--red-lt:#FFEBEE;
+  --gold:#F59E0B;--gold-lt:#FFFDE7;
+  --teal:#006064;--teal-lt:#E0F7FA;
+  --ink:#1A1A2E;--gray:#6B7280;
+  --code:#0D1117;--border:#E5E7EB;
+  --sh:0 4px 20px rgba(0,0,0,.08);
+  --shlg:0 8px 40px rgba(0,0,0,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Poppins',sans-serif;color:var(--ink);font-size:16px;line-height:1.8;overflow-x:hidden}
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:4px;width:0;background:linear-gradient(90deg,var(--py),var(--blue),var(--purple),var(--orange));z-index:9999;transition:width .1s}
+/* TOP NAV */
+#tnav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:52px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.nb{font-weight:800;font-size:14px;color:var(--py);display:flex;align-items:center;gap:7px}
+.snk{animation:snk 2s ease-in-out infinite;display:inline-block}
+@keyframes snk{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-5px) rotate(10deg)}}
+.nl{display:flex;gap:4px;flex-wrap:wrap}
+.nl a{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;text-decoration:none;color:var(--gray);background:var(--bg);border:1px solid var(--border);transition:.2s}
+.nl a:hover{background:var(--py);color:#fff;border-color:var(--py)}
+/* HERO */
+#hero{min-height:100vh;background:linear-gradient(135deg,#ECFDF5 0%,#EFF6FF 45%,#FDF4FF 100%);display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:80px 20px 40px}
+.hc{position:absolute;border-radius:50%;opacity:.09}
+.hc1{width:700px;height:700px;background:var(--py);top:-220px;left:-220px;animation:flt 7s ease-in-out infinite}
+.hc2{width:500px;height:500px;background:var(--blue);bottom:-160px;right:-160px;animation:flt 9s ease-in-out infinite reverse}
+.hc3{width:280px;height:280px;background:var(--purple);top:42%;left:6%;animation:flt 5s ease-in-out infinite 1s}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-38px)}}
+.hcon{position:relative;z-index:2;max-width:900px}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:50px;padding:8px 22px;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--gray);box-shadow:var(--sh);margin-bottom:24px;animation:fdup .7s ease both}
+@keyframes fdup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.htitle{font-family:'Playfair Display',serif;font-size:clamp(42px,8vw,92px);font-weight:900;line-height:1.03;margin-bottom:12px;animation:fdup .8s .1s ease both}
+.ht1{color:var(--py)}.ht2{color:var(--blue)}.ht3{color:var(--purple)}
+.hsub{font-size:17px;color:var(--gray);margin-bottom:34px;animation:fdup .9s .2s ease both}
+.htags{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:36px;animation:fdup 1s .3s ease both}
+.htag{background:#fff;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;box-shadow:var(--sh);border:2px solid transparent;transition:.25s}
+.htag:hover{transform:translateY(-3px);box-shadow:var(--shlg)}
+.htag.g{border-color:#A5D6A7;color:var(--py)}.htag.b{border-color:#90CAF9;color:var(--blue)}.htag.p{border-color:#CE93D8;color:var(--purple)}.htag.o{border-color:#FFCC80;color:var(--orange)}
+.tbadge{background:linear-gradient(135deg,var(--py),var(--blue));color:#fff;border-radius:20px;padding:18px 28px;margin-top:8px;display:inline-block;animation:fdup 1.1s .4s ease both;box-shadow:0 8px 24px rgba(27,107,53,.3)}
+.tbn{font-size:15px;font-weight:800}.tbs{font-size:12px;opacity:.85;margin-top:3px}
+.hscr{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:28px;color:var(--gray);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;animation:fdup 1.2s .5s ease both}
+.sring{width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font-size:18px;animation:bnc 2s ease infinite}
+@keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+/* PART BANNERS */
+.pb{padding:26px 40px;text-align:center;color:#fff;display:flex;align-items:center;justify-content:center;gap:20px}
+.pb.py{background:linear-gradient(135deg,#1B5E20,#2E7D32)}
+.pb.bl{background:linear-gradient(135deg,#1565C0,#1976D2)}
+.pb.pu{background:linear-gradient(135deg,#6A1B9A,#9C27B0)}
+.pb.or{background:linear-gradient(135deg,#E65100,#F57C00)}
+.pb.te{background:linear-gradient(135deg,#004D40,#006064)}
+.pb.go{background:linear-gradient(135deg,#B45309,#D97706)}
+.pb.dk{background:linear-gradient(135deg,#1A1A2E,#2d3461)}
+.pb-ico{font-size:44px;animation:pbsp 8s linear infinite}
+@keyframes pbsp{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.pb-txt h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:900}
+.pb-txt p{font-size:13px;opacity:.85;font-weight:600;letter-spacing:.5px}
+/* SECTIONS */
+.sec{max-width:1000px;margin:0 auto;padding:56px 22px}
+.sw{background:#fff;border-radius:24px;padding:38px 42px;box-shadow:var(--sh);border-top:5px solid var(--py)}
+.sw.bl{border-color:var(--blue)}.sw.pu{border-color:var(--purple)}.sw.or{border-color:var(--orange)}.sw.te{border-color:var(--teal)}.sw.go{border-color:var(--gold)}.sw.re{border-color:var(--red)}
+.sh{display:flex;align-items:center;gap:16px;margin-bottom:26px;padding-bottom:16px;border-bottom:2px solid var(--border)}
+.si{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.si.g{background:var(--py-lt)}.si.b{background:var(--blue-lt)}.si.p{background:var(--purple-lt)}.si.o{background:var(--orange-lt)}.si.t{background:var(--teal-lt)}.si.r{background:var(--red-lt)}.si.go{background:var(--gold-lt)}
+.sn{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:2px}
+.st{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.2}
+p{margin-bottom:14px}
+/* CARDS */
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:14px;margin:18px 0}
+.cd{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--sh);border-top:4px solid;transition:.3s}
+.cd:hover{transform:translateY(-5px);box-shadow:var(--shlg)}
+.cd.g{border-color:var(--py)}.cd.b{border-color:var(--blue)}.cd.p{border-color:var(--purple)}.cd.o{border-color:var(--orange)}.cd.t{border-color:var(--teal)}
+.cd-ic{font-size:30px;margin-bottom:8px}
+.cd-tt{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.cd.g .cd-tt{color:var(--py)}.cd.b .cd-tt{color:var(--blue)}.cd.p .cd-tt{color:var(--purple)}.cd.o .cd-tt{color:var(--orange)}.cd.t .cd-tt{color:var(--teal)}
+.cd-tx{font-size:13px;color:var(--gray);line-height:1.6}
+/* CODE BLOCKS */
+.cw{border-radius:14px;overflow:hidden;margin:18px 0;box-shadow:var(--shlg)}
+.ch{background:#161B22;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+.dots{display:flex;gap:6px}.dot{width:12px;height:12px;border-radius:50%}
+.dr{background:#FF5F57}.dy{background:#FFBD2E}.dg{background:#28CA41}
+.cl2{font-family:'Fira Code',monospace;font-size:12px;color:#8B949E;font-weight:600}
+.cc{background:rgba(255,255,255,.1);border:none;border-radius:6px;color:#8B949E;font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:700;transition:.2s}
+.cc:hover{background:rgba(255,255,255,.2);color:#fff}
+pre{background:var(--code);padding:20px 22px;margin:0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:14px;line-height:1.85}
+.kw{color:#FF7B72}.fn{color:#D2A8FF}.st{color:#A5D6FF}.cm{color:#8B949E;font-style:italic}.nm{color:#79C0FF}.op{color:#FF9580}.df{color:#E2E2E2}
+.ob{background:#F0FFF4;border-left:4px solid var(--py);padding:14px 20px;border-radius:0 10px 10px 0;font-family:'Fira Code',monospace;font-size:14px;color:var(--py);line-height:1.8;margin-top:-2px}
+.ol{font-family:'Poppins',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--py);margin-bottom:6px}
+/* CALLOUTS */
+.ca{border-radius:14px;padding:18px 22px;margin:18px 0;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--sh)}
+.ca.tip{background:var(--gold-lt);border-left:5px solid var(--gold)}.ca.warn{background:var(--red-lt);border-left:5px solid var(--red)}.ca.info{background:var(--blue-lt);border-left:5px solid var(--blue)}.ca.trk{background:var(--teal-lt);border-left:5px solid var(--teal)}.ca.ex{background:var(--purple-lt);border-left:5px solid var(--purple)}
+.ca-ic{font-size:24px;flex-shrink:0;margin-top:2px}
+.ca-tt{font-weight:800;font-size:14px;margin-bottom:4px}
+.ca.tip .ca-tt{color:#B45309}.ca.warn .ca-tt{color:var(--red)}.ca.info .ca-tt{color:var(--blue)}.ca.trk .ca-tt{color:var(--teal)}.ca.ex .ca-tt{color:var(--purple)}
+.ca-bd{font-size:14px;line-height:1.7}
+/* INDEX DIAGRAMS */
+.idt{overflow-x:auto;margin:18px 0;border-radius:12px;box-shadow:var(--sh)}
+.idt table{border-collapse:collapse;min-width:100%;background:#fff}
+.idt td{padding:8px 9px;text-align:center;border:1px solid var(--border);font-family:'Fira Code',monospace;font-size:13px;white-space:nowrap}
+.idt .rl{background:var(--ink);color:#fff;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;text-align:left;padding-left:12px;white-space:nowrap}
+.idt .pi{background:var(--blue-lt);color:var(--blue);font-weight:700}
+.idt .ch2{background:var(--gold-lt);color:var(--ink);font-weight:800;font-size:15px}
+.idt .ni{background:var(--orange-lt);color:var(--orange);font-weight:700}
+/* TABLES */
+.tw{overflow-x:auto;border-radius:14px;box-shadow:var(--sh);margin:18px 0}
+table{width:100%;border-collapse:collapse;background:#fff}
+th{padding:12px 16px;text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;background:var(--py);color:#fff}
+td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:14px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+td code,th code{font-family:'Fira Code',monospace;font-size:12.5px;background:var(--bg);padding:2px 6px;border-radius:4px}
+/* QUIZ */
+.qb{background:linear-gradient(135deg,#FFFDE7,#FEF3C7);border:2px solid var(--gold);border-radius:20px;padding:26px 28px;margin:26px 0;box-shadow:var(--sh)}
+.qh{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.qi{font-size:34px;animation:qpls 2s ease-in-out infinite}
+@keyframes qpls{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.qt{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#92400E}
+.qq{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:12px;border-left:4px solid var(--gold);font-size:15px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.qch{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.qbtn{background:var(--bg);border:2px solid var(--border);border-radius:50px;padding:7px 18px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:.25s;color:var(--ink)}
+.qbtn:hover{border-color:var(--gold);background:var(--gold-lt)}
+.qbtn.correct{background:var(--py-lt);border-color:var(--py);color:var(--py);pointer-events:none}
+.qbtn.wrong{background:var(--red-lt);border-color:var(--red);color:var(--red);pointer-events:none}
+.qfb{margin-top:8px;font-size:13px;font-weight:700;min-height:20px}
+.qsc{background:var(--py);color:#fff;border-radius:12px;padding:12px 18px;text-align:center;font-weight:800;margin-top:14px;display:none;font-size:15px}
+/* PLAYGROUND */
+.pg{background:linear-gradient(135deg,#1A1A2E,#2d3461);border-radius:20px;padding:26px;margin:26px 0;box-shadow:var(--shlg)}
+.pgh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.pgi{font-size:30px;animation:snk 2s ease-in-out infinite}
+.pgt{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#fff}
+.pgs{font-size:13px;color:#8B949E;margin-top:2px}
+.pge{width:100%;min-height:120px;background:#0D1117;color:#E2E2E2;border:1px solid #30363D;border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:14px;resize:vertical;outline:none;line-height:1.8}
+.pge:focus{border-color:var(--py)}
+.pgb{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.pb2{padding:10px 22px;border-radius:10px;border:none;font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:.25s;display:inline-flex;align-items:center;gap:6px}
+.pr{background:var(--py);color:#fff}.pr:hover{background:#145228;transform:translateY(-2px)}
+.pc{background:rgba(255,255,255,.1);color:#aaa;border:1px solid rgba(255,255,255,.15)}.pc:hover{background:rgba(255,255,255,.2);color:#fff}
+.pout{background:#0D1117;border:1px solid #21262D;border-radius:10px;padding:14px 16px;margin-top:12px;font-family:'Fira Code',monospace;font-size:14px;color:#58D68D;min-height:52px;display:none;white-space:pre-wrap;line-height:1.8}
+.pout.show{display:block;animation:fin .3s ease}
+.pout.err{color:#FF7B72}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.pla{font-size:11px;font-weight:700;color:#8B949E;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.psnip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sbtn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#8B949E;font-family:'Fira Code',monospace;font-size:12px;padding:5px 12px;cursor:pointer;transition:.2s}
+.sbtn:hover{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3)}
+/* INTERACTIVE BOXES */
+.ibox{background:#fff;border-radius:14px;padding:22px;box-shadow:var(--sh);margin:18px 0}
+.ibox h3{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.irow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ilbl{font-size:12px;font-weight:800;color:var(--gray);min-width:60px}
+.iin{padding:9px 13px;border-radius:8px;border:2px solid var(--border);font-family:'Fira Code',monospace;font-size:14px;outline:none;transition:.2s;background:#fff}
+.iin:focus{border-color:var(--py)}
+.ires{font-family:'Fira Code',monospace;font-size:15px;color:var(--py);font-weight:700;background:var(--py-lt);padding:10px 14px;border-radius:8px;margin-top:8px;min-height:36px}
+.svis{display:flex;flex-wrap:wrap;gap:2px;margin:12px 0}
+.sch{width:32px;height:42px;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:14px;font-weight:700;border:2px solid var(--border);background:#fff;transition:.3s;position:relative}
+.sch.sel{background:var(--py);color:#fff;border-color:var(--py);transform:translateY(-4px);box-shadow:0 4px 14px rgba(27,107,53,.35)}
+.sch .pi2{font-size:9px;color:var(--gray);position:absolute;top:-16px}
+.sch .ni2{font-size:9px;color:var(--orange);position:absolute;bottom:-16px}
+/* METHOD EXPLORER */
+.mpills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.mp{background:var(--bg);border:2px solid var(--border);border-radius:50px;padding:6px 15px;font-family:'Fira Code',monospace;font-size:12px;font-weight:600;cursor:pointer;transition:.25s;color:var(--ink)}
+.mp:hover,.mp.act{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mdemo{background:var(--blue-lt);border-radius:10px;padding:16px;border-left:4px solid var(--blue)}
+.mdc{font-family:'Fira Code',monospace;font-size:14px;background:var(--code);color:#E2E2E2;padding:10px 14px;border-radius:8px;margin:8px 0}
+.mdo{font-family:'Fira Code',monospace;font-size:14px;color:var(--py);font-weight:600;margin-top:6px}
+/* TRAVERSAL */
+.tbox{background:#fff;border-radius:14px;padding:22px;box-shadow:var(--sh);margin:18px 0}
+.tch{width:40px;height:48px;border-radius:8px;border:2px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:16px;font-weight:700;transition:.3s}
+.tch.hl{background:var(--py);color:#fff;border-color:var(--py);transform:translateY(-6px);box-shadow:0 6px 16px rgba(27,107,53,.4)}
+.tch.vs{background:var(--py-lt);color:var(--py)}
+/* CIPHER */
+.cphr{background:linear-gradient(135deg,#1A1A2E,#2d3461);border-radius:16px;padding:24px;color:#fff;margin:18px 0}
+.cin{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:'Fira Code',monospace;font-size:15px;outline:none;transition:.2s}
+.cin::placeholder{color:rgba(255,255,255,.4)}.cin:focus{border-color:var(--py)}
+.cres{background:rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:16px;color:#58D68D;min-height:50px;margin-top:8px;border:1px solid rgba(255,255,255,.1)}
+/* SUMMARY */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:18px 0}
+.scard{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--sh);border-left:4px solid var(--py);transition:.3s}
+.scard:hover{transform:translateY(-4px);box-shadow:var(--shlg)}
+.sct{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--py);margin-bottom:6px}
+.scb{font-size:13px;color:var(--gray);line-height:1.6}
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.7);text-align:center;padding:44px 20px;font-size:13px;line-height:2.4;margin-top:20px}
+footer strong{color:#fff;font-size:15px}
+#btt{position:fixed;bottom:24px;right:24px;width:48px;height:48px;border-radius:50%;background:var(--py);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:var(--shlg);display:flex;align-items:center;justify-content:center;transition:.25s;opacity:0;pointer-events:none;z-index:999}
+#btt.show{opacity:1;pointer-events:all}
+#btt:hover{background:var(--blue);transform:translateY(-3px)}
+@media(max-width:640px){.sec{padding:36px 12px}.sw{padding:22px 16px}#tnav .nl{display:none}.htitle{font-size:42px}}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<nav id="tnav">
+  <div class="nb"><span class="snk">🐍</span> Ch8 — Strings in Python</div>
+  <div class="nl">
+    <a href="#s0">Intro</a><a href="#s1">Immutable</a><a href="#s2">input()</a>
+    <a href="#s3">f-Strings</a><a href="#s4">Indexing</a><a href="#s5">Slicing</a>
+    <a href="#s6">Traversal</a><a href="#s7">Operations</a><a href="#s8">Methods</a>
+    <a href="#s9">Apps</a><a href="#se">Errors</a><a href="#ss">Summary</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hc hc1"></div><div class="hc hc2"></div><div class="hc hc3"></div>
+  <div class="hcon">
+    <div class="hbadge"><span class="snk">🐍</span> Class XI &nbsp;·&nbsp; Computer Science &nbsp;·&nbsp; Chapter 8</div>
+    <h1 class="htitle">
+      <span class="ht1">Strings</span> <span class="ht2">in</span><br><span class="ht3">Python</span>
+    </h1>
+    <p class="hsub">Interactive Teacher Notes &nbsp;·&nbsp; New Textbook 2026 &nbsp;·&nbsp; State Resource Person Session</p>
+    <div class="htags">
+      <div class="htag g">🔤 String Creation</div><div class="htag g">🔒 Immutability</div>
+      <div class="htag b">📐 Indexing</div><div class="htag b">✂️ Slicing</div>
+      <div class="htag p">🔄 Traversal</div><div class="htag p">🛠️ Methods</div>
+      <div class="htag o">🔐 Caesar Cipher</div><div class="htag o">🔁 Palindrome</div>
+    </div>
+    <div class="tbadge">
+      <div class="tbn">🎓 Binu K Varghese — State Resource Person</div>
+      <div class="tbs">RM HSS Vadavucode, Ernakulam &nbsp;·&nbsp; In-service Training 2026</div>
+    </div>
+    <div class="hscr" onclick="document.getElementById('s0').scrollIntoView({behavior:'smooth'})">
+      <span>Scroll to Begin</span><div class="sring">↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- S0 INTRO -->
+<div class="pb py" id="s0"><div class="pb-ico">🔤</div><div class="pb-txt"><h2>8.0 — Introduction to Strings</h2><p>What is a String · Four Quote Styles · First Look</p></div></div>
+<div class="sec"><div class="sw">
+  <div class="sh"><div class="si g">📖</div><div><div class="sn">Section 8.0</div><div class="st">Introduction to Strings</div></div></div>
+  <p>Strings are one of the most <strong>fundamental and widely used</strong> data types in Python. Every real-world program — from web apps to AI — involves working with text. A string is a <strong>sequence of characters</strong> enclosed within quotes.</p>
+  <div class="cg">
+    <div class="cd g"><div class="cd-ic">🔹</div><div class="cd-tt">Single Quotes</div><div class="cd-tx"><code>'Hello World'</code> — Default for most strings</div></div>
+    <div class="cd b"><div class="cd-ic">🔷</div><div class="cd-tt">Double Quotes</div><div class="cd-tx"><code>"It's Python!"</code> — Use when the string has an apostrophe</div></div>
+    <div class="cd p"><div class="cd-ic">🔶</div><div class="cd-tt">Triple Single</div><div class="cd-tx"><code>'''Multiline'''</code> — Preserves newlines exactly</div></div>
+    <div class="cd o"><div class="cd-ic">💎</div><div class="cd-tt">Triple Double</div><div class="cd-tx"><code>"""Docstrings"""</code> — Used in function docs</div></div>
+  </div>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">s1 </span><span class="op">=</span> <span class="st">'Hello World'</span>
+<span class="df">s2 </span><span class="op">=</span> <span class="st">"Python123!"</span>
+<span class="df">s3 </span><span class="op">=</span> <span class="st">'''This is a
+multiline string'''</span>
+<span class="df">s4 </span><span class="op">=</span> <span class="st">"""Another multiline"""</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">type</span><span class="df">(s1))</span>  <span class="cm"># &lt;class 'str'&gt;</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">len</span><span class="df">(s1))</span>   <span class="cm"># 11</span></pre></div>
+  <div class="ca tip"><div class="ca-ic">📌</div><div><div class="ca-tt">When to Use Which Quote Style</div><div class="ca-bd">Single: default. Double: when string has apostrophe <code>"It's Python!"</code>. Triple: multiline strings / docstrings — preserve newlines and indentation exactly.</div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Section 8.0</div></div>
+    <div class="qq">Q1. Which is NOT a valid Python string?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q0a')">s = 'Hello'</button><button class="qbtn" onclick="qa(this,'correct','q0a')">s = Hello</button><button class="qbtn" onclick="qa(this,'wrong','q0a')">s = """Hello"""</button></div><div class="qfb" id="q0a"></div></div>
+    <div class="qq">Q2. How many characters in <code>'Hello World'</code>?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q0b')">10</button><button class="qbtn" onclick="qa(this,'correct','q0b')">11</button><button class="qbtn" onclick="qa(this,'wrong','q0b')">12</button></div><div class="qfb" id="q0b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">🐍</div><div><div class="pgt">Live Classroom Playground</div><div class="pgs">Try any string expression below ↓</div></div></div>
+    <div class="pla">Load a snippet or write your own:</div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p0',`s = 'Hello World'\nprint(type(s))\nprint(len(s))\nprint(s)`)">Basic String</button>
+      <button class="sbtn" onclick="ls('p0',`msg = &quot;It's Python!&quot;\nprint(msg)`)">Apostrophe</button>
+      <button class="sbtn" onclick="ls('p0',`ml = '''Line 1\nLine 2\nLine 3'''\nprint(ml)`)">Multiline</button>
+    </div>
+    <textarea class="pge" id="p0" spellcheck="false">s = 'Hello World'
+print(type(s))
+print(len(s))
+print(s)</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p0','o0')">▶ Run</button><button class="pb2 pc" onclick="clr('p0','o0')">🗑 Clear</button></div>
+    <div class="pout" id="o0"></div></div>
+</div></div>
+
+<!-- S1 IMMUTABILITY -->
+<div class="pb bl" id="s1"><div class="pb-ico">🔒</div><div class="pb-txt"><h2>8.1 — String Creation &amp; Immutability</h2><p>Memory Model · Why Strings Cannot Change · id() Demo</p></div></div>
+<div class="sec"><div class="sw bl">
+  <div class="sh"><div class="si b">🔒</div><div><div class="sn">Section 8.1</div><div class="st">String Creation &amp; Immutability</div></div></div>
+  <p>Strings in Python are <strong>IMMUTABLE</strong> — once created, characters <em>cannot</em> be changed. Any operation that appears to modify a string creates a <strong>brand-new string object</strong> in memory.</p>
+  <h3 style="font-size:15px;font-weight:800;color:var(--blue);margin:16px 0 10px">Index Map: 'Welcome to Python' (17 characters)</h3>
+  <div class="idt"><table>
+    <tr><td class="rl">Positive →</td><td class="pi">0</td><td class="pi">1</td><td class="pi">2</td><td class="pi">3</td><td class="pi">4</td><td class="pi">5</td><td class="pi">6</td><td class="pi">7</td><td class="pi">8</td><td class="pi">9</td><td class="pi">10</td><td class="pi">11</td><td class="pi">12</td><td class="pi">13</td><td class="pi">14</td><td class="pi">15</td><td class="pi">16</td></tr>
+    <tr><td class="rl">Character</td><td class="ch2">W</td><td class="ch2">e</td><td class="ch2">l</td><td class="ch2">c</td><td class="ch2">o</td><td class="ch2">m</td><td class="ch2">e</td><td class="ch2">·</td><td class="ch2">t</td><td class="ch2">o</td><td class="ch2">·</td><td class="ch2">P</td><td class="ch2">y</td><td class="ch2">t</td><td class="ch2">h</td><td class="ch2">o</td><td class="ch2">n</td></tr>
+    <tr><td class="rl">← Negative</td><td class="ni">-17</td><td class="ni">-16</td><td class="ni">-15</td><td class="ni">-14</td><td class="ni">-13</td><td class="ni">-12</td><td class="ni">-11</td><td class="ni">-10</td><td class="ni">-9</td><td class="ni">-8</td><td class="ni">-7</td><td class="ni">-6</td><td class="ni">-5</td><td class="ni">-4</td><td class="ni">-3</td><td class="ni">-2</td><td class="ni">-1</td></tr>
+  </table></div>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python — Immutability Demo</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">msg </span><span class="op">=</span> <span class="st">'Hello'</span>
+<span class="cm"># msg[0] = 'J'  →  ✗ ERROR! TypeError!</span>
+<span class="cm"># ✓ Correct — create a NEW string:</span>
+<span class="df">msg </span><span class="op">=</span> <span class="st">'J'</span> <span class="op">+</span> <span class="df">msg[</span><span class="nm">1</span><span class="df">:]</span>
+<span class="fn">print</span><span class="df">(msg)</span>   <span class="cm"># Jello</span>
+<span class="cm"># id() shows memory address changes:</span>
+<span class="df">s </span><span class="op">=</span> <span class="st">'Hello'</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">id</span><span class="df">(s))</span>
+<span class="df">s </span><span class="op">=</span> <span class="df">s </span><span class="op">+</span> <span class="st">' World'</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">id</span><span class="df">(s))</span>   <span class="cm"># Different id — NEW object!</span></pre></div>
+  <div class="ca warn"><div class="ca-ic">⚠️</div><div><div class="ca-tt">Common Misconception — Immutability</div><div class="ca-bd">Students expect <code>msg[0]='J'</code> to work. Explain: the VARIABLE can be reassigned but the STRING OBJECT cannot change character by character. Like a printed book — you can't change one letter; you print a new page!</div></div></div>
+  <div class="ca info"><div class="ca-ic">📌</div><div><div class="ca-tt">Why Immutability Matters</div><div class="ca-bd">Makes strings safe as <strong>dictionary keys</strong> and <strong>set elements</strong>. Python optimises memory by reusing identical string objects (string interning). Contrast with lists (Chapter 9) which ARE mutable.</div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Immutability</div></div>
+    <div class="qq">Q1. What happens with: <code>s = 'Python'; s[0] = 'J'</code>?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q1a')">s becomes 'Jython'</button><button class="qbtn" onclick="qa(this,'correct','q1a')">TypeError is raised</button><button class="qbtn" onclick="qa(this,'wrong','q1a')">Nothing happens</button></div><div class="qfb" id="q1a"></div></div>
+    <div class="qq">Q2. How to correctly change 'Hello' to 'Jello'?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q1b')">s[0] = 'J'</button><button class="qbtn" onclick="qa(this,'correct','q1b')">'J' + s[1:]</button><button class="qbtn" onclick="qa(this,'wrong','q1b')">s.change('H','J')</button></div><div class="qfb" id="q1b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">🔒</div><div><div class="pgt">Playground — Immutability</div><div class="pgs">Try modifying strings and see what happens</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p1',`s='Hello'\nprint(id(s))\ns=s+' World'\nprint(id(s))\nprint(s)`)">id() change</button>
+      <button class="sbtn" onclick="ls('p1',`msg='Hello'\nmsg='J'+msg[1:]\nprint(msg)`)">Fix Immutable</button>
+      <button class="sbtn" onclick="ls('p1',`a='hello'\nb='hello'\nprint(a is b)\nprint(a==b)`)">String Interning</button>
+    </div>
+    <textarea class="pge" id="p1" spellcheck="false">s = 'Hello'
+# Correct way to 'modify':
+s = 'J' + s[1:]
+print(s)
+print(len(s))</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p1','o1')">▶ Run</button><button class="pb2 pc" onclick="clr('p1','o1')">🗑 Clear</button></div>
+    <div class="pout" id="o1"></div></div>
+</div></div>
+
+<!-- S2 INPUT -->
+<div class="pb pu" id="s2"><div class="pb-ico">⌨️</div><div class="pb-txt"><h2>8.2 — The input() Function</h2><p>User Input · Type Conversion · Common Pitfalls</p></div></div>
+<div class="sec"><div class="sw pu">
+  <div class="sh"><div class="si p">⌨️</div><div><div class="sn">Section 8.2</div><div class="st">The input() Function</div></div></div>
+  <p>The <code>input()</code> function pauses the program and waits for user input. <strong>It ALWAYS returns a STRING</strong> regardless of what the user types.</p>
+  <p><strong>Syntax:</strong> <code>variable = input(prompt_message)</code></p>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">name </span><span class="op">=</span> <span class="fn">input</span><span class="df">(</span><span class="st">'Enter your name: '</span><span class="df">)</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'Hello,'</span><span class="df">, name)</span>
+<span class="cm"># Accepting a number — MUST convert!</span>
+<span class="df">age_str </span><span class="op">=</span> <span class="fn">input</span><span class="df">(</span><span class="st">'Enter your age: '</span><span class="df">)</span>   <span class="cm"># Returns STRING!</span>
+<span class="df">age </span><span class="op">=</span> <span class="fn">int</span><span class="df">(age_str)</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'In 10 years:'</span><span class="df">, age </span><span class="op">+</span> <span class="nm">10</span><span class="df">)</span>
+<span class="cm"># Shorthand (most common):</span>
+<span class="df">marks </span><span class="op">=</span> <span class="fn">float</span><span class="df">(</span><span class="fn">input</span><span class="df">(</span><span class="st">'Enter marks: '</span><span class="df">))</span></pre></div>
+  <div class="ca warn"><div class="ca-ic">⚠️</div><div><div class="ca-tt">Critical Teaching Point — input() Always Returns a String</div><div class="ca-bd">Most common beginner error: <code>num = input('Enter: ')</code> then <code>num + 10</code> → TypeError! Fix: <code>num = int(input('Enter: '))</code>. Always demonstrate both the error AND the fix live in class.</div></div></div>
+  <div class="ca tip"><div class="ca-ic">📌</div><div><div class="ca-tt">Multiple Values on One Line</div><div class="ca-bd"><code>a, b = input('Enter two numbers: ').split()</code><br><code>a, b = int(a), int(b)</code><br>Useful pattern for competitive programming!</div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — input()</div></div>
+    <div class="qq">Q1. Data type of <code>x = input('Enter: ')</code> even if user types 42?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q2a')">int</button><button class="qbtn" onclick="qa(this,'correct','q2a')">str</button><button class="qbtn" onclick="qa(this,'wrong','q2a')">float</button></div><div class="qfb" id="q2a"></div></div>
+    <div class="qq">Q2. Which line correctly accepts an integer from user?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q2b')">n = input('n: ')</button><button class="qbtn" onclick="qa(this,'correct','q2b')">n = int(input('n: '))</button><button class="qbtn" onclick="qa(this,'wrong','q2b')">n = integer(input())</button></div><div class="qfb" id="q2b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">⌨️</div><div><div class="pgt">Playground — input() Simulation</div><div class="pgs">Simulated input — edit values in code</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p2',`name='Meera'\nprint('Hello,',name)\nprint(type(name))`)">Name Input</button>
+      <button class="sbtn" onclick="ls('p2',`num='10'  # as returned by input()\nprint(num+10)  # TypeError!`)">TypeError Demo</button>
+      <button class="sbtn" onclick="ls('p2',`age_str='16'\nage=int(age_str)\nprint('In 10 years:',age+10)`)">Convert Fix</button>
+    </div>
+    <textarea class="pge" id="p2" spellcheck="false">name = "Arjun"   # Simulated input
+age  = int("17")  # Simulated int input
+print(f"Hello, {name}! You are {age} years old.")
+print(f"In 5 years: {age + 5}")</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p2','o2')">▶ Run</button><button class="pb2 pc" onclick="clr('p2','o2')">🗑 Clear</button></div>
+    <div class="pout" id="o2"></div></div>
+</div></div>
+
+<!-- S3 F-STRINGS -->
+<div class="pb or" id="s3"><div class="pb-ico">📝</div><div class="pb-txt"><h2>8.3 — f-Strings (Formatted String Literals)</h2><p>Clean Output · Format Specifiers · Expressions in Strings</p></div></div>
+<div class="sec"><div class="sw or">
+  <div class="sh"><div class="si o">📝</div><div><div class="sn">Section 8.3</div><div class="st">Python f-Strings</div></div></div>
+  <p>f-strings provide a <strong>clean, readable, efficient</strong> way to embed variables/expressions directly inside strings. Introduced in Python 3.6 — now the <strong>preferred formatting method</strong>. Place <code>f</code> before the quote and embed in <code>{ }</code>.</p>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python — f-Strings</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">name </span><span class="op">=</span> <span class="st">'Alice'</span><span class="df">;  age </span><span class="op">=</span> <span class="nm">30</span>
+<span class="cm"># Old style — messy concatenation:</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'My name is '</span> <span class="op">+</span> <span class="df">name </span><span class="op">+</span> <span class="st">' and I am '</span> <span class="op">+</span> <span class="fn">str</span><span class="df">(age) </span><span class="op">+</span> <span class="st">' years old.'</span><span class="df">)</span>
+<span class="cm"># f-string — clean and readable:</span>
+<span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'My name is {name} and I am {age} years old.'</span><span class="df">)</span>
+<span class="cm"># Expressions inside {}:</span>
+<span class="df">price </span><span class="op">=</span> <span class="nm">19.99</span>
+<span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Price with tax: {price * 1.08:.2f}'</span><span class="df">)</span>   <span class="cm"># 21.59</span>
+<span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Pi to 4dp: {3.14159265:.4f}'</span><span class="df">)</span>           <span class="cm"># 3.1416</span>
+<span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Score: {95:05d}'</span><span class="df">)</span>                       <span class="cm"># 00095</span>
+<span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Right: {name:&gt;12}'</span><span class="df">)</span>                    <span class="cm"># right-align</span></pre></div>
+  <div class="tw"><table>
+    <tr><th>Format Code</th><th>Meaning</th><th>Example</th><th>Output</th></tr>
+    <tr><td><code>:.2f</code></td><td>Float, 2 decimal places</td><td><code>f'{3.14159:.2f}'</code></td><td>3.14</td></tr>
+    <tr><td><code>:05d</code></td><td>Zero-padded int, width 5</td><td><code>f'{42:05d}'</code></td><td>00042</td></tr>
+    <tr><td><code>:&gt;10</code></td><td>Right-align, 10 chars</td><td><code>f'{"hi":&gt;10}'</code></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hi</td></tr>
+    <tr><td><code>:&lt;10</code></td><td>Left-align, 10 chars</td><td><code>f'{"hi":&lt;10}'</code></td><td>hi&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+    <tr><td><code>:^10</code></td><td>Centre, 10 chars</td><td><code>f'{"hi":^10}'</code></td><td>&nbsp;&nbsp;&nbsp;&nbsp;hi&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+  </table></div>
+  <div class="ca ex"><div class="ca-ic">💡</div><div><div class="ca-tt">Classroom Exercise — f-string Report Card</div><div class="ca-bd">Write a program that accepts name, age, percentage and prints:<br><code>Student: Arjun   Age: 17   Marks: 89.50%</code><br>using f-strings with appropriate padding and decimal formatting.</div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — f-Strings</div></div>
+    <div class="qq">Q1. What does <code>f'{3.14159:.2f}'</code> output?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q3a')">3.14159</button><button class="qbtn" onclick="qa(this,'correct','q3a')">3.14</button><button class="qbtn" onclick="qa(this,'wrong','q3a')">3.1</button></div><div class="qfb" id="q3a"></div></div>
+    <div class="qq">Q2. What does <code>f'{42:05d}'</code> output?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q3b')">42000</button><button class="qbtn" onclick="qa(this,'correct','q3b')">00042</button><button class="qbtn" onclick="qa(this,'wrong','q3b')">42</button></div><div class="qfb" id="q3b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">📝</div><div><div class="pgt">Playground — f-Strings</div><div class="pgs">Experiment with format specifiers</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p3',`name='Binu';age=35;pct=92.567\nprint(f'Name:{name:12} Age:{age} Marks:{pct:.1f}%')`)">Report Card</button>
+      <button class="sbtn" onclick="ls('p3',`for i in range(1,6):\n    print(f'{i:3} x 5 = {i*5:4}')`)">Table Format</button>
+    </div>
+    <textarea class="pge" id="p3" spellcheck="false">name = "Alice"; age = 30
+price = 19.99
+print(f"Name: {name}, Age: {age}")
+print(f"Price with 8% tax: {price * 1.08:.2f}")
+print(f"Right-aligned: {'Hi':>15}")</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p3','o3')">▶ Run</button><button class="pb2 pc" onclick="clr('p3','o3')">🗑 Clear</button></div>
+    <div class="pout" id="o3"></div></div>
+</div></div>
+
+<!-- S4 INDEXING -->
+<div class="pb te" id="s4"><div class="pb-ico">📐</div><div class="pb-txt"><h2>8.4 — String Indexing</h2><p>Positive Index · Negative Index · Interactive Explorer</p></div></div>
+<div class="sec"><div class="sw te">
+  <div class="sh"><div class="si t">📐</div><div><div class="sn">Section 8.4</div><div class="st">Accessing Characters — String Indexing</div></div></div>
+  <p>Every character has a unique <strong>index position</strong>. Python supports <strong>positive indexing</strong> (left→right, starts at 0) and <strong>negative indexing</strong> (right→left, starts at -1).</p>
+  <h3 style="font-size:15px;font-weight:800;color:var(--teal);margin:16px 0 10px">Index Map: "Hello World!" (12 characters)</h3>
+  <div class="idt"><table>
+    <tr><td class="rl">Positive →</td><td class="pi">0</td><td class="pi">1</td><td class="pi">2</td><td class="pi">3</td><td class="pi">4</td><td class="pi">5</td><td class="pi">6</td><td class="pi">7</td><td class="pi">8</td><td class="pi">9</td><td class="pi">10</td><td class="pi">11</td></tr>
+    <tr><td class="rl">Character</td><td class="ch2">H</td><td class="ch2">e</td><td class="ch2">l</td><td class="ch2">l</td><td class="ch2">o</td><td class="ch2">·</td><td class="ch2">W</td><td class="ch2">o</td><td class="ch2">r</td><td class="ch2">l</td><td class="ch2">d</td><td class="ch2">!</td></tr>
+    <tr><td class="rl">← Negative</td><td class="ni">-12</td><td class="ni">-11</td><td class="ni">-10</td><td class="ni">-9</td><td class="ni">-8</td><td class="ni">-7</td><td class="ni">-6</td><td class="ni">-5</td><td class="ni">-4</td><td class="ni">-3</td><td class="ni">-2</td><td class="ni">-1</td></tr>
+  </table></div>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">text </span><span class="op">=</span> <span class="st">'Hello World!'</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="nm">0</span><span class="df">])</span>    <span class="cm"># H   (first)</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="nm">6</span><span class="df">])</span>    <span class="cm"># W</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="nm">11</span><span class="df">])</span>   <span class="cm"># !   (last)</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="op">-</span><span class="nm">1</span><span class="df">])</span>   <span class="cm"># !   (last, negative)</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="op">-</span><span class="nm">6</span><span class="df">])</span>   <span class="cm"># W</span>
+<span class="fn">print</span><span class="df">(text[</span><span class="op">-</span><span class="nm">12</span><span class="df">])</span>  <span class="cm"># H   (same as text[0])</span>
+<span class="cm"># text[20] → IndexError!</span></pre></div>
+  <div class="ca tip"><div class="ca-ic">📌</div><div><div class="ca-tt">Ruler Analogy for Classroom</div><div class="ca-bd">Draw the string as boxes in a row like a ruler. Number 0,1,2... from left. Then -1,-2,-3... from right. Overlap both numbering systems. Students immediately see why <code>text[0]</code> and <code>text[-12]</code> both point to 'H'.</div></div></div>
+  <div class="ca trk"><div class="ca-ic">💡</div><div><div class="ca-tt">Quick Mental Math for Negative Index</div><div class="ca-bd">For string of length n: <code>negative_index = positive_index - n</code><br>Example: 'Python' (n=6), char at index 2 ('t') → negative = 2-6 = -4<br>Verify: <code>'Python'[2] == 'Python'[-4]</code> → both give 't' ✓</div></div></div>
+  <!-- Index Explorer -->
+  <div class="ibox">
+    <h3 style="color:var(--teal)">🎯 Index Explorer — Type any string and index!</h3>
+    <div class="irow"><span class="ilbl">String:</span><input class="iin" id="idx-s" value="Hello World!" style="width:220px" oninput="idxUp()"></div>
+    <div class="irow"><span class="ilbl">Index:</span><input class="iin" id="idx-n" value="0" style="width:80px" oninput="idxSh()"><button class="pb2 pr" style="padding:8px 16px;font-size:13px" onclick="idxSh()">Get Char</button></div>
+    <div style="margin-top:10px;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Characters:</div>
+    <div class="svis" id="idx-vis"></div>
+    <div class="ires" id="idx-res">Character at index 0: H</div>
+  </div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Indexing</div></div>
+    <div class="qq">Q1. For <code>'Python'</code>, what is <code>s[-1]</code>?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q4a')">P</button><button class="qbtn" onclick="qa(this,'correct','q4a')">n</button><button class="qbtn" onclick="qa(this,'wrong','q4a')">y</button></div><div class="qfb" id="q4a"></div></div>
+    <div class="qq">Q2. For <code>'Hello'</code> (length 5), what is the negative index of 'H'?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q4b')">-1</button><button class="qbtn" onclick="qa(this,'wrong','q4b')">-4</button><button class="qbtn" onclick="qa(this,'correct','q4b')">-5</button></div><div class="qfb" id="q4b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">📐</div><div><div class="pgt">Playground — String Indexing</div><div class="pgs">Explore positive and negative indices</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p4',`name='Python'\nfor i in range(len(name)):\n    print(f'[{i}]={name[i]}  [{i-len(name)}]={name[i-len(name)]}')`)">Index Table</button>
+      <button class="sbtn" onclick="ls('p4',`s='Kerala'\nprint('First:',s[0])\nprint('Last: ',s[-1])\nprint('Mid:  ',s[len(s)//2])`)">First/Last/Mid</button>
+    </div>
+    <textarea class="pge" id="p4" spellcheck="false">text = 'Hello World!'
+print(text[0])    # H
+print(text[-1])   # !
+print(text[6])    # W
+print(text[-6])   # W</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p4','o4')">▶ Run</button><button class="pb2 pc" onclick="clr('p4','o4')">🗑 Clear</button></div>
+    <div class="pout" id="o4"></div></div>
+</div></div>
+
+<!-- S5 SLICING -->
+<div class="pb go" id="s5"><div class="pb-ico">✂️</div><div class="pb-txt"><h2>8.5 — String Slicing</h2><p>start · end (exclusive!) · step · Interactive Slicer</p></div></div>
+<div class="sec"><div class="sw go">
+  <div class="sh"><div class="si go">✂️</div><div><div class="sn">Section 8.5</div><div class="st">String Slicing</div></div></div>
+  <p>Slicing extracts a <strong>substring</strong> by specifying a range of indices. <strong>Syntax:</strong> <code>string[start : end : step]</code></p>
+  <div class="cg">
+    <div class="cd g"><div class="cd-ic">▶️</div><div class="cd-tt">start</div><div class="cd-tx">Where slicing begins (inclusive). Default = 0</div></div>
+    <div class="cd b"><div class="cd-ic">⏹️</div><div class="cd-tt">end</div><div class="cd-tx">Where slicing STOPS (EXCLUSIVE!). Default = len(s)</div></div>
+    <div class="cd p"><div class="cd-ic">⏩</div><div class="cd-tt">step</div><div class="cd-tx">Jump between selections. Default = 1. Negative = reverse!</div></div>
+  </div>
+  <h3 style="font-size:15px;font-weight:800;color:var(--orange);margin:16px 0 10px">Index Map: "Computer Science" (16 characters)</h3>
+  <div class="idt"><table>
+    <tr><td class="rl">Positive →</td><td class="pi">0</td><td class="pi">1</td><td class="pi">2</td><td class="pi">3</td><td class="pi">4</td><td class="pi">5</td><td class="pi">6</td><td class="pi">7</td><td class="pi">8</td><td class="pi">9</td><td class="pi">10</td><td class="pi">11</td><td class="pi">12</td><td class="pi">13</td><td class="pi">14</td><td class="pi">15</td></tr>
+    <tr><td class="rl">Character</td><td class="ch2">C</td><td class="ch2">o</td><td class="ch2">m</td><td class="ch2">p</td><td class="ch2">u</td><td class="ch2">t</td><td class="ch2">e</td><td class="ch2">r</td><td class="ch2">·</td><td class="ch2">S</td><td class="ch2">c</td><td class="ch2">i</td><td class="ch2">e</td><td class="ch2">n</td><td class="ch2">c</td><td class="ch2">e</td></tr>
+    <tr><td class="rl">← Negative</td><td class="ni">-16</td><td class="ni">-15</td><td class="ni">-14</td><td class="ni">-13</td><td class="ni">-12</td><td class="ni">-11</td><td class="ni">-10</td><td class="ni">-9</td><td class="ni">-8</td><td class="ni">-7</td><td class="ni">-6</td><td class="ni">-5</td><td class="ni">-4</td><td class="ni">-3</td><td class="ni">-2</td><td class="ni">-1</td></tr>
+  </table></div>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python — All Slicing Variants</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">s </span><span class="op">=</span> <span class="st">'Computer Science'</span>
+<span class="fn">print</span><span class="df">(s[</span><span class="nm">0</span><span class="df">:</span><span class="nm">8</span><span class="df">])</span>      <span class="cm"># 'Computer'</span>
+<span class="fn">print</span><span class="df">(s[</span><span class="nm">9</span><span class="df">:])</span>       <span class="cm"># 'Science'</span>
+<span class="fn">print</span><span class="df">(s[:</span><span class="nm">8</span><span class="df">])</span>       <span class="cm"># 'Computer'</span>
+<span class="fn">print</span><span class="df">(s[:])</span>        <span class="cm"># full copy</span>
+<span class="fn">print</span><span class="df">(s[</span><span class="op">-</span><span class="nm">7</span><span class="df">:])</span>      <span class="cm"># 'Science'</span>
+<span class="fn">print</span><span class="df">(s[</span><span class="nm">0</span><span class="df">:</span><span class="nm">15</span><span class="df">:</span><span class="nm">2</span><span class="df">])</span>   <span class="cm"># every 2nd char</span>
+<span class="fn">print</span><span class="df">(s[::</span><span class="op">-</span><span class="nm">1</span><span class="df">])</span>     <span class="cm"># REVERSE!</span></pre></div>
+  <div class="ca warn"><div class="ca-ic">⚠️</div><div><div class="ca-tt">end is ALWAYS Exclusive — Most Common Slicing Mistake</div><div class="ca-bd"><code>s[0:8]</code> gives positions 0,1,2,3,4,5,6,7 — stops BEFORE 8. Memory aid: end = where you STOP, not the last character you want!</div></div></div>
+  <div class="ca trk"><div class="ca-ic">📌</div><div><div class="ca-tt">The Reverse Trick — s[::-1]</div><div class="ca-bd"><code>s[::-1]</code> — both start/end omitted = entire string; step=-1 = go backward. Most elegant way to reverse a string! Memorise for palindrome checking.</div></div></div>
+  <!-- Interactive Slicer -->
+  <div class="ibox">
+    <h3 style="color:var(--orange)">✂️ Interactive String Slicer — Drag to Explore!</h3>
+    <div class="irow"><span class="ilbl">String:</span><input class="iin" id="sl-s" value="Computer Science" style="width:220px" oninput="doSl()"></div>
+    <div class="irow">
+      <span class="ilbl">start:</span><input class="iin" id="sl-st" value="" placeholder="0" style="width:68px" oninput="doSl()">
+      <span class="ilbl">end:</span><input class="iin" id="sl-en" value="" placeholder="end" style="width:68px" oninput="doSl()">
+      <span class="ilbl">step:</span><input class="iin" id="sl-sp" value="" placeholder="1" style="width:68px" oninput="doSl()">
+    </div>
+    <div style="margin:12px 0 18px"><div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Selected characters (highlighted):</div><div class="svis" id="sl-vis"></div></div>
+    <div class="ires" id="sl-res">s[:] = 'Computer Science'</div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="sbtn" onclick="setSl('','8','')">[:8] 'Computer'</button>
+      <button class="sbtn" onclick="setSl('9','','')">s[9:] 'Science'</button>
+      <button class="sbtn" onclick="setSl('','','-1')">[::-1] Reverse</button>
+      <button class="sbtn" onclick="setSl('0','15','2')">[0:15:2]</button>
+      <button class="sbtn" onclick="setSl('-7','','')">[-7:] Last 7</button>
+    </div>
+  </div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Slicing</div></div>
+    <div class="qq">Q1. What does <code>'Python'[1:4]</code> return?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q5a')">Pyth</button><button class="qbtn" onclick="qa(this,'correct','q5a')">yth</button><button class="qbtn" onclick="qa(this,'wrong','q5a')">ytho</button></div><div class="qfb" id="q5a"></div></div>
+    <div class="qq">Q2. What does <code>'Hello'[::-1]</code> return?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q5b')">Hello</button><button class="qbtn" onclick="qa(this,'correct','q5b')">olleH</button><button class="qbtn" onclick="qa(this,'wrong','q5b')">lleH</button></div><div class="qfb" id="q5b"></div></div>
+    <div class="qq">Q3. What does <code>'Kerala'[::2]</code> return?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'correct','q5c')">Krl</button><button class="qbtn" onclick="qa(this,'wrong','q5c')">ear</button><button class="qbtn" onclick="qa(this,'wrong','q5c')">Ker</button></div><div class="qfb" id="q5c"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">✂️</div><div><div class="pgt">Playground — Slicing</div><div class="pgs">Use the slicer above or write your own code</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p5',`s='Python programming'\nprint(s[7:])\nprint(s[-11:-1])\nprint(s[-11:-1:2])\nprint(s[:6])\nprint(s[::-1])`)">Textbook Exercise</button>
+      <button class="sbtn" onclick="ls('p5',`word='racecar'\nif word==word[::-1]:\n    print(word,'is a palindrome!')\nelse:\n    print('Not a palindrome')`)">Palindrome Check</button>
+    </div>
+    <textarea class="pge" id="p5" spellcheck="false">s = 'Computer Science'
+print(s[0:8])   # Computer
+print(s[9:])    # Science
+print(s[::-1])  # Reverse</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p5','o5')">▶ Run</button><button class="pb2 pc" onclick="clr('p5','o5')">🗑 Clear</button></div>
+    <div class="pout" id="o5"></div></div>
+</div></div>
+
+<!-- S6 TRAVERSAL -->
+<div class="pb py" id="s6"><div class="pb-ico">🔄</div><div class="pb-txt"><h2>8.6 — String Traversal</h2><p>for Loop · Index-based · Animated Live Demo</p></div></div>
+<div class="sec"><div class="sw">
+  <div class="sh"><div class="si g">🔄</div><div><div class="sn">Section 8.6</div><div class="st">String Traversal</div></div></div>
+  <p>Traversal means visiting each character <strong>one by one</strong> using a loop — essential for counting, searching, and filtering characters.</p>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python — Two Methods</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="cm"># Method 1 — Direct for loop (Pythonic!):</span>
+<span class="kw">for</span> <span class="df">ch </span><span class="kw">in</span> <span class="st">'Hello'</span><span class="df">:</span>
+    <span class="fn">print</span><span class="df">(ch)</span>          <span class="cm"># H e l l o</span>
+<span class="cm"># Method 2 — Index-based (when you need position):</span>
+<span class="df">A </span><span class="op">=</span> <span class="st">'Hello'</span>
+<span class="kw">for</span> <span class="df">i </span><span class="kw">in</span> <span class="fn">range</span><span class="df">(</span><span class="fn">len</span><span class="df">(A)):</span>
+    <span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Index {i}: {A[i]}'</span><span class="df">)</span>
+<span class="cm"># Count vowels:</span>
+<span class="df">sentence </span><span class="op">=</span> <span class="st">'Hello World'</span>
+<span class="df">vowels   </span><span class="op">=</span> <span class="st">'aeiouAEIOU'</span>
+<span class="df">count    </span><span class="op">=</span> <span class="nm">0</span>
+<span class="kw">for</span> <span class="df">ch </span><span class="kw">in</span> <span class="df">sentence:</span>
+    <span class="kw">if</span> <span class="df">ch </span><span class="kw">in</span> <span class="df">vowels:</span>
+        <span class="df">count </span><span class="op">+=</span> <span class="nm">1</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'Vowels:'</span><span class="df">, count)</span>   <span class="cm"># 3</span></pre></div>
+  <!-- Animated traversal -->
+  <div class="tbox">
+    <h3 style="font-size:16px;font-weight:800;color:var(--py);margin-bottom:14px">🎬 Animated Traversal — Watch the Loop!</h3>
+    <div class="irow">
+      <span class="ilbl">String:</span>
+      <input class="iin" id="td-s" value="Hello World" style="width:200px" oninput="rstTr()">
+      <button class="pb2 pr" style="padding:8px 16px;font-size:13px" onclick="stTr()">▶ Animate</button>
+      <button class="pb2 pc" style="padding:8px 16px;font-size:13px" onclick="rstTr()">↺ Reset</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;margin:14px 0" id="td-chars"></div>
+    <div style="font-family:'Fira Code',monospace;font-size:14px;color:var(--gray);margin-top:6px" id="td-info">Click ▶ Animate to see traversal</div>
+  </div>
+  <div class="ca tip"><div class="ca-ic">📌</div><div><div class="ca-tt">for vs while Loop for Traversal</div><div class="ca-bd">The <strong>for loop</strong> is preferred — automatic iteration, no index management. Use a <strong>while loop</strong> when you need to skip characters, go backwards, or jump multiple positions.</div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Traversal</div></div>
+    <div class="qq">Q1. How many times does <code>for ch in 'Hello':</code> execute?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q6a')">4</button><button class="qbtn" onclick="qa(this,'correct','q6a')">5</button><button class="qbtn" onclick="qa(this,'wrong','q6a')">6</button></div><div class="qfb" id="q6a"></div></div>
+    <div class="qq">Q2. Which is the preferred loop for string traversal?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q6b')">while loop</button><button class="qbtn" onclick="qa(this,'correct','q6b')">for loop</button><button class="qbtn" onclick="qa(this,'wrong','q6b')">do-while</button></div><div class="qfb" id="q6b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">🔄</div><div><div class="pgt">Playground — Traversal</div><div class="pgs">Write your own traversal programs</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p6',`word='PyThOn'\nupper=0\nfor ch in word:\n    if ch.isupper():\n        upper+=1\nprint('Uppercase count:',upper)`)">Count Uppercase</button>
+      <button class="sbtn" onclick="ls('p6',`s='Hello World'\nresult=''\nfor ch in s:\n    if ch.lower() in 'aeiou':\n        result+='*'\n    else:\n        result+=ch\nprint(result)`)">Replace Vowels</button>
+    </div>
+    <textarea class="pge" id="p6" spellcheck="false">sentence = 'Hello World'
+vowels = 'aeiouAEIOU'
+count = 0
+for ch in sentence:
+    if ch in vowels:
+        count += 1
+print('Vowel count:', count)</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p6','o6')">▶ Run</button><button class="pb2 pc" onclick="clr('p6','o6')">🗑 Clear</button></div>
+    <div class="pout" id="o6"></div></div>
+</div></div>
+
+<!-- S7 OPERATIONS -->
+<div class="pb bl" id="s7"><div class="pb-ico">⚡</div><div class="pb-txt"><h2>8.7 — String Operations</h2><p>Concatenation · Repetition · Membership · Comparison</p></div></div>
+<div class="sec"><div class="sw bl">
+  <div class="sh"><div class="si b">⚡</div><div><div class="sn">Section 8.7</div><div class="st">String Operations</div></div></div>
+  <div class="tw"><table>
+    <tr><th>Operation</th><th>Operator</th><th>Process</th><th>Example → Output</th></tr>
+    <tr><td><strong>Concatenation</strong></td><td><code>+</code></td><td>Joins two strings</td><td><code>'Hello' + ' World'</code> → 'Hello World'</td></tr>
+    <tr><td><strong>Repetition</strong></td><td><code>*</code></td><td>Repeats n times</td><td><code>'Ha' * 3</code> → 'HaHaHa'</td></tr>
+    <tr><td><strong>Membership</strong></td><td><code>in / not in</code></td><td>Checks if substring exists</td><td><code>'ell' in 'Hello'</code> → True</td></tr>
+    <tr><td><strong>Comparison</strong></td><td><code>== != &lt; &gt;</code></td><td>Compares by Unicode value</td><td><code>'Z' &lt; 'a'</code> → True (90&lt;97)</td></tr>
+  </table></div>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="df">full </span><span class="op">=</span> <span class="st">'Guido'</span> <span class="op">+</span> <span class="st">' van Rossum'</span>
+<span class="fn">print</span><span class="df">(full)</span>             <span class="cm"># Guido van Rossum</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'India'</span> <span class="op">*</span> <span class="nm">3</span><span class="df">)</span>      <span class="cm"># IndiaIndiaIndia</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'-'</span> <span class="op">*</span> <span class="nm">30</span><span class="df">)</span>         <span class="cm"># 30 dashes</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'Hello'</span> <span class="kw">in</span> <span class="st">'Hello, World!'</span><span class="df">)</span>   <span class="cm"># True</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'hello'</span> <span class="kw">in</span> <span class="st">'Hello, World!'</span><span class="df">)</span>   <span class="cm"># False (case-sensitive!)</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">ord</span><span class="df">(</span><span class="st">'A'</span><span class="df">))</span>   <span class="cm"># 65</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">ord</span><span class="df">(</span><span class="st">'a'</span><span class="df">))</span>   <span class="cm"># 97</span>
+<span class="fn">print</span><span class="df">(</span><span class="st">'Z'</span> <span class="op">&lt;</span> <span class="st">'a'</span><span class="df">)</span>  <span class="cm"># True — surprises students!</span></pre></div>
+  <div class="ca warn"><div class="ca-ic">⚠️</div><div><div class="ca-tt">TypeError: Can Only Concatenate str to str</div><div class="ca-bd">Common error: <code>'Score: ' + 95</code> → TypeError! Fix: <code>'Score: ' + str(95)</code> or f-string: <code>f'Score: {95}'</code></div></div></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — String Operations</div></div>
+    <div class="qq">Q1. What does <code>'Ha' * 3 + '!'</code> produce?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'correct','q7a')">HaHaHa!</button><button class="qbtn" onclick="qa(this,'wrong','q7a')">Ha!Ha!Ha!</button><button class="qbtn" onclick="qa(this,'wrong','q7a')">Ha*3!</button></div><div class="qfb" id="q7a"></div></div>
+    <div class="qq">Q2. Is <code>'Z' &lt; 'a'</code> True or False in Python?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'correct','q7b')">True (Z=90, a=97)</button><button class="qbtn" onclick="qa(this,'wrong','q7b')">False</button></div><div class="qfb" id="q7b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">⚡</div><div><div class="pgt">Playground — String Operations</div><div class="pgs">Try concatenation, repetition, and membership</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p7',`email='teacher@school.in'\nif '@' in email and '.' in email:\n    print('Valid:',email)\nelse:\n    print('Invalid!')`)">Email Validator</button>
+      <button class="sbtn" onclick="ls('p7',`for c in 'ABCDE':\n    print(f'{c}: ord={ord(c)}')`)">Unicode Values</button>
+    </div>
+    <textarea class="pge" id="p7" spellcheck="false">print('Ha' * 3 + '!')
+print('-' * 30)
+print('ell' in 'Hello')
+print('python' in 'Python')  # Case sensitive!</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p7','o7')">▶ Run</button><button class="pb2 pc" onclick="clr('p7','o7')">🗑 Clear</button></div>
+    <div class="pout" id="o7"></div></div>
+</div></div>
+
+<!-- S8 METHODS -->
+<div class="pb pu" id="s8"><div class="pb-ico">🛠️</div><div class="pb-txt"><h2>8.8 — Built-in String Methods</h2><p>capitalize · count · find · replace · split · join and more</p></div></div>
+<div class="sec"><div class="sw pu">
+  <div class="sh"><div class="si p">🛠️</div><div><div class="sn">Section 8.8</div><div class="st">Built-in String Methods</div></div></div>
+  <p>Python strings have a <strong>rich set of built-in methods</strong> called using the dot operator: <code>string.method_name(args)</code></p>
+  <div class="ibox">
+    <h3 style="color:var(--blue)">🔬 Method Explorer — Click any method to see it in action!</h3>
+    <div class="mpills">
+      <button class="mp act" onclick="showM(this,'capitalize')">capitalize()</button>
+      <button class="mp" onclick="showM(this,'upper')">upper()</button>
+      <button class="mp" onclick="showM(this,'lower')">lower()</button>
+      <button class="mp" onclick="showM(this,'title')">title()</button>
+      <button class="mp" onclick="showM(this,'strip')">strip()</button>
+      <button class="mp" onclick="showM(this,'count')">count()</button>
+      <button class="mp" onclick="showM(this,'find')">find()</button>
+      <button class="mp" onclick="showM(this,'index')">index()</button>
+      <button class="mp" onclick="showM(this,'replace')">replace()</button>
+      <button class="mp" onclick="showM(this,'startswith')">startswith()</button>
+      <button class="mp" onclick="showM(this,'endswith')">endswith()</button>
+      <button class="mp" onclick="showM(this,'split')">split()</button>
+      <button class="mp" onclick="showM(this,'join')">join()</button>
+      <button class="mp" onclick="showM(this,'isdigit')">isdigit()</button>
+      <button class="mp" onclick="showM(this,'isalpha')">isalpha()</button>
+    </div>
+    <div class="mdemo">
+      <div style="font-weight:800;color:var(--blue);font-size:15px;margin-bottom:8px" id="m-name">capitalize()</div>
+      <div class="mdc" id="m-code">"hello WORLD".capitalize()</div>
+      <div class="mdo" id="m-out">→ 'Hello world'</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:8px" id="m-desc">Converts first character to UPPERCASE, rest to lowercase.</div>
+    </div>
+  </div>
+  <div class="ca warn"><div class="ca-ic">⚠️</div><div><div class="ca-tt">find() vs index() — Critical Difference</div><div class="ca-bd"><code>find()</code> returns <strong>-1</strong> if not found (safe!). <code>index()</code> raises <strong>ValueError</strong> if not found (crashes!). Use find() when unsure. Use index() only when certain the substring exists.</div></div></div>
+  <div class="ca tip"><div class="ca-ic">📌</div><div><div class="ca-tt">Methods Return NEW Strings</div><div class="ca-bd">String methods never modify the original (immutability!). They always return a NEW string. To use the result: <code>s = s.upper()</code> or <code>result = s.upper()</code></div></div></div>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>Description</th><th>Example</th><th>Output</th></tr>
+    <tr><td><code>capitalize()</code></td><td>First char upper, rest lower</td><td><code>"hello WORLD".capitalize()</code></td><td>'Hello world'</td></tr>
+    <tr><td><code>upper()</code></td><td>All uppercase</td><td><code>"hello".upper()</code></td><td>'HELLO'</td></tr>
+    <tr><td><code>lower()</code></td><td>All lowercase</td><td><code>"HELLO".lower()</code></td><td>'hello'</td></tr>
+    <tr><td><code>strip()</code></td><td>Remove leading/trailing spaces</td><td><code>"  hi  ".strip()</code></td><td>'hi'</td></tr>
+    <tr><td><code>count(sub)</code></td><td>Count occurrences</td><td><code>"banana".count("a")</code></td><td>3</td></tr>
+    <tr><td><code>find(sub)</code></td><td>Index or -1 if not found</td><td><code>"apple".find("p")</code></td><td>1</td></tr>
+    <tr><td><code>replace(old,new)</code></td><td>Replace all occurrences</td><td><code>"hi world".replace("world","Python")</code></td><td>'hi Python'</td></tr>
+    <tr><td><code>split(sep)</code></td><td>Split into list</td><td><code>"a,b,c".split(",")</code></td><td>['a','b','c']</td></tr>
+    <tr><td><code>join(iterable)</code></td><td>Join list with separator</td><td><code>", ".join(['a','b'])</code></td><td>'a, b'</td></tr>
+    <tr><td><code>isdigit()</code></td><td>All digits?</td><td><code>"123".isdigit()</code></td><td>True</td></tr>
+  </table></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — String Methods</div></div>
+    <div class="qq">Q1. What does <code>"banana".count("a")</code> return?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q8a')">2</button><button class="qbtn" onclick="qa(this,'correct','q8a')">3</button><button class="qbtn" onclick="qa(this,'wrong','q8a')">1</button></div><div class="qfb" id="q8a"></div></div>
+    <div class="qq">Q2. What does <code>index()</code> do if substring is not found?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q8b')">Returns -1</button><button class="qbtn" onclick="qa(this,'correct','q8b')">Raises ValueError</button><button class="qbtn" onclick="qa(this,'wrong','q8b')">Returns None</button></div><div class="qfb" id="q8b"></div></div>
+    <div class="qq">Q3. What does <code>"Hello World".title()</code> return?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q8c')">HELLO WORLD</button><button class="qbtn" onclick="qa(this,'correct','q8c')">Hello World</button><button class="qbtn" onclick="qa(this,'wrong','q8c')">hello world</button></div><div class="qfb" id="q8c"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">🛠️</div><div><div class="pgt">Playground — String Methods</div><div class="pgs">Try method chaining too!</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p8',`text='   hello world   '\nresult=text.strip().title().replace('World','Python')\nprint(result)`)">Method Chain</button>
+      <button class="sbtn" onclick="ls('p8',`words=['Python','is','amazing']\nprint(' '.join(words))`)">Join Words</button>
+      <button class="sbtn" onclick="ls('p8',`csv='Name,Age,City,Marks'\nfields=csv.split(',')\nfor f in fields:\n    print('-',f)`)">Split CSV</button>
+    </div>
+    <textarea class="pge" id="p8" spellcheck="false">s = 'Hello, World!'
+print(s.upper())
+print(s.lower())
+print(s.count('l'))
+print(s.replace('World', 'Python'))
+print(s.find('World'))</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p8','o8')">▶ Run</button><button class="pb2 pc" onclick="clr('p8','o8')">🗑 Clear</button></div>
+    <div class="pout" id="o8"></div></div>
+</div></div>
+
+<!-- S9 APPLICATIONS -->
+<div class="pb dk" id="s9"><div class="pb-ico">🚀</div><div class="pb-txt"><h2>8.9 — Applications</h2><p>Reverse · Count Vowels · Caesar Cipher · Palindrome</p></div></div>
+<div class="sec"><div class="sw" style="border-color:#2d3461">
+  <div class="sh"><div class="si" style="background:#F0F0FF">🚀</div><div><div class="sn">Section 8.9</div><div class="st">Applications of Strings — Solved Programs</div></div></div>
+  <h3 style="color:var(--py);font-size:17px;margin-bottom:12px">Problem 8.1 — Reverse a String</h3>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="kw">def</span> <span class="fn">reversed_string</span><span class="df">(text):</span>
+    <span class="df">reversed_s </span><span class="op">=</span> <span class="df">text[::</span><span class="op">-</span><span class="nm">1</span><span class="df">]</span>
+    <span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Original : {text}'</span><span class="df">)</span>
+    <span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Reversed : {reversed_s}'</span><span class="df">)</span>
+<span class="fn">reversed_string</span><span class="df">(</span><span class="st">'Hello, Python!'</span><span class="df">)</span></pre></div>
+  <div class="ob"><div class="ol">▶ Output</div>Original : Hello, Python!<br>Reversed : !nohtyP ,olleH</div>
+  <div class="ca ex"><div class="ca-ic">💡</div><div><div class="ca-tt">Classroom Challenge — Palindrome Checker</div><div class="ca-bd"><pre style="background:none;padding:0;font-size:13px;line-height:1.7;color:inherit">def is_palindrome(text):
+    clean = text.lower().replace(' ', '')
+    return clean == clean[::-1]
+# Test: 'madam'→True | 'racecar'→True | 'python'→False</pre></div></div></div>
+  <h3 style="color:var(--blue);font-size:17px;margin:28px 0 12px">Problem 8.2 — Count Vowels</h3>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="kw">def</span> <span class="fn">count_vowels</span><span class="df">(sentence):</span>
+    <span class="df">vowels </span><span class="op">=</span> <span class="st">'aeiouAEIOU'</span>
+    <span class="df">count  </span><span class="op">=</span> <span class="nm">0</span>
+    <span class="kw">for</span> <span class="df">ch </span><span class="kw">in</span> <span class="df">sentence:</span>
+        <span class="kw">if</span> <span class="df">ch </span><span class="kw">in</span> <span class="df">vowels:</span>
+            <span class="df">count </span><span class="op">+=</span> <span class="nm">1</span>
+    <span class="fn">print</span><span class="df">(</span><span class="kw">f</span><span class="st">'Vowels: {count}'</span><span class="df">)</span>
+<span class="fn">count_vowels</span><span class="df">(</span><span class="st">'Say Yes to Life, No to drugs'</span><span class="df">)</span></pre></div>
+  <div class="ob"><div class="ol">▶ Output</div>Vowels: 8</div>
+  <h3 style="color:var(--purple);font-size:17px;margin:28px 0 12px">🔐 Advanced — Caesar Cipher</h3>
+  <div class="cw"><div class="ch"><div class="dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div><span class="cl2">Python — Caesar Cipher</span><button class="cc" onclick="copyCode(this)">Copy</button></div>
+<pre><span class="kw">def</span> <span class="fn">caesar_cipher</span><span class="df">(text, shift):</span>
+    <span class="df">result </span><span class="op">=</span> <span class="st">''</span>
+    <span class="kw">for</span> <span class="df">ch </span><span class="kw">in</span> <span class="df">text:</span>
+        <span class="kw">if</span> <span class="df">ch.</span><span class="fn">isalpha</span><span class="df">():</span>
+            <span class="df">base </span><span class="op">=</span> <span class="fn">ord</span><span class="df">(</span><span class="st">'A'</span><span class="df">) </span><span class="kw">if</span> <span class="df">ch.</span><span class="fn">isupper</span><span class="df">() </span><span class="kw">else</span> <span class="fn">ord</span><span class="df">(</span><span class="st">'a'</span><span class="df">)</span>
+            <span class="df">shifted </span><span class="op">=</span> <span class="fn">chr</span><span class="df">((</span><span class="fn">ord</span><span class="df">(ch)</span><span class="op">-</span><span class="df">base</span><span class="op">+</span><span class="df">shift)</span><span class="op">%</span><span class="nm">26</span><span class="op">+</span><span class="df">base)</span>
+            <span class="df">result </span><span class="op">+=</span> <span class="df">shifted</span>
+        <span class="kw">else</span><span class="df">:</span>
+            <span class="df">result </span><span class="op">+=</span> <span class="df">ch</span>
+    <span class="kw">return</span> <span class="df">result</span>
+<span class="fn">print</span><span class="df">(</span><span class="fn">caesar_cipher</span><span class="df">(</span><span class="st">'ATTACK AT DAWN'</span><span class="df">, </span><span class="nm">3</span><span class="df">))</span>  <span class="cm"># DWWDFN DW GDZQ</span></pre></div>
+  <!-- Live Cipher -->
+  <div class="cphr">
+    <h3 style="color:#58D68D;font-size:18px;font-weight:800;margin-bottom:16px">🔐 Live Caesar Cipher — Type and Encrypt!</h3>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+      <span style="color:#8B949E;font-size:13px;font-weight:700;min-width:70px">Message:</span>
+      <input class="cin" id="cp-txt" placeholder="Type your message..." value="ATTACK AT DAWN" style="flex:1;min-width:200px" oninput="doCp()">
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <span style="color:#8B949E;font-size:13px;font-weight:700;min-width:70px">Shift:</span>
+      <input class="cin" id="cp-sh" type="number" value="3" min="1" max="25" style="width:70px" oninput="doCp()">
+      <button class="pb2 pr" onclick="doCp()">🔐 Encrypt</button>
+      <button class="pb2" style="background:#C0392B;color:#fff;padding:10px 22px;border-radius:10px;border:none;font-family:Poppins,sans-serif;font-size:14px;font-weight:800;cursor:pointer" onclick="doDe()">🔓 Decrypt</button>
+    </div>
+    <div style="color:#8B949E;font-size:13px;font-weight:700;margin-bottom:6px">Result:</div>
+    <div class="cres" id="cp-res">DWWDFN DW GDZQ</div>
+  </div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Applications</div></div>
+    <div class="qq">Q1. Which slice reverses a string?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q9a')">s[0:-1]</button><button class="qbtn" onclick="qa(this,'correct','q9a')">s[::-1]</button><button class="qbtn" onclick="qa(this,'wrong','q9a')">s[-1:0]</button></div><div class="qfb" id="q9a"></div></div>
+    <div class="qq">Q2. In Caesar Cipher with shift=3, 'A' becomes?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','q9b')">B</button><button class="qbtn" onclick="qa(this,'wrong','q9b')">C</button><button class="qbtn" onclick="qa(this,'correct','q9b')">D</button></div><div class="qfb" id="q9b"></div></div></div>
+  <div class="pg"><div class="pgh"><div class="pgi">🚀</div><div><div class="pgt">Playground — Applications</div><div class="pgs">Run and modify the programs</div></div></div>
+    <div class="psnip">
+      <button class="sbtn" onclick="ls('p9',`def is_pal(t):\n    c=t.lower().replace(' ','')\n    return c==c[::-1]\nfor w in ['racecar','hello','madam','Python']:\n    print(f'{w}: {is_pal(w)}')`)">Palindrome</button>
+      <button class="sbtn" onclick="ls('p9',`s='April 23, 1984'\ndigits=sum(1 for c in s if c.isdigit())\nprint(f'Digits in {s}: {digits}')`)">Count Digits</button>
+      <button class="sbtn" onclick="ls('p9',`def anagram(s1,s2):\n    return sorted(s1.lower())==sorted(s2.lower())\nprint(anagram('listen','silent'))\nprint(anagram('hello','world'))`)">Anagram</button>
+    </div>
+    <textarea class="pge" id="p9" spellcheck="false">def count_vowels(sentence):
+    vowels = 'aeiouAEIOU'
+    count = 0
+    for ch in sentence:
+        if ch in vowels:
+            count += 1
+    print(f'Sentence : {sentence}')
+    print(f'Vowels   : {count}')
+
+count_vowels('Say Yes to Life, No to drugs')</textarea>
+    <div class="pgb"><button class="pb2 pr" onclick="run('p9','o9')">▶ Run</button><button class="pb2 pc" onclick="clr('p9','o9')">🗑 Clear</button></div>
+    <div class="pout" id="o9"></div></div>
+</div></div>
+
+<!-- ERRORS -->
+<div class="pb dk" id="se"><div class="pb-ico">🐛</div><div class="pb-txt"><h2>Common Errors &amp; Fixes</h2><p>TypeError · IndexError · ValueError · Slicing Mistakes</p></div></div>
+<div class="sec"><div class="sw re">
+  <div class="sh"><div class="si r">🐛</div><div><div class="sn">Error Reference</div><div class="st">Common Errors and How to Fix Them</div></div></div>
+  <div class="tw"><table>
+    <tr><th style="background:var(--red)">Error</th><th style="background:var(--red)">Cause</th><th style="background:var(--red)">Fix</th></tr>
+    <tr><td>TypeError: str item assignment</td><td><code>s[0]='A'</code> — modifying immutable string</td><td>Create new: <code>s='A'+s[1:]</code></td></tr>
+    <tr><td>TypeError: only concatenate str to str</td><td><code>'Score: '+95</code> — mixing str+int</td><td>Convert: <code>str(95)</code> or use f-string</td></tr>
+    <tr><td>IndexError: string index out of range</td><td>Index &gt;= len(s) or &lt; -len(s)</td><td>Valid range: 0 to len(s)-1 or -len(s) to -1</td></tr>
+    <tr><td>ValueError (from index())</td><td>Substring not found with index()</td><td>Use find() — returns -1 safely</td></tr>
+    <tr><td>Wrong comparison (case issue)</td><td>'Apple'=='apple' → False</td><td>Normalise: <code>s1.lower()==s2.lower()</code></td></tr>
+    <tr><td>input() arithmetic error</td><td>Forgot input() returns a string</td><td>Wrap: <code>int(input('...'))</code></td></tr>
+    <tr><td>Slicing gives empty string</td><td>start &gt;= end with positive step</td><td>Remember: end is EXCLUSIVE!</td></tr>
+  </table></div>
+  <div class="qb"><div class="qh"><div class="qi">🧠</div><div class="qt">Quick Check — Errors</div></div>
+    <div class="qq">Q1. <code>'Hello'[10]</code> raises which error?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','qea')">TypeError</button><button class="qbtn" onclick="qa(this,'correct','qea')">IndexError</button><button class="qbtn" onclick="qa(this,'wrong','qea')">ValueError</button></div><div class="qfb" id="qea"></div></div>
+    <div class="qq">Q2. Which is safer when searching for a substring?
+      <div class="qch"><button class="qbtn" onclick="qa(this,'wrong','qeb')">index()</button><button class="qbtn" onclick="qa(this,'correct','qeb')">find()</button><button class="qbtn" onclick="qa(this,'wrong','qeb')">search()</button></div><div class="qfb" id="qeb"></div></div></div>
+</div></div>
+
+<!-- SUMMARY -->
+<div class="pb py" id="ss"><div class="pb-ico">📝</div><div class="pb-txt"><h2>Chapter Summary</h2><p>Key Points · Revision Cards · Final Quiz</p></div></div>
+<div class="sec"><div class="sw">
+  <div class="sh"><div class="si g">📝</div><div><div class="sn">Chapter Summary</div><div class="st">Chapter 8 — Strings in Python</div></div></div>
+  <div class="sgrid">
+    <div class="scard"><div class="sct">String Creation</div><div class="scb">Single, double, or triple quotes. Sequence of characters. Length-1 string = single character.</div></div>
+    <div class="scard" style="border-color:var(--blue)"><div class="sct" style="color:var(--blue)">Immutability</div><div class="scb">Cannot change after creation. Operations create new strings. Variables can be reassigned.</div></div>
+    <div class="scard" style="border-color:var(--purple)"><div class="sct" style="color:var(--purple)">input() Function</div><div class="scb">ALWAYS returns a string. Convert with int() or float(). Prompt parameter is optional.</div></div>
+    <div class="scard" style="border-color:var(--orange)"><div class="sct" style="color:var(--orange)">f-Strings</div><div class="scb">f'...' syntax. Embed in {}. Format: :.2f, :&gt;10, :05d. Preferred over concatenation.</div></div>
+    <div class="scard" style="border-color:var(--teal)"><div class="sct" style="color:var(--teal)">Indexing</div><div class="scb">Positive: 0 to n-1. Negative: -1 to -n. Same character, two references.</div></div>
+    <div class="scard" style="border-color:var(--gold)"><div class="sct" style="color:var(--gold)">Slicing</div><div class="scb">str[start:end:step]. end is EXCLUSIVE. [::-1] reverses. Omitting = defaults.</div></div>
+    <div class="scard"><div class="sct">Traversal</div><div class="scb">for ch in string: visits each char. range(len(s)) for index-based access.</div></div>
+    <div class="scard" style="border-color:var(--blue)"><div class="sct" style="color:var(--blue)">Operations</div><div class="scb">+ concatenate, * repeat, in/not in membership, == != &lt; &gt; comparison by Unicode.</div></div>
+    <div class="scard" style="border-color:var(--purple)"><div class="sct" style="color:var(--purple)">String Methods</div><div class="scb">capitalize, upper, lower, strip, count, find, replace, split, join, isdigit, isalpha.</div></div>
+    <div class="scard" style="border-color:var(--orange)"><div class="sct" style="color:var(--orange)">Applications</div><div class="scb">Reverse, palindrome, count vowels/digits, template replace, Caesar cipher.</div></div>
+  </div>
+  <!-- FINAL QUIZ -->
+  <div class="qb"><div class="qh"><div class="qi">🏆</div><div class="qt">Final Chapter Quiz — Test Your Knowledge!</div></div>
+    <div class="qq">Q1. Which creates a multiline string?
+      <div class="qch"><button class="qbtn" onclick="fq(this,'wrong','fq1',1)">"line1\nline2" only</button><button class="qbtn" onclick="fq(this,'wrong','fq1',1)">"""...""" only</button><button class="qbtn" onclick="fq(this,'correct','fq1',1)">Both are valid</button></div><div class="qfb" id="fq1"></div></div>
+    <div class="qq">Q2. What is <code>len('Python')</code>?
+      <div class="qch"><button class="qbtn" onclick="fq(this,'wrong','fq2',2)">5</button><button class="qbtn" onclick="fq(this,'correct','fq2',2)">6</button><button class="qbtn" onclick="fq(this,'wrong','fq2',2)">7</button></div><div class="qfb" id="fq2"></div></div>
+    <div class="qq">Q3. What does <code>'Python'[2:-2]</code> return?
+      <div class="qch"><button class="qbtn" onclick="fq(this,'wrong','fq3',3)">tho</button><button class="qbtn" onclick="fq(this,'wrong','fq3',3)">ytho</button><button class="qbtn" onclick="fq(this,'correct','fq3',3)">th</button></div><div class="qfb" id="fq3"></div></div>
+    <div class="qq">Q4. Which method removes whitespace from both ends?
+      <div class="qch"><button class="qbtn" onclick="fq(this,'wrong','fq4',4)">trim()</button><button class="qbtn" onclick="fq(this,'correct','fq4',4)">strip()</button><button class="qbtn" onclick="fq(this,'wrong','fq4',4)">clean()</button></div><div class="qfb" id="fq4"></div></div>
+    <div class="qq">Q5. What does <code>'hello'.upper().replace('L','7')</code> return?
+      <div class="qch"><button class="qbtn" onclick="fq(this,'wrong','fq5',5)">he77o</button><button class="qbtn" onclick="fq(this,'correct','fq5',5)">HE77O</button><button class="qbtn" onclick="fq(this,'wrong','fq5',5)">HELLO</button></div><div class="qfb" id="fq5"></div></div>
+    <div class="qsc" id="fqsc"></div></div>
+  <div class="ca info" style="margin-top:26px"><div class="ca-ic">🏁</div><div><div class="ca-tt">Final Teaching Note</div><div class="ca-bd">Chapter 8 on Strings is <strong>foundational for all subsequent chapters</strong>. Indexing and slicing concepts apply equally to Lists (Ch.9), Tuples (Ch.10). The traversal pattern is used throughout. Explore Python docs at <strong>docs.python.org</strong> for many more methods!</div></div></div>
+</div></div>
+
+<footer>
+  <div style="font-size:36px;margin-bottom:10px;animation:snk 2s ease-in-out infinite;display:inline-block">🐍</div><br>
+  <strong>Computer Science XI &nbsp;·&nbsp; Chapter 8 : Strings in Python &nbsp;·&nbsp; Interactive Teacher Notes</strong><br>
+  Developed by <strong>Binu K Varghese</strong>, RM HSS Vadavucode, Ernakulam<br>
+  with 🐍 Python Love<br>
+  <span style="font-size:12px;opacity:.45">New Higher Secondary Textbook 2026 · State Resource Person Training Programme · All sections include Live Playground &amp; Quick Quiz</span>
+</footer>
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script src="https://cdn.jsdelivr.net/gh/Tezumie/Skulpt-CDN@latest/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Tezumie/Skulpt-CDN@latest/skulpt-stdlib.js"></script>
+<script>
+// Progress bar & back to top
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  document.getElementById('prog').style.width=((h.scrollTop/(h.scrollHeight-h.clientHeight))*100)+'%';
+  document.getElementById('btt').classList.toggle('show',h.scrollTop>400);
+});
+
+// Copy code
+function copyCode(btn){
+  const pre=btn.closest('.cw').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1800);});
+}
+
+// ── PYTHON SIMULATOR ─────────────────────────────────
+function skReady(){return window.Sk&&Sk.importMainWithBody&&Sk.builtinFiles;}
+function run(edId,outId){
+  const code=document.getElementById(edId).value;
+  const el=document.getElementById(outId);
+  el.classList.remove('err');el.classList.add('show');
+  if(!skReady()){
+    el.textContent='⏳ The Python engine is still loading (it needs an internet connection the first time this page opens). Please wait a few seconds and press ▶ Run again.';
+    return;
+  }
+  let buf='';
+  Sk.configure({
+    output:t=>{buf+=t;},
+    read:x=>{if(Sk.builtinFiles===undefined||Sk.builtinFiles["files"][x]===undefined)throw"File not found: '"+x+"'";return Sk.builtinFiles["files"][x];},
+    __future__:Sk.python3,
+    inputfun:()=>'',inputfunTakesPrompt:true
+  });
+  Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody("<stdin>",false,code,true))
+    .then(()=>{el.textContent=buf.replace(/\n$/,'')||'(no output)';el.classList.remove('err');},
+          e=>{el.textContent='⚠ '+(e&&e.toString?e.toString():e);el.classList.add('err');});
+}
+function mkEnv(L){
+  return{
+    print:(...a)=>{L.push(a.map(v=>pys(v)).join(' '));},
+    len:v=>typeof v==='string'?v.length:Array.isArray(v)?v.length:0,
+    str:v=>String(v), int:v=>Math.trunc(parseFloat(v))||0,
+    float:v=>parseFloat(v)||0,
+    type:v=>`<class '${typeof v==='string'?'str':typeof v==='number'?Number.isInteger(v)?'int':'float':typeof v==='boolean'?'bool':'object'}'>`,
+    ord:c=>c.charCodeAt(0), chr:n=>String.fromCharCode(n),
+    range:(a,b,c)=>{const r=[];if(b===undefined){for(let i=0;i<a;i++)r.push(i);}else{const s=c===undefined?1:c;if(s>0)for(let i=a;i<b;i+=s)r.push(i);else for(let i=a;i>b;i+=s)r.push(i);}return r;},
+    sorted:a=>[...a].sort(), sum:a=>a.reduce((x,y)=>x+y,0),
+    enumerate:a=>a.map((v,i)=>[i,v]),
+    input:p=>{L.push((p||'')+'(simulated)');return'demo';},
+    id:v=>Math.floor(Math.random()*9e9+1e9),
+    True:true,False:false,None:null,
+    abs:Math.abs, min:Math.min, max:Math.max,
+    bool:v=>!!v,
+  };
+}
+function pys(v){
+  if(v===null)return'None';
+  if(v===true)return'True';
+  if(v===false)return'False';
+  if(Array.isArray(v))return'['+v.map(pys).join(', ')+']';
+  return String(v);
+}
+function evalPy(code,E,L){
+  let js=code
+    .replace(/\bTrue\b/g,'true').replace(/\bFalse\b/g,'false').replace(/\bNone\b/g,'null')
+    .replace(/\band\b/g,'&&').replace(/\bor\b/g,'||').replace(/\bnot\s+/g,'!')
+    .replace(/\.append\(/g,'.push(')
+    .replace(/def (\w+)\((.*?)\):/g,'function $1($2){')
+    .replace(/for (\w+) in range\(len\((\w+)\)\):/g,'for(let $1 of range($2.length)){')
+    .replace(/for (\w+) in range\(([^,)]+),\s*([^,)]+),\s*([^)]+)\):/g,'for(let $1 of range($2,$3,$4)){')
+    .replace(/for (\w+) in range\(([^,)]+),\s*([^)]+)\):/g,'for(let $1 of range($2,$3)){')
+    .replace(/for (\w+) in range\(([^)]+)\):/g,'for(let $1 of range($2)){')
+    .replace(/for (\w+) in ([^:]+):/g,'for(let $1 of $2){')
+    .replace(/while (.+?):/g,'while($1){')
+    .replace(/elif (.+?):/g,'}else if($1){')
+    .replace(/if (.+?):/g,'if($1){')
+    .replace(/else:/g,'}else{')
+    .replace(/f'([^']*)'/g,(m,s)=>'`'+s.replace(/\{([^}]+)\}/g,'${$1}')+'`')
+    .replace(/f"([^"]*)"/g,(m,s)=>'`'+s.replace(/\{([^}]+)\}/g,'${$1}')+'`');
+  const iL=js.split('\n'),oL=[];const stk=[0];
+  for(const l of iL){
+    if(!l.trim()){oL.push('');continue;}
+    const ind=l.match(/^ */)[0].length,cur=stk[stk.length-1];
+    if(ind>cur)stk.push(ind);
+    else while(ind<stk[stk.length-1]){stk.pop();oL.push('}');}
+    oL.push(l);
+  }
+  while(stk.length>1){stk.pop();oL.push('}');}
+  const fn=new Function(...Object.keys(E),'L',oL.join('\n'));
+  fn(...Object.values(E),L);
+}
+function ls(id,code){document.getElementById(id).value=code;}
+function clr(e,o){document.getElementById(e).value='';const el=document.getElementById(o);el.classList.remove('show','err');el.textContent='';}
+
+// ── QUIZ ─────────────────────────────────────────────
+const qM={correct:['✅ Correct!','✅ Excellent!','✅ Right answer!','✅ Well done!'],wrong:['❌ Not quite — review the notes!','❌ Oops! Try again.','❌ Almost, but not quite.','❌ Think again!']};
+function qa(btn,res,fbId){
+  btn.parentElement.querySelectorAll('.qbtn').forEach(b=>{b.style.pointerEvents='none';});
+  btn.classList.add(res);
+  const fb=document.getElementById(fbId);
+  const arr=qM[res];fb.textContent=arr[Math.floor(Math.random()*arr.length)];
+  fb.style.color=res==='correct'?'var(--py)':'var(--red)';
+}
+let fqC=0;
+function fq(btn,res,fbId,n){
+  qa(btn,res,fbId);
+  if(res==='correct')fqC++;
+  if(n===5){
+    const sc=document.getElementById('fqsc');sc.style.display='block';
+    const p=Math.round(fqC/5*100);
+    sc.textContent='🏆 Score: '+fqC+'/5 ('+p+'%) — '+(p>=80?'Excellent! 🌟':p>=60?'Good job! 👍':'Keep practising! 📖');
+  }
+}
+
+// ── INDEX EXPLORER ───────────────────────────────────
+function idxUp(){
+  const s=document.getElementById('idx-s').value;
+  const vis=document.getElementById('idx-vis');vis.innerHTML='';
+  s.split('').forEach((c,i)=>{
+    const el=document.createElement('div');el.className='sch';
+    el.innerHTML='<span class="pi2">'+i+'</span>'+(c===' '?'·':c)+'<span class="ni2">'+(i-s.length)+'</span>';
+    vis.appendChild(el);
+  });
+  idxSh();
+}
+function idxSh(){
+  const s=document.getElementById('idx-s').value;
+  let idx=parseInt(document.getElementById('idx-n').value);
+  document.getElementById('idx-vis').querySelectorAll('.sch').forEach(e=>e.classList.remove('sel'));
+  const res=document.getElementById('idx-res');
+  if(isNaN(idx)){res.textContent='Enter a valid index number';return;}
+  const act=idx<0?s.length+idx:idx;
+  if(act<0||act>=s.length){res.textContent='IndexError: index '+idx+' is out of range (length '+s.length+')';return;}
+  const chars=document.getElementById('idx-vis').querySelectorAll('.sch');
+  if(chars[act])chars[act].classList.add('sel');
+  res.textContent="s["+idx+"] = '"+(s[act]===' '?'(space)':s[act])+"'  |  positive: "+act+"  |  negative: "+(act-s.length);
+}
+setTimeout(()=>{idxUp();doSl();},200);
+
+// ── SLICER ───────────────────────────────────────────
+function pySliceIdx(n,st,en,sp){
+  let step=(sp===null||isNaN(sp))?1:sp; if(step===0)step=1;
+  let start,stop;
+  if(step>0){
+    start=(st===null||isNaN(st))?0:(st<0?Math.max(st+n,0):Math.min(st,n));
+    stop =(en===null||isNaN(en))?n:(en<0?Math.max(en+n,0):Math.min(en,n));
+  }else{
+    start=(st===null||isNaN(st))?n-1:(st<0?Math.max(st+n,-1):Math.min(st,n-1));
+    stop =(en===null||isNaN(en))?-1:(en<0?Math.max(en+n,-1):Math.min(en,n-1));
+  }
+  const idx=[];
+  if(step>0){for(let i=start;i<stop;i+=step)idx.push(i);}
+  else{for(let i=start;i>stop;i+=step)idx.push(i);}
+  return idx;
+}
+function doSl(){
+  const s=document.getElementById('sl-s').value;
+  const n=s.length;
+  const stv=document.getElementById('sl-st').value.trim();
+  const env=document.getElementById('sl-en').value.trim();
+  const spv=document.getElementById('sl-sp').value.trim();
+  const iSt=stv===''?null:parseInt(stv);
+  const iEn=env===''?null:parseInt(env);
+  const iSp=spv===''?null:parseInt(spv);
+  const order=pySliceIdx(n,iSt,iEn,iSp);
+  const sel=new Set(order);
+  const vis=document.getElementById('sl-vis');vis.innerHTML='';
+  s.split('').forEach((c,i)=>{
+    const el=document.createElement('div');el.className='sch'+(sel.has(i)?' sel':'');
+    el.innerHTML='<span class="pi2">'+i+'</span>'+(c===' '?'·':c)+'<span class="ni2">'+(i-n)+'</span>';
+    vis.appendChild(el);
+  });
+  const r=order.map(i=>s[i]).join('');
+  const expr='s['+(stv===''?'':stv)+':'+(env===''?'':env)+(spv===''?'':':'+spv)+']';
+  document.getElementById('sl-res').textContent=expr+" = '"+r+"'  ("+order.length+' chars)';
+}
+function setSl(s,e,p){
+  document.getElementById('sl-st').value=s;
+  document.getElementById('sl-en').value=e;
+  document.getElementById('sl-sp').value=p;
+  doSl();
+}
+
+// ── TRAVERSAL ANIMATOR ───────────────────────────────
+let travT=null;
+function rstTr(){
+  clearInterval(travT);
+  const s=document.getElementById('td-s').value;
+  const c=document.getElementById('td-chars');c.innerHTML='';
+  s.split('').forEach((ch,i)=>{
+    const el=document.createElement('div');el.className='tch';
+    el.innerHTML='<div style="font-size:9px;color:var(--gray)">'+i+'</div>'+(ch===' '?'·':ch);
+    c.appendChild(el);
+  });
+  document.getElementById('td-info').textContent='Click ▶ Animate to see traversal';
+}
+function stTr(){
+  clearInterval(travT);
+  const s=document.getElementById('td-s').value;
+  const chars=document.getElementById('td-chars').querySelectorAll('.tch');
+  const info=document.getElementById('td-info');
+  chars.forEach(c=>c.classList.remove('hl','vs'));
+  let i=0;
+  const vowels='aeiouAEIOU';
+  travT=setInterval(()=>{
+    if(i>0)chars[i-1].classList.replace('hl','vs');
+    if(i>=s.length){clearInterval(travT);info.textContent='✅ Traversal complete! Visited '+s.length+' characters.';return;}
+    chars[i].classList.add('hl');
+    const ch=s[i];
+    info.textContent="Loop → ch = '"+(ch===' '?'(space)':ch)+"'  [index "+i+']'+(vowels.includes(ch)?' ← VOWEL! 🔵':'');
+    i++;
+  },580);
+}
+rstTr();
+
+// ── METHOD EXPLORER ──────────────────────────────────
+const MD={
+  capitalize:{code:'"hello WORLD".capitalize()',out:"'Hello world'",desc:'Converts first character to UPPERCASE, rest to lowercase.'},
+  upper:{code:'"hello".upper()',out:"'HELLO'",desc:'Converts ALL characters to uppercase.'},
+  lower:{code:'"HELLO".lower()',out:"'hello'",desc:'Converts ALL characters to lowercase.'},
+  title:{code:'"hello world".title()',out:"'Hello World'",desc:'Capitalises the FIRST LETTER of each word.'},
+  strip:{code:'"  hello  ".strip()',out:"'hello'",desc:'Removes leading and trailing whitespace.'},
+  count:{code:'"banana".count("a")',out:'3',desc:'Counts non-overlapping occurrences of substring. Returns 0 if not found.'},
+  find:{code:'"apple".find("p")',out:'1',desc:'Returns index of first occurrence, or -1 if NOT found. SAFE — no crash!'},
+  index:{code:'"pineapple".index("e")',out:'3',desc:'Returns index of first occurrence, but raises ValueError if NOT found. Use find() when unsure!'},
+  replace:{code:'"hello world".replace("world","Python")',out:"'hello Python'",desc:'Returns new string with ALL occurrences of old replaced by new.'},
+  startswith:{code:'"hello".startswith("he")',out:'True',desc:'Returns True if the string starts with the given prefix.'},
+  endswith:{code:'"hello".endswith("hi")',out:'False',desc:'Returns False since "hello" does not end with "hi".'},
+  split:{code:'"a,b,c".split(",")',out:"['a', 'b', 'c']",desc:'Splits string at separator and returns a list of substrings.'},
+  join:{code:'", ".join(["a","b","c"])',out:"'a, b, c'",desc:'Joins list elements with the calling string as separator.'},
+  isdigit:{code:'"123".isdigit()',out:'True',desc:'Returns True if ALL characters are digits. "12.3" returns False.'},
+  isalpha:{code:'"hello".isalpha()',out:'True',desc:'Returns True if ALL characters are alphabetic letters.'},
+};
+function showM(btn,name){
+  document.querySelectorAll('.mp').forEach(p=>p.classList.remove('act'));
+  btn.classList.add('act');
+  const m=MD[name];
+  document.getElementById('m-name').textContent=name+'()';
+  document.getElementById('m-code').textContent=m.code;
+  document.getElementById('m-out').textContent='→ '+m.out;
+  document.getElementById('m-desc').textContent=m.desc;
+}
+
+// ── CAESAR CIPHER ────────────────────────────────────
+function cpC(ch,sh,enc){
+  if(!/[a-zA-Z]/.test(ch))return ch;
+  const b=ch===ch.toUpperCase()?65:97;
+  return String.fromCharCode((ch.charCodeAt(0)-b+(enc?sh:(26-sh%26)))%26+b);
+}
+function doCp(){
+  const t=document.getElementById('cp-txt').value;
+  const sh=parseInt(document.getElementById('cp-sh').value)||3;
+  document.getElementById('cp-res').textContent=t.split('').map(c=>cpC(c,sh,true)).join('');
+}
+function doDe(){
+  const t=document.getElementById('cp-txt').value;
+  const sh=parseInt(document.getElementById('cp-sh').value)||3;
+  document.getElementById('cp-res').textContent=t.split('').map(c=>cpC(c,sh,false)).join('');
+}
+doCp();
+</script>
+</body>
+</html>

@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<title>Chapter 5 — Python Fundamentals | Teacher Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EE;
+    --paper-alt:#E7EBE0;
+    --panel:#FFFFFF;
+    --ink:#16241F;
+    --ink-soft:#4A6156;
+    --py-blue:#1874C4;
+    --py-blue-deep:#0F4C81;
+    --py-gold:#F5A623;
+    --shell-green:#1E9E64;
+    --shell-green-bg:#E4F5EB;
+    --cpp-brown:#C0632E;
+    --cpp-brown-bg:#FBEADB;
+    --violet:#7C5CFF;
+    --err:#E0473A;
+    --line:#D8DECF;
+    --radius:10px;
+    --shadow:0 2px 8px rgba(22,36,31,.07);
+    --shadow-hover:0 14px 32px rgba(22,36,31,.16);
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1B16;
+    --paper-alt:#16261F;
+    --panel:#182A22;
+    --ink:#F1F8F1;
+    --ink-soft:#9AC1AC;
+    --py-blue:#5EB8FF;
+    --py-blue-deep:#8FD1FF;
+    --py-gold:#FFC15C;
+    --shell-green:#4FE0A0;
+    --shell-green-bg:#173428;
+    --cpp-brown:#FF9D5C;
+    --cpp-brown-bg:#33221A;
+    --violet:#B49CFF;
+    --err:#FF7A6B;
+    --line:#26402F;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+    --shadow-hover:0 16px 36px rgba(0,0,0,.5);
+  }
+  html, body{transition:background-color .35s ease, color .35s ease;}
+  @media (prefers-reduced-motion: reduce){
+    html, body, *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:radial-gradient(circle, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+    background-size:26px 26px;
+    animation:drift 40s linear infinite;
+  }
+  @keyframes drift{0%{background-position:0 0;}100%{background-position:130px 130px;}}
+  h1.title{
+    background:linear-gradient(100deg, var(--py-blue-deep), var(--violet) 45%, var(--shell-green) 80%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:var(--ink); -webkit-text-fill-color:transparent;
+    animation:hue-shift 8s ease-in-out infinite alternate;
+  }
+  @keyframes hue-shift{0%{background-position:0% center;}100%{background-position:100% center;}}
+  h1,h2,h3,h4{font-family:'Fraunces',serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  code, .mono, .code-cell, textarea, pre{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--py-blue-deep);}
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- Tab bar (signature nav, mimics IDE open files) ---------- */
+  .tabbar-outer{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-alt);
+    border-bottom:1px solid var(--line);
+  }
+  .progress-track{height:3px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--py-gold), var(--shell-green)); transition:width .12s linear;}
+  .tabbar{
+    display:flex; align-items:center; overflow-x:auto; max-width:900px; margin:0 auto;
+    scrollbar-width:thin;
+  }
+  .theme-toggle{
+    flex:0 0 auto; margin-left:auto; border:none; background:var(--panel); color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 12px; cursor:pointer;
+    border-left:1px solid var(--line); white-space:nowrap; display:flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{color:var(--ink);}
+  .tabbar a{
+    flex:0 0 auto;
+    padding:12px 16px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:2px solid transparent;
+    border-right:1px solid var(--line);
+  }
+  .tabbar a.active{
+    color:var(--py-blue-deep);
+    background:var(--paper);
+    border-bottom:2px solid var(--py-gold);
+    font-weight:600;
+  }
+  .tabbar a::before{content:"● "; color:var(--py-gold); font-size:9px;}
+
+  /* ---------- Header / Hero ---------- */
+  header.hero{
+    padding:56px 0 40px; border-bottom:1px solid var(--line); position:relative;
+  }
+  header.hero::before{
+    content:""; position:absolute; top:-140px; right:-120px; width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--py-gold) 20%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  header.hero::after{
+    content:""; position:absolute; bottom:-160px; left:-100px; width:360px; height:360px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--shell-green) 18%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--py-blue); margin-bottom:14px;
+  }
+  .kicker span{color:var(--ink-soft);}
+  h1.title{font-size:clamp(28px,6vw,44px); line-height:1.15; max-width:16ch; overflow-wrap:break-word; word-break:break-word;}
+  .subtitle{color:var(--ink-soft); font-size:17px; max-width:60ch; margin-top:10px;}
+
+  .hero-demo{
+    margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    background:var(--panel);
+  }
+  @media(max-width:640px){.hero-demo{grid-template-columns:1fr;}}
+  .hero-col{padding:18px 20px;}
+  .hero-col.cpp{background:var(--cpp-brown-bg); border-right:1px solid var(--line);}
+  .hero-col.py{background:var(--shell-green-bg);}
+  .hero-label{font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; font-weight:600;}
+  .hero-col.cpp .hero-label{color:var(--cpp-brown);}
+  .hero-col.py .hero-label{color:var(--shell-green);}
+  .hero-col pre{margin:0; font-size:13.5px; white-space:pre-wrap;}
+  .cursor-blink{display:inline-block; width:8px; height:15px; background:var(--shell-green); margin-left:2px; vertical-align:text-bottom; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero-stat{padding:14px 20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); grid-column:1/-1; background:var(--paper);}
+  .hero-stat b{color:var(--ink);}
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding:52px 0; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--py-blue);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;
+    position:relative; display:inline-block; padding-bottom:6px;
+  }
+  .eyebrow::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:28px;
+    background:linear-gradient(90deg, var(--py-gold), var(--violet));
+    border-radius:2px;
+  }
+  section h2{font-size:clamp(24px,3.4vw,30px);}
+  section > p.lead{color:var(--ink-soft); max-width:68ch; margin-bottom:24px;}
+
+  /* ---------- Callout boxes ---------- */
+  .callout{
+    border-radius:var(--radius); padding:18px 20px; margin:20px 0; border:1px solid var(--line);
+  }
+  .callout h4{font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .callout.history{background:var(--paper-alt);}
+  .callout.history h4{color:var(--ink-soft);}
+  .callout.teach{background:#FDF6E8; border-color:#EAD9A8;}
+  .callout.teach h4{color:#8A6A1E;}
+  .callout.teach h4::before{content:"👩‍🏫 ";}
+  .callout p{margin:0 0 8px; font-size:14.5px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout ul{margin:8px 0 0; padding-left:20px; font-size:14.5px;}
+
+  /* ---------- Feature grid ---------- */
+  .feature-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;}
+  @media(max-width:640px){.feature-grid{grid-template-columns:1fr;}}
+  .feature{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease; position:relative;
+    border-left:3px solid var(--py-gold);
+  }
+  html.js-ready .feature, html.js-ready .exercise{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease, box-shadow .2s ease;
+  }
+  html.js-ready .feature.show, html.js-ready .exercise.show{opacity:1; transform:translateY(0);}
+  .feature:hover{transform:translateY(-4px) !important; box-shadow:var(--shadow-hover);}
+  .feature .icon-badge{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:17px; background:var(--paper-alt); margin-bottom:10px;
+  }
+  .feature h4{font-size:15px; margin-bottom:6px; color:var(--py-blue-deep);}
+  .feature p{margin:0; font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- Comparison table ---------- */
+  table.compare{width:100%; border-collapse:collapse; margin-top:20px; font-size:14.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.compare th, table.compare td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.compare th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.03em;}
+  table.compare th.cpp-h{color:var(--cpp-brown);}
+  table.compare th.py-h{color:var(--shell-green);}
+  table.compare td.cpp-c{color:var(--cpp-brown);}
+  table.compare td.py-c{color:var(--shell-green);}
+  table.compare code{font-size:13px; background:var(--paper-alt); padding:1px 5px; border-radius:4px;}
+  table.compare tr:last-child td{border-bottom:none;}
+
+  /* ---------- Numbered steps (IDLE launch) ---------- */
+  .steps{counter-reset:step; margin-top:20px; list-style:none; padding:0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:12px 0 12px 42px; border-bottom:1px dashed var(--line);
+    font-size:15px;
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:10px; width:26px; height:26px;
+    background:var(--py-blue); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+  }
+  .steps kbd{background:var(--paper-alt); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+
+  /* ---------- Mode toggle (SIGNATURE ELEMENT) ---------- */
+  .mode-widget{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-top:24px; background:var(--panel);}
+  .mode-switch{display:flex; background:var(--paper-alt); border-bottom:1px solid var(--line);}
+  .mode-btn{
+    flex:1; padding:15px 10px; background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; min-height:44px; -webkit-tap-highlight-color:transparent;
+  }
+  .mode-btn.active.shell{color:var(--shell-green); border-bottom-color:var(--shell-green); background:var(--shell-green-bg);}
+  .mode-btn.active.script{color:var(--py-blue-deep); border-bottom-color:var(--py-blue); background:#EAF1F7;}
+  .mode-pane{display:none; padding:18px 20px;}
+  .mode-pane.active{display:block;}
+  .mode-pane p.explain{font-size:14px; color:var(--ink-soft); margin-top:0;}
+
+  /* ---------- Code cell (shared by all runnable examples) ---------- */
+  .code-cell{border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:10px;}
+  .code-cell .file-tag{
+    background:var(--paper-alt); padding:6px 12px; font-size:11.5px; color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; border-bottom:1px solid var(--line); display:flex; justify-content:space-between;
+  }
+  .code-cell textarea{
+    width:100%; border:none; resize:vertical; min-height:90px; padding:12px 14px;
+    font-size:16px; background:#1B2B27; color:#EAF1EA; outline:none; line-height:1.55;
+  }
+  .code-cell.shell textarea{background:#0F1F19; color:#B9E3C3;}
+  .code-cell .toolbar{display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--paper-alt); border-top:1px solid var(--line);}
+  .run-btn{
+    background:linear-gradient(100deg, var(--py-gold), #FFCF7A 50%, var(--py-gold));
+    background-size:220% auto; background-position:0% center;
+    color:#3A2A05; border:none; border-radius:6px; padding:10px 18px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;
+    min-height:40px; -webkit-tap-highlight-color:transparent;
+    box-shadow:0 0 0 rgba(245,166,35,0); transition:box-shadow .2s ease, background-position .5s ease, transform .1s ease;
+  }
+  .run-btn:disabled{opacity:.5; cursor:wait;}
+  .run-btn:hover:not(:disabled){background-position:100% center; box-shadow:0 6px 20px rgba(245,166,35,.5);}
+  .run-btn:active:not(:disabled){transform:translateY(1px);}
+  header.hero .wrap{position:relative; z-index:1;}
+  .py-status{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;}
+  .output{
+    background:#0F1712; color:#D9F0DC; padding:12px 14px; font-size:13.5px; min-height:20px;
+    white-space:pre-wrap; word-break:break-word; border-top:1px solid var(--line);
+    transition:box-shadow .3s ease;
+  }
+  .output.flash{animation:flash-glow .6s ease;}
+  @keyframes flash-glow{
+    0%{box-shadow:inset 0 0 0 2px var(--shell-green), 0 0 18px rgba(30,158,100,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(30,158,100,0), 0 0 0 rgba(30,158,100,0);}
+  }
+  .output.flash-err{animation:flash-glow-err .6s ease;}
+  @keyframes flash-glow-err{
+    0%{box-shadow:inset 0 0 0 2px var(--err), 0 0 18px rgba(224,71,58,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(224,71,58,0), 0 0 0 rgba(224,71,58,0);}
+  }
+  .output:empty::before{content:"— run the code to see output here —"; color:#5F7A68; font-style:italic;}
+  .output .err{color:#FF9E80;}
+
+  /* ---------- Let us do (exercise grid) ---------- */
+  .exercise{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    margin-top:18px; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease;
+    border-left:3px solid var(--shell-green);
+  }
+  .exercise:hover{transform:translateY(-3px) !important; box-shadow:var(--shadow-hover);}
+  .exercise h4{font-size:15px; margin-bottom:4px;}
+  .exercise .task{font-size:14px; color:var(--ink-soft); margin-bottom:10px;}
+  .ex-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    background:var(--py-blue); color:#fff; border-radius:50%; font-size:12px; font-family:'JetBrains Mono',monospace;
+    margin-right:8px;
+  }
+
+  ::selection{background:var(--py-gold); color:#1B2B27;}
+
+  /* ---------- Chapter 5 additions: multi-tab operator widget + data tables ---------- */
+  .mode-switch.scroll{overflow-x:auto; scrollbar-width:thin;}
+  .mode-switch.scroll .mode-btn{flex:0 0 auto; padding-left:16px; padding-right:16px; white-space:nowrap;}
+  table.op-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:13.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.op-table th, table.op-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.op-table th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.03em;}
+  table.op-table code{background:var(--paper-alt); padding:1px 5px; border-radius:4px; font-size:12.5px;}
+  table.op-table tr:last-child td{border-bottom:none;}
+  .kw-grid{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .kw-pill{background:var(--paper-alt); border:1px solid var(--line); border-radius:20px; padding:5px 13px; font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .badge{border-radius:20px; padding:5px 12px; font-family:'JetBrains Mono',monospace; font-size:12.5px; border:1px solid var(--line);}
+  .badge.valid{background:var(--shell-green-bg); color:var(--shell-green); border-color:var(--shell-green);}
+  .badge.invalid{background:var(--cpp-brown-bg); color:var(--cpp-brown); border-color:var(--cpp-brown); text-decoration:line-through;}
+</style>
+</head>
+<body>
+
+<div class="tabbar-outer">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="tabbar" id="tabbar">
+    <a href="#tokens" class="active">5.1_5.2_tokens.py</a>
+    <a href="#variables">5.3_5.4_variables.py</a>
+    <a href="#operators">5.5_operators.py</a>
+    <a href="#expressions">5.6_expressions.py</a>
+    <a href="#statements">5.7_5.8_programs.py</a>
+    <a href="#compare">cpp_vs_python.diff</a>
+    <a href="#practice">let_us_do.py</a>
+    <a href="#summary">summary.md</a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme"><span id="theme-icon">🌙</span><span id="theme-label">dark</span></button>
+  </nav>
+</div>
+
+<header class="hero wrap">
+  <div class="kicker">Computer Science · Class XI &nbsp;<span>|</span>&nbsp; Chapter 5 &nbsp;<span>|</span>&nbsp; Teacher Training Session</div>
+  <h1 class="title">Python Fundamentals</h1>
+  <p class="subtitle">The building blocks: tokens, variables, data types, operators, expressions and statements. This is the chapter where "no type declarations" stops being a curiosity and starts being something to actually teach carefully.</p>
+
+  <div class="hero-demo">
+    <div class="hero-col cpp">
+      <div class="hero-label">C++ — types are declared up front</div>
+      <pre>int a = 5;
+float b = 2.5;
+// type is fixed forever</pre>
+    </div>
+    <div class="hero-col py">
+      <div class="hero-label">Python — types follow the value</div>
+      <pre>a = 5
+b = 2.5
+print(type(a), type(b))</pre>
+      <div class="code-cell" style="margin-top:14px; border:1px solid #cfe0d3;">
+        <div class="toolbar" style="border-top:none;">
+          <button class="run-btn" data-run-target="hero-out" data-mode="script" data-source="hero-code">▶ Run this</button>
+          <span class="py-status" id="hero-status">runs instantly · fully offline</span>
+        </div>
+        <textarea id="hero-code" spellcheck="false" style="display:none;">a = 5
+b = 2.5
+print(type(a), type(b))</textarea>
+        <div class="output" id="hero-out"></div>
+      </div>
+    </div>
+    <div class="hero-stat">Same variable, no declared type — Python asks the <b>object</b>, not the variable, what type it is. Watch this idea resurface constantly this chapter.</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="tokens">
+  <div class="eyebrow">5.1 – 5.2 · Character set &amp; tokens</div>
+  <h2>The alphabet before the words</h2>
+  <p class="lead">Every Python statement is built from characters (letters, digits, symbols, whitespace) grouped into <strong>tokens</strong> — the smallest meaningful units. Python has five token types: keywords, identifiers, literals, operators and punctuators.</p>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="icon-badge">🔑</div>
+      <h4>Keywords</h4>
+      <p>Reserved words with fixed meaning — you can't use them as variable names. Python is <strong>case-sensitive</strong>: <code>True</code> is a keyword, <code>true</code> is not.</p>
+    </div>
+    <div class="feature">
+      <div class="icon-badge">🏷️</div>
+      <h4>Identifiers</h4>
+      <p>Names you create for variables, functions, classes. Must start with a letter or underscore, no spaces or special characters, and can't be a keyword.</p>
+    </div>
+  </div>
+
+  <div class="kw-grid">
+    <span class="kw-pill">and</span><span class="kw-pill">as</span><span class="kw-pill">assert</span><span class="kw-pill">break</span>
+    <span class="kw-pill">class</span><span class="kw-pill">continue</span><span class="kw-pill">def</span><span class="kw-pill">del</span>
+    <span class="kw-pill">elif</span><span class="kw-pill">else</span><span class="kw-pill">except</span><span class="kw-pill">False</span>
+    <span class="kw-pill">finally</span><span class="kw-pill">for</span><span class="kw-pill">from</span><span class="kw-pill">global</span>
+    <span class="kw-pill">if</span><span class="kw-pill">import</span><span class="kw-pill">in</span><span class="kw-pill">is</span>
+    <span class="kw-pill">lambda</span><span class="kw-pill">None</span><span class="kw-pill">nonlocal</span><span class="kw-pill">not</span>
+    <span class="kw-pill">or</span><span class="kw-pill">pass</span><span class="kw-pill">raise</span><span class="kw-pill">return</span>
+    <span class="kw-pill">True</span><span class="kw-pill">try</span><span class="kw-pill">while</span><span class="kw-pill">with</span><span class="kw-pill">yield</span>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>C++ students already accept "reserved words" from <code>int</code>/<code>class</code>/<code>return</code>, so this concept isn't new — only the specific list is. The one that trips people up: Python's soft keywords (<code>match</code>, <code>case</code>) are only reserved in certain contexts, unlike C++'s all-or-nothing reserved words. Save the detail for Chapter 6.</p>
+  </div>
+
+  <div class="exercise" style="margin-top:24px;">
+    <h4><span class="ex-num">?</span>Let us do — spot the invalid identifiers</h4>
+    <div class="task">From the textbook: <code>Data_rec</code>, <code>Num#</code>, <code>2ab</code>, <code>try</code>, <code>My File</code>, <code>_num1</code>, <code>Sum2Num</code>, <code>false</code>, <code>True</code>, <code>File.py</code>. Tap each to reveal why.</div>
+    <div class="badge-row" id="ident-quiz">
+      <span class="badge valid" data-why="Valid — letters and underscore only.">Data_rec</span>
+      <span class="badge invalid" data-why="Invalid — # is a special character, not allowed.">Num#</span>
+      <span class="badge invalid" data-why="Invalid — starts with a digit.">2ab</span>
+      <span class="badge invalid" data-why="Invalid — try is a reserved keyword.">try</span>
+      <span class="badge invalid" data-why="Invalid — contains a space.">My File</span>
+      <span class="badge valid" data-why="Valid — starts with underscore, rest are letters/digits.">_num1</span>
+      <span class="badge valid" data-why="Valid — letters and digits, doesn't start with a digit.">Sum2Num</span>
+      <span class="badge valid" data-why="Valid — 'false' (lowercase) is just a name, not the keyword False.">false</span>
+      <span class="badge invalid" data-why="Invalid — True is a reserved keyword (capital T matters).">True</span>
+      <span class="badge invalid" data-why="Invalid — the period isn't allowed inside an identifier.">File.py</span>
+    </div>
+    <p id="ident-explain" style="font-size:13.5px; color:var(--ink-soft); margin-top:10px; min-height:20px;">Tap a token above to see why.</p>
+  </div>
+
+  <h3 style="margin-top:32px; font-size:19px;">Literals</h3>
+  <p class="lead">A literal is a token that represents a fixed value — string, numeric, Boolean, or the special value <code>None</code>. Python also groups literals into collections: lists, tuples, dictionaries and sets.</p>
+
+  <table class="op-table">
+    <tr><th>Kind</th><th>Example</th><th>Notes</th></tr>
+    <tr><td>String</td><td><code>"Python"</code>, <code>'A'</code></td><td>Single, double, or triple quotes (triple = multi-line)</td></tr>
+    <tr><td>Integer</td><td><code>76</code>, <code>-5</code>, <code>0xF</code></td><td>Decimal, binary (<code>0b</code>), octal (<code>0o</code>), hex (<code>0x</code>)</td></tr>
+    <tr><td>Float</td><td><code>-3.14</code>, <code>0.5</code></td><td>Has a decimal point</td></tr>
+    <tr><td>Complex</td><td><code>5+3j</code></td><td>Real + imaginary part, <code>j</code> = √−1</td></tr>
+    <tr><td>Boolean</td><td><code>True</code>, <code>False</code></td><td>Exactly two values, capitalised</td></tr>
+    <tr><td>Special</td><td><code>None</code></td><td>Means "no value" — closest analogue to C++'s <code>NULL</code>/<code>nullptr</code></td></tr>
+    <tr><td>List</td><td><code>[25, "Python", 95.5]</code></td><td>Ordered, changeable</td></tr>
+    <tr><td>Tuple</td><td><code>(23, "CS", 'A')</code></td><td>Ordered, <strong>cannot</strong> be changed</td></tr>
+    <tr><td>Dictionary</td><td><code>{1: 'one', 2: 'two'}</code></td><td>Key–value pairs, unordered</td></tr>
+    <tr><td>Set</td><td><code>{'sat', 'sun', 20}</code></td><td>Unordered, no duplicates</td></tr>
+  </table>
+
+  <div class="callout history">
+    <h4>Escape sequences, quickly</h4>
+    <p><code>\n</code> new line · <code>\t</code> tab · <code>\'</code> single quote · <code>\"</code> double quote · <code>\\</code> backslash — same backslash convention as C++, so this one needs no reframing at all.</p>
+  </div>
+</section>
+
+<section id="variables">
+  <div class="eyebrow">5.3 – 5.4 · Variables &amp; data types</div>
+  <h2>A name, an object, and a type that can change</h2>
+  <p class="lead">A variable is an identifier bound to an object in memory. That object carries three things: an <strong>identity</strong> (its memory address), a <strong>type</strong>, and a <strong>value</strong>. Try the exact demonstration from the textbook below.</p>
+
+  <div class="code-cell shell">
+    <div class="file-tag"><span>IDLE Shell</span><span>type() in action</span></div>
+    <textarea id="type-code" spellcheck="false">num = 10
+type(num)
+num = 3.5
+type(num)
+msg = "Hello"
+type(msg)</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="type-out" data-mode="shell" data-source="type-code">▶ Run</button>
+      <span class="py-status" id="type-status">ready ✓</span>
+    </div>
+    <div class="output" id="type-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>The variable <code>num</code> doesn't have a fixed type — the <em>object it currently refers to</em> does. Assigning <code>num = 3.5</code> after <code>num = 10</code> doesn't convert an int to a float; it points <code>num</code> at a brand-new float object. This is the single biggest mental model shift for a C++ class this chapter.</p>
+  </div>
+
+  <h3 style="margin-top:32px; font-size:19px;">Mutable vs immutable — the textbook's exact example</h3>
+  <p class="lead">int, float, str and tuple are <strong>immutable</strong> — they can't change after creation. list, dict and set are <strong>mutable</strong>. Run this and watch <code>num</code> and <code>temp</code> drift apart:</p>
+
+  <div class="code-cell shell">
+    <div class="file-tag"><span>IDLE Shell</span><span>identity &amp; immutability</span></div>
+    <textarea id="mutable-code" spellcheck="false">num = 10
+temp = num
+num is temp
+num = num * num
+num
+temp
+num is temp</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="mutable-out" data-mode="shell" data-source="mutable-code">▶ Run</button>
+      <span class="py-status" id="mutable-status">ready ✓</span>
+    </div>
+    <div class="output" id="mutable-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p><code>temp = num</code> makes both names point at the <em>same</em> object — <code>num is temp</code> is <code>True</code>. But <code>num = num * num</code> creates a brand-new object (int is immutable) and re-points <code>num</code> at it; <code>temp</code> still refers to the old object with value 10. That's why the final <code>num is temp</code> flips to <code>False</code>. This maps cleanly to C++ pointer/reference intuition if your teachers already have it.</p>
+  </div>
+</section>
+
+<section id="operators">
+  <div class="eyebrow">5.5 · Operators</div>
+  <h2>Six families of operators</h2>
+  <p class="lead">Every operator category below is runnable — switch tabs, edit the textbook's own example variables, and run.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll" id="op-switch">
+      <button class="mode-btn shell active" data-target="op-arith">Arithmetic</button>
+      <button class="mode-btn shell" data-target="op-rel">Relational</button>
+      <button class="mode-btn shell" data-target="op-log">Logical</button>
+      <button class="mode-btn shell" data-target="op-assign">Assignment</button>
+      <button class="mode-btn shell" data-target="op-identity">Identity</button>
+      <button class="mode-btn shell" data-target="op-member">Membership</button>
+    </div>
+
+    <div class="mode-pane active" id="op-arith">
+      <p class="explain"><code>+ − * / % // **</code> — same four basics as C++, plus <code>%</code> modulus, <code>//</code> floor division, and <code>**</code> exponent (C++ has no power operator; it needs <code>pow()</code>). <code>/</code> always returns a float in Python 3, even <code>int / int</code>.</p>
+      <div class="code-cell shell">
+        <textarea id="ex-arith" spellcheck="false">num1 = 5
+num2 = 2
+num1 + num2
+num1 - num2
+num1 * num2
+num1 / num2
+num1 % num2
+num1 // num2
+num1 ** num2
+"Hello" * 2</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-arith-out" data-mode="shell" data-source="ex-arith">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-arith-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-rel">
+      <p class="explain"><code>== != &gt; &gt;= &lt; &lt;=</code> — same symbols as C++. Comparing a string to a number raises <code>TypeError</code> (except <code>==</code>/<code>!=</code>, which just return <code>False</code>/<code>True</code>).</p>
+      <div class="code-cell shell">
+        <textarea id="ex-rel" spellcheck="false">num1 = 5
+num2 = 2
+num3 = 5
+str1 = "Good"
+str2 = "Bad"
+num1 == num2
+str1 == str2
+num1 > num3
+str1 > str2
+"Good" < "good"</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-rel-out" data-mode="shell" data-source="ex-rel">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-rel-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p><code>"Good" &lt; "good"</code> is <code>True</code> — uppercase letters have smaller Unicode values than lowercase. Worth a live "guess before you run" moment.</p>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-log">
+      <p class="explain">Python spells these out as words: <code>and</code>, <code>or</code>, <code>not</code> — where C++ uses <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>. Unlike C++, they don't just return <code>True</code>/<code>False</code> — they return one of the actual operands.</p>
+      <div class="code-cell shell">
+        <textarea id="ex-log" spellcheck="false">True and True
+False and True
+True or False
+not False
+3 and 0
+"Hello" or ""</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-log-out" data-mode="shell" data-source="ex-log">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-log-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p><code>3 and 0</code> gives <code>0</code>, not <code>False</code> — <code>and</code>/<code>or</code> return an actual operand, not a boolean. This surprises C++ programmers every time; it's worth dwelling on.</p>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-assign">
+      <p class="explain">Compound assignment works exactly like C++'s <code>+=</code> family — Python just adds <code>**=</code> and <code>//=</code> to match its extra arithmetic operators.</p>
+      <table class="op-table">
+        <tr><th>Compound</th><th>Equivalent to</th></tr>
+        <tr><td><code>a += b</code></td><td><code>a = a + b</code></td></tr>
+        <tr><td><code>a -= b</code></td><td><code>a = a - b</code></td></tr>
+        <tr><td><code>a *= b</code></td><td><code>a = a * b</code></td></tr>
+        <tr><td><code>a /= b</code></td><td><code>a = a / b</code></td></tr>
+        <tr><td><code>a %= b</code></td><td><code>a = a % b</code></td></tr>
+        <tr><td><code>a //= b</code></td><td><code>a = a // b</code></td></tr>
+        <tr><td><code>a **= b</code></td><td><code>a = a ** b</code></td></tr>
+      </table>
+      <div class="code-cell shell" style="margin-top:14px;">
+        <textarea id="ex-assign" spellcheck="false">ans = 25
+ans += 10
+ans
+ans //= 10
+ans
+ans %= 10
+ans</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-assign-out" data-mode="shell" data-source="ex-assign">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-assign-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-identity">
+      <p class="explain"><code>is</code> / <code>is not</code> check whether two names refer to the <strong>same object</strong> in memory — not whether their values are equal. C++ has no direct equivalent; the closest idea is comparing pointer addresses rather than dereferenced values.</p>
+      <div class="code-cell shell">
+        <textarea id="ex-identity" spellcheck="false">num1 = 5
+num2 = num1
+num1 is num2
+type(num1) is int
+num1 is not num2</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-identity-out" data-mode="shell" data-source="ex-identity">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-identity-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-member">
+      <p class="explain"><code>in</code> / <code>not in</code> test whether a value exists inside a sequence (string, list, tuple). C++ has no built-in equivalent — you'd normally write a loop or call <code>std::find</code>.</p>
+      <div class="code-cell shell">
+        <textarea id="ex-member" spellcheck="false">a = [10, 15, 100]
+10 in a
+"15" in a
+10 not in a</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ex-member-out" data-mode="shell" data-source="ex-member">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ex-member-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p><code>"15" in a</code> is <code>False</code> even though <code>15</code> is in the list — the string <code>"15"</code> and the int <code>15</code> are different types. A quick, memorable illustration of why type matters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="expressions">
+  <div class="eyebrow">5.6 · Expressions &amp; precedence</div>
+  <h2>Same PEMDAS instinct, a longer table</h2>
+  <p class="lead">Operators combine into expressions, and precedence decides evaluation order — same core idea as C++, extended to cover Python's extra operators (<code>is</code>, <code>in</code>, <code>and</code>/<code>or</code>/<code>not</code>).</p>
+
+  <table class="op-table">
+    <tr><th>Order</th><th>Operator(s)</th><th>Description</th></tr>
+    <tr><td>1 (highest)</td><td><code>**</code></td><td>Exponent</td></tr>
+    <tr><td>2</td><td><code>+x -x</code></td><td>Unary plus/minus</td></tr>
+    <tr><td>3</td><td><code>* / % //</code></td><td>Multiply, divide, modulus, floor divide</td></tr>
+    <tr><td>4</td><td><code>+ -</code></td><td>Add, subtract</td></tr>
+    <tr><td>5</td><td><code>&lt; &lt;= &gt; &gt;= == !=</code></td><td>Comparisons</td></tr>
+    <tr><td>6</td><td><code>= += -= …</code></td><td>Assignment</td></tr>
+    <tr><td>7</td><td><code>is</code> / <code>is not</code></td><td>Identity</td></tr>
+    <tr><td>8</td><td><code>in</code> / <code>not in</code></td><td>Membership</td></tr>
+    <tr><td>9</td><td><code>not</code></td><td>Logical NOT</td></tr>
+    <tr><td>10</td><td><code>and</code></td><td>Logical AND</td></tr>
+    <tr><td>11 (lowest)</td><td><code>or</code></td><td>Logical OR</td></tr>
+  </table>
+
+  <p class="lead" style="margin-top:20px;">The textbook's own example — guess the result before you run it:</p>
+  <div class="code-cell shell">
+    <textarea id="ex-precedence" spellcheck="false">5 + 7 - 2 * 4
+5 + (7 - 2) * 4
+-2 ** 2</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="ex-precedence-out" data-mode="shell" data-source="ex-precedence">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="ex-precedence-out"></div>
+  </div>
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p><code>-2 ** 2</code> evaluates to <code>-4</code>, not <code>4</code> — <code>**</code> binds tighter than unary minus, so it's <code>-(2 ** 2)</code>. This is one of the few places Python precedence differs from naive left-to-right intuition; worth a deliberate pause.</p>
+  </div>
+</section>
+
+<section id="statements">
+  <div class="eyebrow">5.7 – 5.8 · Statements &amp; first programs</div>
+  <h2>Assignment, input, output — then a real program</h2>
+  <p class="lead">Three statement types finish this chapter's toolkit. <code>input()</code> always returns a <strong>string</strong> — a detail that catches almost every new class doing arithmetic on user input.</p>
+
+  <div class="code-cell shell">
+    <div class="file-tag"><span>print() with sep and end</span><span>try changing them</span></div>
+    <textarea id="ex-print" spellcheck="false">print("A", "B", "C")
+print("A", "B", "C", sep="-")
+print("no newline after this", end=" — ")
+print("continued on the same line")</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="ex-print-out" data-mode="script" data-source="ex-print">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="ex-print-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p><code>print()</code>'s default <code>sep=' '</code> and <code>end='\n'</code> are themselves worth naming explicitly — C++'s <code>cout</code> has no equivalent built-in separator behaviour, so this is genuinely new, not just differently spelled.</p>
+  </div>
+
+  <h3 style="margin-top:32px; font-size:19px;">Program 5.8.1 — greet the user by name</h3>
+  <p class="lead">This one uses real <code>input()</code> — your browser will show an actual input prompt when you run it.</p>
+  <div class="code-cell">
+    <div class="file-tag"><span>greeting.py</span><span>uses input()</span></div>
+    <textarea id="prog1" spellcheck="false">name = input("Enter your name: ")
+print("Hello", name, "Welcome!")</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="prog1-out" data-mode="script" data-source="prog1">▶ Run Module (F5)</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="prog1-out"></div>
+  </div>
+
+  <h3 style="margin-top:32px; font-size:19px;">Program 5.8.2 — sum of two numbers</h3>
+  <p class="lead">Demonstrates exactly why <code>int()</code> is needed: <code>input()</code> hands back strings, and <code>+</code> on two strings concatenates instead of adding.</p>
+  <div class="code-cell">
+    <div class="file-tag"><span>sum.py</span><span>uses input() + int()</span></div>
+    <textarea id="prog2" spellcheck="false">#accept two numbers
+num1 = input("Enter first number: ")
+num2 = input("Enter second number: ")
+
+#calculate the sum
+s = int(num1) + int(num2)
+
+#print the result
+print("Sum = ", s)</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="prog2-out" data-mode="script" data-source="prog2">▶ Run Module (F5)</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="prog2-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Have someone delete both <code>int()</code> calls and run Program 5.8.2 again with inputs <code>7</code> and <code>5</code> — the output becomes <code>75</code>, not <code>12</code>, because it's now string concatenation. That single broken run says more than any amount of explaining.</p>
+  </div>
+
+  <div class="callout history">
+    <h4>Comments</h4>
+    <p>Single-line comments start with <code>#</code> — same symbol, same idea as C++'s <code>//</code>. Multi-line comments use a pair of triple quotes (<code>"""…"""</code>) instead of C++'s <code>/* … */</code>.</p>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="eyebrow">Quick reference</div>
+  <h2>More C++ habits, mapped</h2>
+  <p class="lead">Extending the table from Chapter 4 with this chapter's new territory: operators and types.</p>
+
+  <table class="compare">
+    <tr><th>Concept</th><th class="cpp-h">C++</th><th class="py-h">Python</th></tr>
+    <tr><td>Logical AND / OR / NOT</td><td class="cpp-c"><code>&amp;&amp; || !</code></td><td class="py-c"><code>and or not</code></td></tr>
+    <tr><td>Power / exponent</td><td class="cpp-c"><code>pow(x, y)</code></td><td class="py-c"><code>x ** y</code></td></tr>
+    <tr><td>Integer division</td><td class="cpp-c"><code>int / int</code> truncates</td><td class="py-c"><code>//</code> floors; <code>/</code> always returns float</td></tr>
+    <tr><td>Type of a value</td><td class="cpp-c">Fixed at compile time</td><td class="py-c"><code>type(x)</code> — checked at runtime</td></tr>
+    <tr><td>Null / no value</td><td class="cpp-c"><code>NULL</code> / <code>nullptr</code></td><td class="py-c"><code>None</code></td></tr>
+    <tr><td>Reading user input</td><td class="cpp-c"><code>cin &gt;&gt; x;</code> (typed)</td><td class="py-c"><code>input()</code> — always returns a string</td></tr>
+    <tr><td>Comment</td><td class="cpp-c"><code>// </code> or <code>/* */</code></td><td class="py-c"><code># </code> or <code>"""…"""</code></td></tr>
+    <tr><td>Pointer/reference comparison</td><td class="cpp-c">Compare addresses with <code>&amp;</code></td><td class="py-c"><code>is</code> / <code>is not</code></td></tr>
+  </table>
+</section>
+
+<section id="practice">
+  <div class="eyebrow">Let us do</div>
+  <h2>Practice, straight from the textbook</h2>
+  <p class="lead">A selection of the chapter's exercises, pre-loaded and editable.</p>
+
+  <div class="exercise">
+    <h4><span class="ex-num">1</span>Predict, then run — expressions with a=5, b=10, c=2.5, d="hello"</h4>
+    <div class="task">Guess each result and type before running.</div>
+    <div class="code-cell shell">
+      <textarea id="ex-p1" spellcheck="false">a = 5
+b = 10
+c = 2.5
+d = "hello"
+a / b
+a + b - c
+d * 3
+b // 3
+(a + b) % 2
+a > b
+(a > b) and (b > c)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p1-out" data-mode="shell" data-source="ex-p1">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p1-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">2</span>Swap two numbers using a third variable</h4>
+    <div class="task">Classic exercise — same logic as C++, minus the type declarations.</div>
+    <div class="code-cell shell">
+      <textarea id="ex-p2" spellcheck="false">a = 5
+b = 8
+temp = a
+a = b
+b = temp
+print("a =", a, " b =", b)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p2-out" data-mode="script" data-source="ex-p2">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p2-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">3</span>Celsius to Fahrenheit — check boiling &amp; freezing points</h4>
+    <div class="task">T(°F) = T(°C) × 9/5 + 32. Verify 100°C → 212°F and 0°C → 32°F.</div>
+    <div class="code-cell shell">
+      <textarea id="ex-p3" spellcheck="false">celsius = 100
+fahrenheit = celsius * 9 / 5 + 32
+print("Boiling point:", fahrenheit, "F")
+
+celsius = 0
+fahrenheit = celsius * 9 / 5 + 32
+print("Freezing point:", fahrenheit, "F")</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p3-out" data-mode="script" data-source="ex-p3">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p3-out"></div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>For the swap exercise, once teachers see the third-variable version work, challenge them to do it <em>without</em> a third variable using <code>a, b = b, a</code> — Python's multiple assignment makes this a one-liner, which is a nice payoff for section 5.7.1's tuple-assignment idea.</p>
+  </div>
+</section>
+
+<section id="summary" style="border-bottom:none;">
+  <div class="eyebrow">Wrap-up</div>
+  <h2>Session summary</h2>
+  <p class="lead">Today: the five token types, how variables reference objects rather than "contain" values, the six operator families, how precedence resolves multi-operator expressions, and the input → process → output shape of a first program.</p>
+
+  <div class="callout teach">
+    <h4>Five habits to reinforce with C++ students</h4>
+    <ul>
+      <li>A variable's type comes from its <strong>current object</strong>, not a declaration — and it can change.</li>
+      <li><code>and</code> / <code>or</code> / <code>not</code> replace <code>&amp;&amp;</code> / <code>||</code> / <code>!</code>, and don't always return a strict boolean.</li>
+      <li><code>/</code> always gives a float; use <code>//</code> for integer-style division.</li>
+      <li><code>input()</code> always returns a string — wrap it in <code>int()</code> or <code>float()</code> before doing arithmetic.</li>
+      <li><code>is</code> checks identity (same object), <code>==</code> checks equality (same value) — they are not interchangeable.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+document.documentElement.classList.add('js-ready');
+/* =========================================================================
+   Chapter 5 local interpreter — tokens, operators, precedence, statements.
+   No network calls, no external runtime. Not full Python — covers exactly
+   what this chapter teaches, verified line-by-line against a real Python
+   interpreter during development.
+   ========================================================================= */
+
+class PyError extends Error {}
+let __idCounter = 1;
+function newId(){ return __idCounter++; }
+function mk(type, value){ return { type, value, id: newId() }; }
+
+const TYPE_REFS = {};
+['int','float','str','bool','list','tuple','dict','set','complex','NoneType'].forEach(n=>{
+  TYPE_REFS[n] = { type:'typeref', name:n, id:'T_'+n };
+});
+
+function tokenize(line){
+  const tokens = [];
+  let i = 0;
+  const n = line.length;
+  while(i < n){
+    const c = line[i];
+    if(/\s/.test(c)){ i++; continue; }
+    if(c === '#'){ break; }
+    let m = /^\d+\.\d+/.exec(line.slice(i)) || /^\d+/.exec(line.slice(i));
+    if(m){
+      tokens.push({t:'NUM', v: m[0].includes('.') ? parseFloat(m[0]) : parseInt(m[0],10), isFloat:m[0].includes('.')});
+      i += m[0].length; continue;
+    }
+    if(c === '"' || c === "'"){
+      let j = i+1, buf = '';
+      while(j < n && line[j] !== c){
+        if(line[j] === '\\' && j+1 < n){ buf += line[j+1]; j += 2; }
+        else { buf += line[j]; j++; }
+      }
+      tokens.push({t:'STR', v: buf});
+      i = j+1; continue;
+    }
+    m = /^[A-Za-z_]\w*/.exec(line.slice(i));
+    if(m){ tokens.push({t:'ID', v:m[0]}); i += m[0].length; continue; }
+    const multi3 = ['**=','//='];
+    const multi2 = ['==','!=','<=','>=','+=','-=','*=','/=','%=','**','//'];
+    let matched = null;
+    for(const op of multi3){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(!matched) for(const op of multi2){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(matched){ tokens.push({t:'OP', v:matched}); i += matched.length; continue; }
+    if('+-*/%()[],=<>:.'.includes(c)){ tokens.push({t:'OP', v:c}); i++; continue; }
+    throw new PyError(`SyntaxError: invalid syntax near "${line.slice(i, i+8)}"`);
+  }
+  return tokens;
+}
+
+class Parser{
+  constructor(tokens){ this.toks = tokens; this.pos = 0; }
+  peek(k=0){ return this.toks[this.pos+k]; }
+  next(){ return this.toks[this.pos++]; }
+  atEnd(){ return this.pos >= this.toks.length; }
+  parseProgram(){
+    const e = this.parseExpr(0);
+    if(!this.atEnd()) throw new PyError(`SyntaxError: unexpected token "${this.peek().v}"`);
+    return e;
+  }
+  peekBinOp(){
+    const t = this.peek();
+    if(!t) return null;
+    if(t.t === 'OP'){
+      const table = {'**':[90,true],'*':[70,false],'/':[70,false],'%':[70,false],'//':[70,false],
+                      '+':[60,false],'-':[60,false],
+                      '==':[50,false],'!=':[50,false],'<':[50,false],'>':[50,false],'<=':[50,false],'>=':[50,false]};
+      if(table[t.v]) return {op:t.v, bp:table[t.v][0], right:table[t.v][1], len:1};
+      return null;
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'is'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='not') return {op:'is not', bp:40, right:false, len:2};
+        return {op:'is', bp:40, right:false, len:1};
+      }
+      if(t.v === 'in') return {op:'in', bp:30, right:false, len:1};
+      if(t.v === 'not'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='in') return {op:'not in', bp:30, right:false, len:2};
+        return null;
+      }
+      if(t.v === 'and') return {op:'and', bp:20, right:false, len:1};
+      if(t.v === 'or') return {op:'or', bp:10, right:false, len:1};
+    }
+    return null;
+  }
+  parseExpr(minBp){
+    let left = this.parseUnary();
+    while(true){
+      const info = this.peekBinOp();
+      if(!info || info.bp < minBp) break;
+      for(let k=0;k<info.len;k++) this.next();
+      const right = this.parseExpr(info.right ? info.bp : info.bp + 1);
+      left = { type:'binop', op:info.op, left, right };
+    }
+    return left;
+  }
+  parseUnary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'ID' && t.v === 'not'){ this.next(); return { type:'unary', op:'not', val:this.parseExpr(25) }; }
+    if(t.t === 'OP' && (t.v === '-' || t.v === '+')){ this.next(); return { type:'unary', op:t.v, val:this.parseExpr(80) }; }
+    return this.parsePrimary();
+  }
+  parseCallArgs(){
+    const args = [];
+    if(!(this.peek() && this.peek().t==='OP' && this.peek().v===')')){
+      args.push(this.parseArg());
+      while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); args.push(this.parseArg()); }
+    }
+    if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+    this.next();
+    return args;
+  }
+  parseArg(){
+    if(this.peek() && this.peek().t==='ID' && this.peek(1) && this.peek(1).t==='OP' && this.peek(1).v==='='){
+      const name = this.next().v; this.next();
+      return { kind:'kw', name, val:this.parseExpr(0) };
+    }
+    return { kind:'pos', val:this.parseExpr(0) };
+  }
+  parsePrimary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'NUM'){ this.next(); return { type:'num', value:t.v, isFloat:t.isFloat }; }
+    if(t.t === 'STR'){ this.next(); return { type:'str', value:t.v }; }
+    if(t.t === 'OP' && t.v === '('){
+      this.next();
+      const e = this.parseExpr(0);
+      if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+      this.next();
+      return e;
+    }
+    if(t.t === 'OP' && t.v === '['){
+      this.next();
+      const items = [];
+      if(!(this.peek() && this.peek().t==='OP' && this.peek().v===']')){
+        items.push(this.parseExpr(0));
+        while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); items.push(this.parseExpr(0)); }
+      }
+      if(!this.peek() || this.peek().v !== ']') throw new PyError('SyntaxError: missing closing bracket');
+      this.next();
+      return { type:'list', items };
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'True'){ this.next(); return { type:'bool_lit', value:true }; }
+      if(t.v === 'False'){ this.next(); return { type:'bool_lit', value:false }; }
+      if(t.v === 'None'){ this.next(); return { type:'none_lit' }; }
+      if(this.peek(1) && this.peek(1).t==='OP' && this.peek(1).v==='('){
+        this.next(); this.next();
+        const args = this.parseCallArgs();
+        return { type:'call', name:t.v, args };
+      }
+      this.next();
+      return { type:'var', name:t.v };
+    }
+    throw new PyError(`SyntaxError: unexpected token "${t.v}"`);
+  }
+}
+
+function pyTypeName(v){
+  return { int:'int', float:'float', str:'str', bool:'bool', list:'list', none:'NoneType', typeref:'type' }[v.type] || v.type;
+}
+function truthy(v){
+  switch(v.type){
+    case 'bool': return v.value;
+    case 'int': case 'float': return v.value !== 0;
+    case 'str': return v.value.length > 0;
+    case 'list': return v.value.length > 0;
+    case 'none': return false;
+    default: return true;
+  }
+}
+function pyFloatStr(num){ if(Number.isInteger(num)) return num.toFixed(1); return String(num); }
+function reprOf(v){
+  switch(v.type){
+    case 'str': return "'" + v.value.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'";
+    case 'bool': return v.value ? 'True' : 'False';
+    case 'none': return 'None';
+    case 'float': return pyFloatStr(v.value);
+    case 'int': return String(v.value);
+    case 'list': return '[' + v.value.map(reprOf).join(', ') + ']';
+    case 'typeref': return `<class '${v.name}'>`;
+    default: return String(v.value);
+  }
+}
+function displayOf(v){ if(v.type === 'str') return v.value; return reprOf(v); }
+
+function evalNode(node, env, io){
+  switch(node.type){
+    case 'num': return mk(node.isFloat ? 'float' : 'int', node.value);
+    case 'str': return mk('str', node.value);
+    case 'bool_lit': return mk('bool', node.value);
+    case 'none_lit': return mk('none', null);
+    case 'list': return mk('list', node.items.map(it => evalNode(it, env, io)));
+    case 'var': {
+      if(node.name in env) return env[node.name];
+      if(TYPE_REFS[node.name]) return TYPE_REFS[node.name];
+      throw new PyError(`NameError: name '${node.name}' is not defined`);
+    }
+    case 'unary': {
+      const v = evalNode(node.val, env, io);
+      if(node.op === 'not') return mk('bool', !truthy(v));
+      if(v.type !== 'int' && v.type !== 'float') throw new PyError(`TypeError: bad operand type for unary ${node.op}: '${pyTypeName(v)}'`);
+      return mk(v.type, node.op === '-' ? -v.value : +v.value);
+    }
+    case 'call': return evalCall(node, env, io);
+    case 'binop': {
+      if(node.op === 'and'){ const l = evalNode(node.left, env, io); return truthy(l) ? evalNode(node.right, env, io) : l; }
+      if(node.op === 'or'){ const l = evalNode(node.left, env, io); return truthy(l) ? l : evalNode(node.right, env, io); }
+      const l = evalNode(node.left, env, io), r = evalNode(node.right, env, io);
+      return applyBinOp(node.op, l, r);
+    }
+  }
+}
+function numeric(v){ return v.type === 'int' || v.type === 'float'; }
+function applyBinOp(op, l, r){
+  switch(op){
+    case '+': {
+      if(l.type==='str' && r.type==='str') return mk('str', l.value + r.value);
+      if(l.type==='list' && r.type==='list') return mk('list', l.value.concat(r.value));
+      if(numeric(l) && numeric(r)) return mk((l.type==='float'||r.type==='float')?'float':'int', l.value + r.value);
+      throw typeErrBin('+', l, r);
+    }
+    case '-': {
+      if(numeric(l) && numeric(r)) return mk((l.type==='float'||r.type==='float')?'float':'int', l.value - r.value);
+      throw typeErrBin('-', l, r);
+    }
+    case '*': {
+      if(numeric(l) && numeric(r)) return mk((l.type==='float'||r.type==='float')?'float':'int', l.value * r.value);
+      if(l.type==='str' && r.type==='int') return mk('str', l.value.repeat(Math.max(0,r.value)));
+      if(r.type==='str' && l.type==='int') return mk('str', r.value.repeat(Math.max(0,l.value)));
+      throw typeErrBin('*', l, r);
+    }
+    case '/': {
+      if(numeric(l) && numeric(r)){ if(r.value === 0) throw new PyError('ZeroDivisionError: division by zero'); return mk('float', l.value / r.value); }
+      throw typeErrBin('/', l, r);
+    }
+    case '%': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        const res = ((l.value % r.value) + r.value) % r.value;
+        return mk((l.type==='float'||r.type==='float')?'float':'int', res);
+      }
+      throw typeErrBin('%', l, r);
+    }
+    case '//': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        return mk((l.type==='float'||r.type==='float')?'float':'int', Math.floor(l.value / r.value));
+      }
+      throw typeErrBin('//', l, r);
+    }
+    case '**': {
+      if(numeric(l) && numeric(r)) return mk((l.type==='float'||r.type==='float')?'float':'int', Math.pow(l.value, r.value));
+      throw typeErrBin('**', l, r);
+    }
+    case '==': return mk('bool', pyEquals(l, r));
+    case '!=': return mk('bool', !pyEquals(l, r));
+    case '<': case '>': case '<=': case '>=': {
+      if(numeric(l) && numeric(r)){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      if(l.type==='str' && r.type==='str'){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      throw new PyError(`TypeError: '${op}' not supported between instances of '${pyTypeName(l)}' and '${pyTypeName(r)}'`);
+    }
+    case 'is': return mk('bool', l.id === r.id);
+    case 'is not': return mk('bool', l.id !== r.id);
+    case 'in': return mk('bool', membership(l, r));
+    case 'not in': return mk('bool', !membership(l, r));
+  }
+  throw new PyError(`SyntaxError: unsupported operator "${op}"`);
+}
+function typeErrBin(op, l, r){ return new PyError(`TypeError: unsupported operand type(s) for ${op}: '${pyTypeName(l)}' and '${pyTypeName(r)}'`); }
+function pyEquals(l, r){
+  if(numeric(l) && numeric(r)) return l.value === r.value;
+  if(l.type !== r.type) return false;
+  if(l.type === 'list') return l.value.length===r.value.length && l.value.every((v,i)=>pyEquals(v, r.value[i]));
+  return l.value === r.value;
+}
+function membership(l, r){
+  if(r.type === 'list') return r.value.some(el => pyEquals(el, l));
+  if(r.type === 'str'){ if(l.type !== 'str') throw new PyError("TypeError: 'in <string>' requires string as left operand, not " + pyTypeName(l)); return r.value.includes(l.value); }
+  throw new PyError(`TypeError: argument of type '${pyTypeName(r)}' is not iterable`);
+}
+function evalCall(node, env, io){
+  const posArgs = node.args.filter(a=>a.kind==='pos').map(a=>evalNode(a.val, env, io));
+  const kwArgs = {};
+  node.args.filter(a=>a.kind==='kw').forEach(a=>{ kwArgs[a.name] = evalNode(a.val, env, io); });
+  switch(node.name){
+    case 'print': {
+      const sep = kwArgs.sep ? displayOf(kwArgs.sep) : ' ';
+      const end = kwArgs.end ? displayOf(kwArgs.end) : '\n';
+      io.out += posArgs.map(displayOf).join(sep) + end;
+      return mk('none', null);
+    }
+    case 'type': {
+      if(posArgs.length !== 1) throw new PyError('TypeError: type() takes exactly one argument');
+      const tn = pyTypeName(posArgs[0]);
+      return TYPE_REFS[tn] || mk('str', tn);
+    }
+    case 'int': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseInt(a.value.trim(), 10); if(Number.isNaN(nu)) throw new PyError(`ValueError: invalid literal for int() with base 10: '${a.value}'`); return mk('int', nu); }
+      if(numeric(a)) return mk('int', Math.trunc(a.value));
+      if(a.type === 'bool') return mk('int', a.value ? 1 : 0);
+      throw new PyError(`TypeError: int() argument must be a string or a number`);
+    }
+    case 'float': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseFloat(a.value.trim()); if(Number.isNaN(nu)) throw new PyError(`ValueError: could not convert string to float: '${a.value}'`); return mk('float', nu); }
+      if(numeric(a)) return mk('float', a.value);
+      if(a.type === 'bool') return mk('float', a.value ? 1.0 : 0.0);
+      throw new PyError(`TypeError: float() argument must be a string or a number`);
+    }
+    case 'str': return mk('str', displayOf(posArgs[0]));
+    case 'len': {
+      const a = posArgs[0];
+      if(a.type === 'str' || a.type === 'list') return mk('int', a.value.length);
+      throw new PyError(`TypeError: object of type '${pyTypeName(a)}' has no len()`);
+    }
+    case 'input': {
+      const promptMsg = posArgs.length ? displayOf(posArgs[0]) : '';
+      const result = (typeof window !== 'undefined' && window.prompt) ? window.prompt(promptMsg) : '';
+      io.out += promptMsg + (result || '') + '\n';
+      return mk('str', result || '');
+    }
+    default: throw new PyError(`NameError: name '${node.name}' is not defined`);
+  }
+}
+function splitTopLevel(line, sepChar){
+  const parts = [];
+  let depth = 0, buf = '', inStr = null;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ buf += c; if(c === inStr && line[i-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; buf += c; continue; }
+    if(c === '(' || c === '[') depth++;
+    if(c === ')' || c === ']') depth--;
+    if(c === sepChar && depth === 0){
+      if(sepChar === '='){
+        const prev = line[i-1], nxt = line[i+1];
+        if(prev === '=' || prev === '!' || prev === '<' || prev === '>' || nxt === '='){ buf += c; continue; }
+      }
+      parts.push(buf); buf = ''; continue;
+    }
+    buf += c;
+  }
+  parts.push(buf);
+  return parts;
+}
+const COMPOUND_OPS = ['**=','//=','+=','-=','*=','/=','%='];
+function runStatement(line, env, io){
+  for(const cop of COMPOUND_OPS){
+    const idx = line.indexOf(cop);
+    if(idx > -1 && /^[A-Za-z_]\w*\s*$/.test(line.slice(0, idx))){
+      const name = line.slice(0, idx).trim();
+      const exprSrc = line.slice(idx + cop.length);
+      const baseOp = cop.slice(0, -1);
+      if(!(name in env)) throw new PyError(`NameError: name '${name}' is not defined`);
+      const rhs = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      env[name] = applyBinOp(baseOp, env[name], rhs);
+      return;
+    }
+  }
+  const segs = splitTopLevel(line, '=');
+  if(segs.length > 1){
+    const targetsRaw = segs.slice(0, -1);
+    const exprSrc = segs[segs.length - 1];
+    const allSimpleNames = targetsRaw.every(s => /^[A-Za-z_]\w*$/.test(s.trim()));
+    const multiTargets = targetsRaw.length === 1 ? targetsRaw[0].split(',').map(s=>s.trim()) : null;
+    if(allSimpleNames && targetsRaw.length >= 1 && !targetsRaw[0].includes(',')){
+      const val = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      targetsRaw.map(s=>s.trim()).forEach(name => { env[name] = val; });
+      return;
+    }
+    if(multiTargets && multiTargets.length > 1){
+      const rhsParts = splitTopLevel(exprSrc, ',');
+      if(rhsParts.length !== multiTargets.length) throw new PyError('ValueError: number of targets and values do not match');
+      const vals = rhsParts.map(p => evalNode(new Parser(tokenize(p)).parseProgram(), env, io));
+      multiTargets.forEach((name,i) => { env[name] = vals[i]; });
+      return;
+    }
+  }
+  const node = new Parser(tokenize(line)).parseProgram();
+  return evalNode(node, env, io);
+}
+function runLines(code, replMode){
+  const env = {};
+  const io = { out: '' };
+  const lines = code.split('\n');
+  for(let raw of lines){
+    let line = raw.trim();
+    if(!line || line.startsWith('#')) continue;
+    try{
+      const val = runStatement(line, env, io);
+      if(replMode && val !== undefined && val.type !== 'none'){ io.out += reprOf(val) + '\n'; }
+    } catch(err){
+      io.out += (err instanceof PyError ? err.message : ('Error: ' + err.message)) + '\n';
+      break;
+    }
+  }
+  return io.out.replace(/\n$/, '');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.run-btn');
+  if(!btn) return;
+  const outId = btn.dataset.runTarget;
+  const outEl = document.getElementById(outId);
+  const mode = btn.dataset.mode;
+  const code = btn.dataset.source
+    ? document.getElementById(btn.dataset.source).value
+    : 'print("Hello World!!")';
+
+  const result = runLines(code, mode === 'shell');
+  outEl.textContent = result;
+
+  const isError = /^(SyntaxError|NameError|TypeError|ZeroDivisionError|ValueError|Error):/m.test(result);
+  outEl.classList.remove('flash', 'flash-err');
+  void outEl.offsetWidth;
+  outEl.classList.add(isError ? 'flash-err' : 'flash');
+});
+
+// Mode toggle — reused for both the Shell/Script widget (if present) and the Operators tab widget
+document.querySelectorAll('.mode-switch').forEach(group => {
+  group.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      const parent = group.parentElement;
+      parent.querySelectorAll(':scope > .mode-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+});
+
+// Identifier quiz — tap a token to see why it is/isn't valid
+document.querySelectorAll('#ident-quiz .badge').forEach(b => {
+  b.addEventListener('click', () => {
+    document.getElementById('ident-explain').textContent = b.dataset.why;
+  });
+});
+
+// Theme toggle
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeLabel = document.getElementById('theme-label');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeIcon.textContent = isDark ? '🌙' : '☀️';
+  themeLabel.textContent = isDark ? 'dark' : 'light';
+});
+
+// Scroll progress bar
+const progressFill = document.getElementById('progress-fill');
+function updateProgress(){
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+  progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+// Tab bar active-state on scroll
+const sections = [...document.querySelectorAll('section[id]')];
+const tabLinks = [...document.querySelectorAll('#tabbar a')];
+const io2 = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      tabLinks.forEach(a => a.classList.remove('active'));
+      const link = tabLinks.find(a => a.getAttribute('href') === '#' + entry.target.id);
+      if(link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => io2.observe(s));
+
+// Staggered card cascade reveal
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const cards = entry.target.querySelectorAll('.feature, .exercise');
+      cards.forEach((card, i) => setTimeout(() => card.classList.add('show'), i * 70));
+      revealIO.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+sections.forEach(s => revealIO.observe(s));
+setTimeout(() => document.querySelectorAll('.feature, .exercise').forEach(c => c.classList.add('show')), 3000);
+</script>
+
+</body>
+</html>

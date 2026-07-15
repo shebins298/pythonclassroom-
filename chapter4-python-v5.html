@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<title>Chapter 4 — Getting Started with Python | Teacher Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EE;
+    --paper-alt:#E7EBE0;
+    --panel:#FFFFFF;
+    --ink:#16241F;
+    --ink-soft:#4A6156;
+    --py-blue:#1874C4;
+    --py-blue-deep:#0F4C81;
+    --py-gold:#F5A623;
+    --shell-green:#1E9E64;
+    --shell-green-bg:#E4F5EB;
+    --cpp-brown:#C0632E;
+    --cpp-brown-bg:#FBEADB;
+    --violet:#7C5CFF;
+    --err:#E0473A;
+    --line:#D8DECF;
+    --radius:10px;
+    --shadow:0 2px 8px rgba(22,36,31,.07);
+    --shadow-hover:0 14px 32px rgba(22,36,31,.16);
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1B16;
+    --paper-alt:#16261F;
+    --panel:#182A22;
+    --ink:#F1F8F1;
+    --ink-soft:#9AC1AC;
+    --py-blue:#5EB8FF;
+    --py-blue-deep:#8FD1FF;
+    --py-gold:#FFC15C;
+    --shell-green:#4FE0A0;
+    --shell-green-bg:#173428;
+    --cpp-brown:#FF9D5C;
+    --cpp-brown-bg:#33221A;
+    --violet:#B49CFF;
+    --err:#FF7A6B;
+    --line:#26402F;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+    --shadow-hover:0 16px 36px rgba(0,0,0,.5);
+  }
+  html, body{transition:background-color .35s ease, color .35s ease;}
+  @media (prefers-reduced-motion: reduce){
+    html, body, *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:radial-gradient(circle, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+    background-size:26px 26px;
+    animation:drift 40s linear infinite;
+  }
+  @keyframes drift{0%{background-position:0 0;}100%{background-position:130px 130px;}}
+  h1.title{
+    background:linear-gradient(100deg, var(--py-blue-deep), var(--violet) 45%, var(--shell-green) 80%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:var(--ink); -webkit-text-fill-color:transparent;
+    animation:hue-shift 8s ease-in-out infinite alternate;
+  }
+  @keyframes hue-shift{0%{background-position:0% center;}100%{background-position:100% center;}}
+  h1,h2,h3,h4{font-family:'Fraunces',serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  code, .mono, .code-cell, textarea, pre{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--py-blue-deep);}
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- Tab bar (signature nav, mimics IDE open files) ---------- */
+  .tabbar-outer{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-alt);
+    border-bottom:1px solid var(--line);
+  }
+  .progress-track{height:3px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--py-gold), var(--shell-green)); transition:width .12s linear;}
+  .tabbar{
+    display:flex; align-items:center; overflow-x:auto; max-width:900px; margin:0 auto;
+    scrollbar-width:thin;
+  }
+  .theme-toggle{
+    flex:0 0 auto; margin-left:auto; border:none; background:var(--panel); color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 12px; cursor:pointer;
+    border-left:1px solid var(--line); white-space:nowrap; display:flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{color:var(--ink);}
+  .tabbar a{
+    flex:0 0 auto;
+    padding:12px 16px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:2px solid transparent;
+    border-right:1px solid var(--line);
+  }
+  .tabbar a.active{
+    color:var(--py-blue-deep);
+    background:var(--paper);
+    border-bottom:2px solid var(--py-gold);
+    font-weight:600;
+  }
+  .tabbar a::before{content:"● "; color:var(--py-gold); font-size:9px;}
+
+  /* ---------- Header / Hero ---------- */
+  header.hero{
+    padding:56px 0 40px; border-bottom:1px solid var(--line); position:relative;
+  }
+  header.hero::before{
+    content:""; position:absolute; top:-140px; right:-120px; width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--py-gold) 20%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  header.hero::after{
+    content:""; position:absolute; bottom:-160px; left:-100px; width:360px; height:360px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--shell-green) 18%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--py-blue); margin-bottom:14px;
+  }
+  .kicker span{color:var(--ink-soft);}
+  h1.title{font-size:clamp(28px,6vw,44px); line-height:1.15; max-width:16ch; overflow-wrap:break-word; word-break:break-word;}
+  .subtitle{color:var(--ink-soft); font-size:17px; max-width:60ch; margin-top:10px;}
+
+  .hero-demo{
+    margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    background:var(--panel);
+  }
+  @media(max-width:640px){.hero-demo{grid-template-columns:1fr;}}
+  .hero-col{padding:18px 20px;}
+  .hero-col.cpp{background:var(--cpp-brown-bg); border-right:1px solid var(--line);}
+  .hero-col.py{background:var(--shell-green-bg);}
+  .hero-label{font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; font-weight:600;}
+  .hero-col.cpp .hero-label{color:var(--cpp-brown);}
+  .hero-col.py .hero-label{color:var(--shell-green);}
+  .hero-col pre{margin:0; font-size:13.5px; white-space:pre-wrap;}
+  .cursor-blink{display:inline-block; width:8px; height:15px; background:var(--shell-green); margin-left:2px; vertical-align:text-bottom; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero-stat{padding:14px 20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); grid-column:1/-1; background:var(--paper);}
+  .hero-stat b{color:var(--ink);}
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding:52px 0; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--py-blue);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;
+    position:relative; display:inline-block; padding-bottom:6px;
+  }
+  .eyebrow::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:28px;
+    background:linear-gradient(90deg, var(--py-gold), var(--violet));
+    border-radius:2px;
+  }
+  section h2{font-size:clamp(24px,3.4vw,30px);}
+  section > p.lead{color:var(--ink-soft); max-width:68ch; margin-bottom:24px;}
+
+  /* ---------- Callout boxes ---------- */
+  .callout{
+    border-radius:var(--radius); padding:18px 20px; margin:20px 0; border:1px solid var(--line);
+  }
+  .callout h4{font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .callout.history{background:var(--paper-alt);}
+  .callout.history h4{color:var(--ink-soft);}
+  .callout.teach{background:#FDF6E8; border-color:#EAD9A8;}
+  .callout.teach h4{color:#8A6A1E;}
+  .callout.teach h4::before{content:"👩‍🏫 ";}
+  .callout p{margin:0 0 8px; font-size:14.5px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout ul{margin:8px 0 0; padding-left:20px; font-size:14.5px;}
+
+  /* ---------- Feature grid ---------- */
+  .feature-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;}
+  @media(max-width:640px){.feature-grid{grid-template-columns:1fr;}}
+  .feature{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease; position:relative;
+    border-left:3px solid var(--py-gold);
+  }
+  html.js-ready .feature, html.js-ready .exercise{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease, box-shadow .2s ease;
+  }
+  html.js-ready .feature.show, html.js-ready .exercise.show{opacity:1; transform:translateY(0);}
+  .feature:hover{transform:translateY(-4px) !important; box-shadow:var(--shadow-hover);}
+  .feature .icon-badge{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:17px; background:var(--paper-alt); margin-bottom:10px;
+  }
+  .feature h4{font-size:15px; margin-bottom:6px; color:var(--py-blue-deep);}
+  .feature p{margin:0; font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- Comparison table ---------- */
+  table.compare{width:100%; border-collapse:collapse; margin-top:20px; font-size:14.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.compare th, table.compare td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.compare th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.03em;}
+  table.compare th.cpp-h{color:var(--cpp-brown);}
+  table.compare th.py-h{color:var(--shell-green);}
+  table.compare td.cpp-c{color:var(--cpp-brown);}
+  table.compare td.py-c{color:var(--shell-green);}
+  table.compare code{font-size:13px; background:var(--paper-alt); padding:1px 5px; border-radius:4px;}
+  table.compare tr:last-child td{border-bottom:none;}
+
+  /* ---------- Numbered steps (IDLE launch) ---------- */
+  .steps{counter-reset:step; margin-top:20px; list-style:none; padding:0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:12px 0 12px 42px; border-bottom:1px dashed var(--line);
+    font-size:15px;
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:10px; width:26px; height:26px;
+    background:var(--py-blue); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+  }
+  .steps kbd{background:var(--paper-alt); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+
+  /* ---------- Mode toggle (SIGNATURE ELEMENT) ---------- */
+  .mode-widget{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-top:24px; background:var(--panel);}
+  .mode-switch{display:flex; background:var(--paper-alt); border-bottom:1px solid var(--line);}
+  .mode-btn{
+    flex:1; padding:15px 10px; background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; min-height:44px; -webkit-tap-highlight-color:transparent;
+  }
+  .mode-btn.active.shell{color:var(--shell-green); border-bottom-color:var(--shell-green); background:var(--shell-green-bg);}
+  .mode-btn.active.script{color:var(--py-blue-deep); border-bottom-color:var(--py-blue); background:#EAF1F7;}
+  .mode-pane{display:none; padding:18px 20px;}
+  .mode-pane.active{display:block;}
+  .mode-pane p.explain{font-size:14px; color:var(--ink-soft); margin-top:0;}
+
+  /* ---------- Code cell (shared by all runnable examples) ---------- */
+  .code-cell{border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:10px;}
+  .code-cell .file-tag{
+    background:var(--paper-alt); padding:6px 12px; font-size:11.5px; color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; border-bottom:1px solid var(--line); display:flex; justify-content:space-between;
+  }
+  .code-cell textarea{
+    width:100%; border:none; resize:vertical; min-height:90px; padding:12px 14px;
+    font-size:16px; background:#1B2B27; color:#EAF1EA; outline:none; line-height:1.55;
+  }
+  .code-cell.shell textarea{background:#0F1F19; color:#B9E3C3;}
+  .code-cell .toolbar{display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--paper-alt); border-top:1px solid var(--line);}
+  .run-btn{
+    background:linear-gradient(100deg, var(--py-gold), #FFCF7A 50%, var(--py-gold));
+    background-size:220% auto; background-position:0% center;
+    color:#3A2A05; border:none; border-radius:6px; padding:10px 18px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;
+    min-height:40px; -webkit-tap-highlight-color:transparent;
+    box-shadow:0 0 0 rgba(245,166,35,0); transition:box-shadow .2s ease, background-position .5s ease, transform .1s ease;
+  }
+  .run-btn:disabled{opacity:.5; cursor:wait;}
+  .run-btn:hover:not(:disabled){background-position:100% center; box-shadow:0 6px 20px rgba(245,166,35,.5);}
+  .run-btn:active:not(:disabled){transform:translateY(1px);}
+  header.hero .wrap{position:relative; z-index:1;}
+  .py-status{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;}
+  .output{
+    background:#0F1712; color:#D9F0DC; padding:12px 14px; font-size:13.5px; min-height:20px;
+    white-space:pre-wrap; word-break:break-word; border-top:1px solid var(--line);
+    transition:box-shadow .3s ease;
+  }
+  .output.flash{animation:flash-glow .6s ease;}
+  @keyframes flash-glow{
+    0%{box-shadow:inset 0 0 0 2px var(--shell-green), 0 0 18px rgba(30,158,100,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(30,158,100,0), 0 0 0 rgba(30,158,100,0);}
+  }
+  .output.flash-err{animation:flash-glow-err .6s ease;}
+  @keyframes flash-glow-err{
+    0%{box-shadow:inset 0 0 0 2px var(--err), 0 0 18px rgba(224,71,58,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(224,71,58,0), 0 0 0 rgba(224,71,58,0);}
+  }
+  .output:empty::before{content:"— run the code to see output here —"; color:#5F7A68; font-style:italic;}
+  .output .err{color:#FF9E80;}
+
+  /* ---------- Let us do (exercise grid) ---------- */
+  .exercise{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    margin-top:18px; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease;
+    border-left:3px solid var(--shell-green);
+  }
+  .exercise:hover{transform:translateY(-3px) !important; box-shadow:var(--shadow-hover);}
+  .exercise h4{font-size:15px; margin-bottom:4px;}
+  .exercise .task{font-size:14px; color:var(--ink-soft); margin-bottom:10px;}
+  .ex-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    background:var(--py-blue); color:#fff; border-radius:50%; font-size:12px; font-family:'JetBrains Mono',monospace;
+    margin-right:8px;
+  }
+
+  ::selection{background:var(--py-gold); color:#1B2B27;}
+</style>
+</head>
+<body>
+
+<div class="tabbar-outer">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="tabbar" id="tabbar">
+    <a href="#intro" class="active">4.0_why_python.md</a>
+    <a href="#features">4.1_features.py</a>
+    <a href="#ides">4.2_ides.md</a>
+    <a href="#modes">interactive_vs_script.py</a>
+    <a href="#compare">cpp_vs_python.diff</a>
+    <a href="#practice">let_us_do.py</a>
+    <a href="#summary">summary.md</a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme"><span id="theme-icon">🌙</span><span id="theme-label">dark</span></button>
+  </nav>
+</div>
+
+<header class="hero wrap">
+  <div class="kicker">Computer Science · Class XI &nbsp;<span>|</span>&nbsp; Chapter 4 &nbsp;<span>|</span>&nbsp; Teacher Training Session</div>
+  <h1 class="title">Getting Started with Python</h1>
+  <p class="subtitle">A hands-on walkthrough for teachers who already think in C++. Every idea here is anchored to something you already know — then run live in this page, on any device, with no install or internet required.</p>
+
+  <div class="hero-demo">
+    <div class="hero-col cpp">
+      <div class="hero-label">C++ — what your students already write</div>
+      <pre>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Hello World!!";
+    return 0;
+}</pre>
+    </div>
+    <div class="hero-col py">
+      <div class="hero-label">Python — same task</div>
+      <pre><span id="hero-typewriter"></span><span class="cursor-blink" id="hero-cursor"></span></pre>
+      <div class="code-cell" style="margin-top:14px; border:1px solid #cfe0d3;">
+        <div class="toolbar" style="border-top:none;">
+          <button class="run-btn" data-run-target="hero-out" data-mode="script">▶ Run this</button>
+          <span class="py-status" id="hero-status">runs instantly · fully offline</span>
+        </div>
+        <div class="output" id="hero-out"></div>
+      </div>
+    </div>
+    <div class="hero-stat">No <code>#include</code>. No <code>main()</code>. No semicolon. No braces. <b>One line, one meaning</b> — this is the entire program.</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="intro">
+  <div class="eyebrow">4.0 · Why a new language at all</div>
+  <h2>From machine code to Python, in one breath</h2>
+  <p class="lead">Your students already know why we need high-level languages — C++ made that case. Python makes the same case again, one step further toward plain English.</p>
+
+  <div class="feature-grid">
+    <div class="feature" style="border-left-color:var(--cpp-brown);">
+      <div class="icon-badge">⚙️</div>
+      <h4>C++: compile, then run</h4>
+      <p>A C++ compiler translates the <em>entire</em> program into machine code up front, producing an executable. Errors surface at compile time, before anything runs.</p>
+    </div>
+    <div class="feature">
+      <div class="icon-badge">🔄</div>
+      <h4>Python: interpret, line by line</h4>
+      <p>The Python interpreter converts source code to <strong>bytecode</strong> — a platform-independent intermediate form — and executes it line by line. A syntax error later in the file won't stop earlier lines from running first.</p>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>This is usually the first "aha" for a C++ class: ask them to predict what happens if line 5 of a 10-line script has an error. In C++, nothing runs. In Python, lines 1–4 execute, output appears, <em>then</em> it crashes on line 5. Demo it live using the Script tab below.</p>
+  </div>
+
+  <div class="callout history">
+    <h4>Worth mentioning in class</h4>
+    <p>Python was created by <strong>Guido van Rossum</strong>, a Dutch programmer, who began working on it in the late 1980s. The first official release, Python 0.9.0, came out in 1991. He named the language after the British comedy show <em>Monty Python's Flying Circus</em> — not the snake — because he wanted something short, memorable, and a little quirky.</p>
+  </div>
+</section>
+
+<section id="features">
+  <div class="eyebrow">4.1 · Introduction to Python</div>
+  <h2>What makes Python worth the switch</h2>
+  <p class="lead">Frame each of these against what a C++ student already struggles with — that's the fastest way to make the value land.</p>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="icon-badge">📖</div>
+      <h4>Reads like English</h4>
+      <p>Simple syntax means students focus on <em>logic</em>, not on hunting for a missing semicolon or brace.</p>
+    </div>
+    <div class="feature">
+      <div class="icon-badge">📦</div>
+      <h4>Libraries &amp; frameworks</h4>
+      <p>Libraries are reusable functions/classes for a task (math, graphics, networking). Frameworks give a full structure to build on — Django and Flask for the web; Pandas, TensorFlow and Scikit-learn for AI/ML and data science.</p>
+    </div>
+    <div class="feature">
+      <div class="icon-badge">🌍</div>
+      <h4>Cross-platform</h4>
+      <p>The same code runs on Windows, Mac and Linux with little to no change — similar promise to C++, delivered with far less setup friction.</p>
+    </div>
+    <div class="feature">
+      <div class="icon-badge">🔓</div>
+      <h4>Open source &amp; free</h4>
+      <p>Source is freely available to use, modify and distribute, improved continuously by a large global community.</p>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Have students count lines: the same task (say, swapping two variables, or summing a list) is often 3–5 lines in Python vs 10+ in C++. Fewer lines isn't "less real programming" — it's less <em>ceremony</em> around the same logic. Worth saying explicitly, since some C++-trained students read brevity as "not serious."</p>
+  </div>
+</section>
+
+<section id="ides">
+  <div class="eyebrow">4.2 · Python IDEs</div>
+  <h2>Meet IDLE</h2>
+  <p class="lead">An IDE is a single workspace for writing, running and debugging code — think Code::Blocks or Dev-C++, but for Python. This textbook uses <strong>IDLE 3.10.12</strong> on GNU/Linux. A Python interpreter must be installed for any IDE to actually run code.</p>
+
+  <ol class="steps">
+    <li>Press the <kbd>Super</kbd> key to open the desktop search bar.</li>
+    <li>Type <kbd>idle</kbd> (case doesn't matter).</li>
+    <li>Click the IDLE icon — this opens the <strong>IDLE Shell</strong>, showing the <code>&gt;&gt;&gt;</code> prompt.</li>
+    <li>The <code>&gt;&gt;&gt;</code> prompt means the interpreter is idle and ready for your next instruction — hence the name "IDLE."</li>
+  </ol>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>If your lab machines are Windows, IDLE ships with the standard python.org installer instead of a desktop search. Either way, the on-screen behaviour once it's open — the <code>&gt;&gt;&gt;</code> prompt — is identical to what's shown here, so the rest of this session applies unchanged. Thonny and VS Code are common alternatives if a lab already has them installed.</p>
+  </div>
+</section>
+
+<section id="modes">
+  <div class="eyebrow">The core idea of this chapter</div>
+  <h2>Interactive Mode vs Script Mode</h2>
+  <p class="lead">This is the one distinction worth over-explaining to a C++ class, because C++ doesn't really have an equivalent to the first mode. Try both below — the code runs instantly, right in this page, on any device, with no internet needed.</p>
+  <p class="lead" style="font-size:13px; margin-top:-14px;">This page runs a small built-in interpreter covering exactly what this chapter teaches — <code>print()</code>, variables, numbers, strings, and <code>+ − × ÷</code>. It's not full Python, so save more advanced experiments for an actual interpreter or IDLE.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch">
+      <button class="mode-btn shell active" data-target="pane-shell">🐚 Interactive Shell (&gt;&gt;&gt;)</button>
+      <button class="mode-btn script" data-target="pane-script">📄 Script Mode (test.py)</button>
+    </div>
+
+    <div class="mode-pane active" id="pane-shell">
+      <p class="explain"><strong>One line in, one result out, instantly.</strong> Like a calculator — great for testing an idea, but nothing here is saved. Type in the box (each line is treated as if typed at a separate <code>&gt;&gt;&gt;</code> prompt) and press Run.</p>
+      <div class="code-cell shell">
+        <div class="file-tag"><span>IDLE Shell</span><span>no file — nothing is saved</span></div>
+        <textarea id="shell-code" spellcheck="false">print("Hello World!!")
+25 + 12
+"Hello" + "World"</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="shell-out" data-mode="shell" data-source="shell-code">▶ Run</button>
+          <span class="py-status" id="shell-status">ready ✓</span>
+        </div>
+        <div class="output" id="shell-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:16px;">
+        <h4>Teaching tip</h4>
+        <p>Point out that <code>"Hello" + "World"</code> shows the result wrapped in quotes (<code>'HelloWorld'</code>) — that's Python's REPL telling you the value is a <em>string</em>, not printed text. It's a natural bridge into talking about data types next chapter. Also worth noting: <code>+</code> on numbers adds, but <code>+</code> on strings concatenates — same operator, different behaviour depending on type.</p>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="pane-script">
+      <p class="explain"><strong>Write once, save as a <code>.py</code> file, run any time.</strong> This is the mode your C++ students will find familiar — closer to writing and compiling a <code>.cpp</code> file, except there's no separate compile step. Edit <code>test.py</code> below and hit Run (equivalent of <kbd>F5</kbd> / Run → Run Module in IDLE).</p>
+      <div class="code-cell">
+        <div class="file-tag"><span>test.py</span><span>saved · run with F5</span></div>
+        <textarea id="script-code" spellcheck="false">name = "Python"
+print("Learning", name)
+print("2 + 2 =", 2 + 2)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="script-out" data-mode="script" data-source="script-code">▶ Run Module (F5)</button>
+          <span class="py-status" id="script-status">ready ✓</span>
+        </div>
+        <div class="output" id="script-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:16px;">
+        <h4>Teaching tip</h4>
+        <p>Only what's inside a <code>print()</code> shows up here — unlike the Shell tab, bare expressions produce no output in script mode. That surprises students who just came from the Shell tab; it's worth triggering on purpose so they see the contrast themselves.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="eyebrow">Quick reference</div>
+  <h2>C++ habits, and their Python equivalent</h2>
+  <p class="lead">Keep this table on screen during your first live-coding demo — it answers the "wait, where's the...?" questions before they're asked.</p>
+
+  <table class="compare">
+    <tr><th>Concept</th><th class="cpp-h">C++</th><th class="py-h">Python</th></tr>
+    <tr><td>Print output</td><td class="cpp-c"><code>cout &lt;&lt; "Hi";</code></td><td class="py-c"><code>print("Hi")</code></td></tr>
+    <tr><td>Statement ending</td><td class="cpp-c">Semicolon <code>;</code> required</td><td class="py-c">None — a newline ends the statement</td></tr>
+    <tr><td>Blocks</td><td class="cpp-c">Curly braces <code>{ }</code></td><td class="py-c">Indentation (consistent whitespace)</td></tr>
+    <tr><td>Variable declaration</td><td class="cpp-c"><code>int x = 5;</code></td><td class="py-c"><code>x = 5</code> — type inferred, no keyword</td></tr>
+    <tr><td>Entry point</td><td class="cpp-c"><code>int main() { … }</code> required</td><td class="py-c">None — a script just runs top to bottom</td></tr>
+    <tr><td>Running the code</td><td class="cpp-c">Compile to an executable, then run it</td><td class="py-c">Interpreter runs the source directly</td></tr>
+    <tr><td>Testing one line</td><td class="cpp-c">Not really possible without a full program</td><td class="py-c">Interactive Shell — type and see the result instantly</td></tr>
+  </table>
+</section>
+
+<section id="practice">
+  <div class="eyebrow">Let us do</div>
+  <h2>Practice, straight from the textbook</h2>
+  <p class="lead">These are the exact "Let us do" activities from the chapter. Run each one live in the session, or hand this page to teachers to try on their own phones afterward — everything below runs on mobile too.</p>
+
+  <div class="exercise">
+    <h4><span class="ex-num">1</span>Try these three statements</h4>
+    <div class="task">Run each line and discuss what <code>print()</code> does, and how <code>+</code> behaves differently on numbers vs strings.</div>
+    <div class="code-cell shell">
+      <textarea id="ex1-code" spellcheck="false">print("Welcome to Python programming")
+print(25 + 12)
+print("Hello" + "World")</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex1-out" data-mode="script" data-source="ex1-code">▶ Run</button>
+        <span class="py-status" id="ex1-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex1-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">2</span>Area of a circle, diameter 12 cm</h4>
+    <div class="task">Edit the code if you'd like to try a different diameter, then run it.</div>
+    <div class="code-cell shell">
+      <textarea id="ex2-code" spellcheck="false">diameter = 12
+radius = diameter / 2
+area = 3.14159 * radius * radius
+print("Area of circle =", area, "sq cm")</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex2-out" data-mode="script" data-source="ex2-code">▶ Run</button>
+        <span class="py-status" id="ex2-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex2-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">3</span>Perimeter of a rectangle, length 7 cm, breadth 5 cm</h4>
+    <div class="task">Same idea — two known values, one formula, one <code>print()</code>.</div>
+    <div class="code-cell shell">
+      <textarea id="ex3-code" spellcheck="false">length = 7
+breadth = 5
+perimeter = 2 * (length + breadth)
+print("Perimeter of rectangle =", perimeter, "cm")</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex3-out" data-mode="script" data-source="ex3-code">▶ Run</button>
+        <span class="py-status" id="ex3-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex3-out"></div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Ask teachers to solve Exercises 2 and 3 in C++ first (mentally or on paper) — <code>#include</code>, <code>main()</code>, <code>cin</code>/<code>cout</code>, semicolons, a return statement — then run the Python version above. The line-count contrast is the whole pitch for this chapter, and it lands better coming from their own comparison than from being told.</p>
+  </div>
+</section>
+
+<section id="summary" style="border-bottom:none;">
+  <div class="eyebrow">Wrap-up</div>
+  <h2>Session summary</h2>
+  <p class="lead">Today: what an interpreter and bytecode are, why Python's syntax is lighter than C++'s, how to open IDLE, and the two modes of running code — interactive and script.</p>
+
+  <div class="callout teach">
+    <h4>Five habits to reinforce with C++ students</h4>
+    <ul>
+      <li>No semicolons, no braces — <strong>indentation is not a style choice, it's syntax</strong>.</li>
+      <li><code>print()</code> replaces <code>cout &lt;&lt;</code> — and it's a function, so arguments go in parentheses.</li>
+      <li>No <code>int main()</code> — a script just executes top to bottom.</li>
+      <li>Variables aren't declared with a type — Python infers it, and it can change.</li>
+      <li>The Shell (<code>&gt;&gt;&gt;</code>) is for quick experiments; real programs belong in a saved <code>.py</code> script.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+document.documentElement.classList.add('js-ready');
+/* =========================================================================
+   Tiny local Python-subset interpreter.
+   No network calls, no external runtime — everything below executes
+   instantly and works fully offline once this file is saved to a device.
+   It covers exactly what this chapter teaches: print(), variables,
+   numbers, strings, + - * / and parentheses. It is not full Python —
+   that tradeoff is what makes it load in 0ms on any phone.
+   ========================================================================= */
+
+class PyError extends Error {}
+
+function tokenize(line){
+  const tokens = [];
+  const re = /\s*(\d+\.\d+|\d+|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[A-Za-z_]\w*|==|!=|<=|>=|[+\-*/(),=<>])/y;
+  let pos = 0;
+  while(pos < line.length){
+    const slice = line.slice(pos);
+    if(/^\s+$/.test(slice)) break;
+    re.lastIndex = 0;
+    const m = re.exec(slice);
+    if(!m || m[0].trim() === ''){
+      if(slice.trim() === '') break;
+      throw new PyError(`SyntaxError: invalid syntax near "${slice.trim().slice(0,10)}"`);
+    }
+    const raw = m[1];
+    pos += m[0].length;
+    if(/^\d/.test(raw)){
+      tokens.push({t:'NUM', v: raw.includes('.') ? parseFloat(raw) : parseInt(raw,10), isFloat: raw.includes('.')});
+    } else if(raw[0] === '"' || raw[0] === "'"){
+      tokens.push({t:'STR', v: raw.slice(1,-1).replace(/\\(.)/g,'$1')});
+    } else if(/^[A-Za-z_]\w*$/.test(raw)){
+      tokens.push({t:'ID', v: raw});
+    } else {
+      tokens.push({t:'OP', v: raw});
+    }
+  }
+  return tokens;
+}
+
+// Recursive-descent parser: expr := term (('+'|'-') term)* ; term := factor (('*'|'/') factor)*
+function parseExpr(tokens){
+  let i = 0;
+  function peek(){ return tokens[i]; }
+  function next(){ return tokens[i++]; }
+
+  function parseCall(){
+    const id = next(); // ID
+    next(); // '('
+    const args = [];
+    if(peek() && !(peek().t==='OP' && peek().v===')')){
+      args.push(parseAddSub());
+      while(peek() && peek().t==='OP' && peek().v===','){ next(); args.push(parseAddSub()); }
+    }
+    if(!peek() || peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+    next();
+    return {type:'call', name:id.v, args};
+  }
+
+  function parseFactor(){
+    const tk = peek();
+    if(!tk) throw new PyError('SyntaxError: unexpected end of expression');
+    if(tk.t === 'OP' && tk.v === '-'){ next(); return {type:'neg', val:parseFactor()}; }
+    if(tk.t === 'OP' && tk.v === '('){ next(); const e = parseAddSub(); if(!peek()||peek().v!==')') throw new PyError('SyntaxError: missing closing parenthesis'); next(); return e; }
+    if(tk.t === 'NUM'){ next(); return {type:'num', value:tk.v, isFloat:tk.isFloat}; }
+    if(tk.t === 'STR'){ next(); return {type:'str', value:tk.v}; }
+    if(tk.t === 'ID'){
+      if(tokens[i+1] && tokens[i+1].t==='OP' && tokens[i+1].v==='(') return parseCall();
+      next(); return {type:'var', name:tk.v};
+    }
+    throw new PyError(`SyntaxError: unexpected token "${tk.v}"`);
+  }
+  function parseMulDiv(){
+    let node = parseFactor();
+    while(peek() && peek().t==='OP' && (peek().v==='*'||peek().v==='/')){
+      const op = next().v;
+      node = {type:'binop', op, left:node, right:parseFactor()};
+    }
+    return node;
+  }
+  function parseAddSub(){
+    let node = parseMulDiv();
+    while(peek() && peek().t==='OP' && (peek().v==='+'||peek().v==='-')){
+      const op = next().v;
+      node = {type:'binop', op, left:node, right:parseMulDiv()};
+    }
+    return node;
+  }
+  const result = parseAddSub();
+  if(i < tokens.length) throw new PyError(`SyntaxError: unexpected token "${tokens[i].v}"`);
+  return result;
+}
+
+function evalNode(node, env){
+  switch(node.type){
+    case 'num': return {type: node.isFloat ? 'float':'int', value: node.value};
+    case 'str': return {type:'str', value: node.value};
+    case 'var':
+      if(!(node.name in env)) throw new PyError(`NameError: name '${node.name}' is not defined`);
+      return env[node.name];
+    case 'neg': {
+      const v = evalNode(node.val, env);
+      if(v.type==='str') throw new PyError("TypeError: bad operand type for unary -: 'str'");
+      return {type:v.type, value:-v.value};
+    }
+    case 'call': {
+      if(node.name !== 'print') throw new PyError(`NameError: name '${node.name}' is not defined (only print() is supported here)`);
+      const vals = node.args.map(a => evalNode(a, env));
+      return {type:'print', parts: vals};
+    }
+    case 'binop': {
+      const l = evalNode(node.left, env), r = evalNode(node.right, env);
+      return applyOp(node.op, l, r);
+    }
+  }
+}
+
+function applyOp(op, l, r){
+  if(op === '+'){
+    if(l.type==='str' && r.type==='str') return {type:'str', value:l.value + r.value};
+    if(l.type==='str' || r.type==='str') throw new PyError(`TypeError: can only concatenate str (not "${l.type==='str'?r.type:l.type}") to str`);
+    const isFloat = l.type==='float' || r.type==='float';
+    return {type:isFloat?'float':'int', value:l.value + r.value};
+  }
+  if(l.type==='str' || r.type==='str') throw new PyError(`TypeError: unsupported operand type(s) for ${op}: 'str' and '${l.type==='str'?r.type:l.type}'`);
+  if(op === '-'){ const f=l.type==='float'||r.type==='float'; return {type:f?'float':'int', value:l.value-r.value}; }
+  if(op === '*'){ const f=l.type==='float'||r.type==='float'; return {type:f?'float':'int', value:l.value*r.value}; }
+  if(op === '/'){
+    if(r.value === 0) throw new PyError('ZeroDivisionError: division by zero');
+    return {type:'float', value:l.value/r.value}; // Python 3 true division
+  }
+  throw new PyError(`SyntaxError: unsupported operator "${op}"`);
+}
+
+function pyFloatStr(n){
+  if(Number.isInteger(n)) return n.toFixed(1);
+  let s = String(n);
+  if(s.includes('e')) return n.toFixed(6).replace(/0+$/,'').replace(/\.$/,'.0');
+  return s;
+}
+function displayValue(v){ // for print() — no quotes around strings
+  if(v.type==='str') return v.value;
+  if(v.type==='float') return pyFloatStr(v.value);
+  return String(v.value);
+}
+function reprValue(v){ // for bare REPL echo — strings show quoted, like real Python
+  if(v.type==='str') return "'" + v.value.replace(/'/g,"\\'") + "'";
+  if(v.type==='float') return pyFloatStr(v.value);
+  return String(v.value);
+}
+
+function runLines(code, replMode){
+  const env = {};
+  const out = [];
+  const lines = code.split('\n');
+  for(let raw of lines){
+    const line = raw.trim();
+    if(!line || line.startsWith('#')) continue;
+    try{
+      const assignMatch = line.match(/^([A-Za-z_]\w*)\s*=\s*(?!=)(.+)$/);
+      if(assignMatch){
+        const [, name, exprSrc] = assignMatch;
+        const val = evalNode(parseExpr(tokenize(exprSrc)), env);
+        env[name] = val;
+        continue;
+      }
+      const node = parseExpr(tokenize(line));
+      const val = evalNode(node, env);
+      if(val.type === 'print'){
+        out.push(val.parts.map(displayValue).join(' '));
+      } else if(replMode){
+        out.push(reprValue(val));
+      }
+      // in script mode, a bare non-print expression produces no output — matches real Python
+    } catch(err){
+      out.push(err instanceof PyError ? err.message : 'Error: ' + err.message);
+      break;
+    }
+  }
+  return out.join('\n');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.run-btn');
+  if(!btn) return;
+
+  const outId = btn.dataset.runTarget;
+  const outEl = document.getElementById(outId);
+  const mode = btn.dataset.mode;
+  const code = btn.dataset.source
+    ? document.getElementById(btn.dataset.source).value
+    : 'print("Hello World!!")';
+
+  const result = runLines(code, mode === 'shell');
+  outEl.textContent = result;
+
+  const isError = /^(SyntaxError|NameError|TypeError|ZeroDivisionError|Error):/m.test(result);
+  outEl.classList.remove('flash', 'flash-err');
+  void outEl.offsetWidth; // restart animation
+  outEl.classList.add(isError ? 'flash-err' : 'flash');
+});
+
+// Mode toggle (Interactive Shell vs Script Mode)
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.mode-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+
+  // Tab bar active-state on scroll
+  const sections = [...document.querySelectorAll('section[id]')];
+  const tabLinks = [...document.querySelectorAll('#tabbar a')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        tabLinks.forEach(a => a.classList.remove('active'));
+        const link = tabLinks.find(a => a.getAttribute('href') === '#' + entry.target.id);
+        if(link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  sections.forEach(s => io.observe(s));
+
+  // Theme toggle (light "paper" IDE theme <-> dark IDE theme)
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const themeLabel = document.getElementById('theme-label');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeIcon.textContent = isDark ? '🌙' : '☀️';
+    themeLabel.textContent = isDark ? 'dark' : 'light';
+  });
+
+  // Scroll progress bar
+  const progressFill = document.getElementById('progress-fill');
+  function updateProgress(){
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+    progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Reveal cards with a staggered cascade as their section scrolls into view
+  const cardHolders = sections; // reuse same section list as trigger zones
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const cards = entry.target.querySelectorAll('.feature, .exercise');
+        cards.forEach((card, i) => setTimeout(() => card.classList.add('show'), i * 70));
+        revealIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  cardHolders.forEach(s => revealIO.observe(s));
+  // Safety net: if anything about the observer misbehaves, ensure content is visible anyway.
+  setTimeout(() => document.querySelectorAll('.feature, .exercise').forEach(c => c.classList.add('show')), 3000);
+
+  // Hero typewriter effect
+  const heroPre = document.getElementById('hero-typewriter');
+  if(heroPre){
+    const fullText = 'print("Hello World!!")';
+    heroPre.textContent = '';
+    let idx = 0;
+    const cursor = document.getElementById('hero-cursor');
+    function typeChar(){
+      if(idx <= fullText.length){
+        heroPre.textContent = fullText.slice(0, idx);
+        idx++;
+        setTimeout(typeChar, 45);
+      }
+    }
+    typeChar();
+  }
+</script>
+
+</body>
+</html>

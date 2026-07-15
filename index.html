@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<title>Computer Science XI — Python Training | Course Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EE;
+    --paper-alt:#E7EBE0;
+    --panel:#FFFFFF;
+    --ink:#16241F;
+    --ink-soft:#4A6156;
+    --py-blue:#1874C4;
+    --py-blue-deep:#0F4C81;
+    --py-gold:#F5A623;
+    --shell-green:#1E9E64;
+    --shell-green-bg:#E4F5EB;
+    --cpp-brown:#C0632E;
+    --cpp-brown-bg:#FBEADB;
+    --violet:#7C5CFF;
+    --err:#E0473A;
+    --line:#D8DECF;
+    --radius:12px;
+    --shadow:0 2px 8px rgba(22,36,31,.07);
+    --shadow-hover:0 14px 32px rgba(22,36,31,.16);
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1B16;
+    --paper-alt:#16261F;
+    --panel:#182A22;
+    --ink:#F1F8F1;
+    --ink-soft:#9AC1AC;
+    --py-blue:#5EB8FF;
+    --py-blue-deep:#8FD1FF;
+    --py-gold:#FFC15C;
+    --shell-green:#4FE0A0;
+    --shell-green-bg:#173428;
+    --cpp-brown:#FF9D5C;
+    --cpp-brown-bg:#33221A;
+    --violet:#B49CFF;
+    --err:#FF7A6B;
+    --line:#26402F;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+    --shadow-hover:0 16px 36px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden;
+    transition:background-color .35s ease, color .35s ease;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:radial-gradient(circle, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+    background-size:26px 26px; animation:drift 40s linear infinite;
+  }
+  @keyframes drift{0%{background-position:0 0;}100%{background-position:130px 130px;}}
+  @media (prefers-reduced-motion: reduce){ html, body, *{transition:none !important; animation:none !important; scroll-behavior:auto !important;} }
+
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  code, .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:960px; margin:0 auto; padding:0 20px;}
+  ::selection{background:var(--py-gold); color:#1B2B27;}
+
+  .topbar{
+    position:sticky; top:0; z-index:50; background:var(--paper-alt); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; padding:12px 20px;
+  }
+  .topbar .brand{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft); display:flex; align-items:center; gap:8px;}
+  .theme-toggle{
+    border:1px solid var(--line); background:var(--panel); color:var(--ink-soft); border-radius:20px;
+    padding:7px 14px; font-family:'JetBrains Mono',monospace; font-size:12px; cursor:pointer;
+    display:flex; align-items:center; gap:6px; -webkit-tap-highlight-color:transparent;
+  }
+  .theme-toggle:hover{color:var(--ink);}
+
+  header.hero{padding:60px 0 40px; border-bottom:1px solid var(--line); position:relative;}
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--py-blue); margin-bottom:14px;
+  }
+  .kicker span{color:var(--ink-soft);}
+  h1.title{
+    font-size:clamp(30px,5.5vw,46px); line-height:1.12; max-width:18ch; overflow-wrap:break-word;
+    background:linear-gradient(100deg, var(--py-blue-deep), var(--violet) 45%, var(--shell-green) 80%);
+    background-size:200% auto; -webkit-background-clip:text; background-clip:text;
+    color:var(--ink); -webkit-text-fill-color:transparent;
+    animation:hue-shift 8s ease-in-out infinite alternate;
+  }
+  @keyframes hue-shift{0%{background-position:0% center;}100%{background-position:100% center;}}
+  .subtitle{color:var(--ink-soft); font-size:17px; max-width:62ch; margin-top:10px;}
+
+  .progress-strip{
+    margin-top:32px; display:flex; align-items:center; gap:14px; background:var(--panel);
+    border:1px solid var(--line); border-radius:var(--radius); padding:16px 20px; box-shadow:var(--shadow);
+    flex-wrap:wrap;
+  }
+  .progress-strip .ps-label{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .progress-track{flex:1; min-width:160px; height:8px; background:var(--paper-alt); border-radius:6px; overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--py-gold), var(--shell-green)); border-radius:6px;}
+  .progress-count{font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; color:var(--ink);}
+
+  main{padding:44px 0 60px;}
+  .section-label{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); margin-bottom:18px;
+  }
+
+  .chapter-grid{display:flex; flex-direction:column; gap:14px;}
+  .ch-card{
+    display:flex; align-items:stretch; gap:0; background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);
+    text-decoration:none; color:inherit; transition:transform .2s ease, box-shadow .2s ease;
+    position:relative;
+  }
+  .ch-card.ready:hover{transform:translateY(-3px); box-shadow:var(--shadow-hover);}
+  .ch-card.locked{opacity:.6; cursor:default;}
+  .ch-num{
+    flex:0 0 88px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; font-size:34px; color:#fff;
+    background:linear-gradient(160deg, var(--py-blue-deep), var(--violet));
+  }
+  .ch-card.locked .ch-num{background:linear-gradient(160deg, var(--ink-soft), var(--line)); color:var(--paper);}
+  .ch-num .ch-num-label{font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:400; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; opacity:.85;}
+  .ch-body{flex:1; padding:18px 22px; display:flex; flex-direction:column; justify-content:center; gap:6px; min-width:0;}
+  .ch-title{font-family:'Fraunces',serif; font-weight:600; font-size:19px; color:var(--ink);}
+  .ch-desc{font-size:14px; color:var(--ink-soft); line-height:1.5;}
+  .ch-tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;}
+  .ch-tag{
+    font-family:'JetBrains Mono',monospace; font-size:11px; padding:3px 9px; border-radius:20px;
+    background:var(--paper-alt); color:var(--ink-soft); border:1px solid var(--line);
+  }
+  .ch-arrow{
+    flex:0 0 60px; display:flex; align-items:center; justify-content:center; font-size:22px;
+    color:var(--py-blue); border-left:1px solid var(--line); background:var(--paper-alt);
+    transition:background .2s ease;
+  }
+  .ch-card.ready:hover .ch-arrow{background:var(--py-gold); color:#3A2A05;}
+  .ch-status{
+    position:absolute; top:10px; right:10px; font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    padding:3px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; font-weight:600;
+  }
+  .ch-status.ready{background:var(--shell-green-bg); color:var(--shell-green);}
+  .ch-status.locked{background:var(--paper-alt); color:var(--ink-soft); border:1px solid var(--line);}
+
+  @media(max-width:640px){
+    .ch-card{flex-direction:column;}
+    .ch-num{flex-direction:row; gap:8px; padding:14px; flex:none;}
+    .ch-arrow{flex:none; border-left:none; border-top:1px solid var(--line); padding:10px;}
+    .ch-status{position:static; align-self:flex-start; margin:0 22px;}
+  }
+
+  .callout{
+    border-radius:var(--radius); padding:16px 20px; margin-top:28px; border:1px solid var(--line);
+    background:#FDF6E8; border-color:#EAD9A8; font-size:14px;
+  }
+  html[data-theme="dark"] .callout{background:#2A2410; border-color:#4A3E1A;}
+  .callout h4{font-family:'Inter',sans-serif; font-weight:700; font-size:13px; text-transform:uppercase; margin:0 0 6px; color:#8A6A1E;}
+  html[data-theme="dark"] .callout h4{color:#E3C878;}
+  .callout p{margin:0;}
+
+  footer{padding:30px 0 50px; text-align:center; color:var(--ink-soft); font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">🐍 <span>Computer Science XI · Python Training</span></div>
+  <button class="theme-toggle" id="theme-toggle"><span id="theme-icon">🌙</span><span id="theme-label">dark</span></button>
+</div>
+
+<header class="hero wrap">
+  <div class="kicker">Teacher Training Session &nbsp;<span>|</span>&nbsp; Course Home</div>
+  <h1 class="title">Learning Python, Chapter by Chapter</h1>
+  <p class="subtitle">Every chapter below is a self-contained, interactive page — built for teachers who already think in C++. Open any chapter directly; nothing needs installing.</p>
+
+  <div class="progress-strip">
+    <span class="ps-label">Chapters ready</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-count" id="progress-count">0 / 0</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="section-label">Select a chapter</div>
+  <div class="chapter-grid" id="chapterGrid">
+
+    <a class="ch-card ready" href="chapter4-python-v5.html">
+      <span class="ch-status ready">● Ready</span>
+      <div class="ch-num">4<span class="ch-num-label">Chapter</span></div>
+      <div class="ch-body">
+        <div class="ch-title">Getting Started with Python</div>
+        <div class="ch-desc">Interpreter vs compiler, IDLE, and the core distinction of the whole chapter: Interactive Mode vs Script Mode — run live in your browser.</div>
+        <div class="ch-tags"><span class="ch-tag">IDLE</span><span class="ch-tag">Interactive Shell</span><span class="ch-tag">Script Mode</span></div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <a class="ch-card ready" href="chapter5-python-fundamentals.html">
+      <span class="ch-status ready">● Ready</span>
+      <div class="ch-num">5<span class="ch-num-label">Chapter</span></div>
+      <div class="ch-body">
+        <div class="ch-title">Python Fundamentals</div>
+        <div class="ch-desc">Tokens, variables, data types, all six operator families, precedence, and statements — with a tappable identifier quiz and a live mutable/immutable identity demo.</div>
+        <div class="ch-tags"><span class="ch-tag">Operators</span><span class="ch-tag">Data Types</span><span class="ch-tag">Precedence</span></div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <a class="ch-card ready" href="chapter6-control-statements.html">
+      <span class="ch-status ready">● Ready</span>
+      <div class="ch-num">6<span class="ch-num-label">Chapter</span></div>
+      <div class="ch-body">
+        <div class="ch-title">Control Statements</div>
+        <div class="ch-desc">if/elif/else, match–case with guards, while/for loops, break/continue/pass, loop-else, and nested loops — all genuinely runnable, including a deliberately broken indentation exercise.</div>
+        <div class="ch-tags"><span class="ch-tag">match–case</span><span class="ch-tag">Loops</span><span class="ch-tag">Nesting</span></div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <a class="ch-card ready" href="chapter7-functions-modules.html">
+      <span class="ch-status ready">● Ready</span>
+      <div class="ch-num">7<span class="ch-num-label">Chapter</span></div>
+      <div class="ch-body">
+        <div class="ch-title">Functions &amp; Modules</div>
+        <div class="ch-desc">Built-in functions, user-defined functions, all four argument types, scope rules, recursion, and user modules — with a Live Playground on every section.</div>
+        <div class="ch-tags"><span class="ch-tag">Functions</span><span class="ch-tag">Recursion</span><span class="ch-tag">Scope</span></div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <a class="ch-card ready" href="chapter8-strings-in-python.html">
+      <span class="ch-status ready">● Ready</span>
+      <div class="ch-num">8<span class="ch-num-label">Chapter</span></div>
+      <div class="ch-body">
+        <div class="ch-title">Strings in Python</div>
+        <div class="ch-desc">Indexing, slicing, traversal, built-in string methods, and a Caesar cipher demo — powered by Skulpt, a real Python-to-JS interpreter (needs internet on first load).</div>
+        <div class="ch-tags"><span class="ch-tag">Slicing</span><span class="ch-tag">Methods</span><span class="ch-tag">Caesar Cipher</span></div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+  </div>
+
+  <div class="callout">
+    <h4>Setup note</h4>
+    <p>Keep this file in the <strong>same folder</strong> as all the chapter files — the links above are relative, so if a chapter file is moved elsewhere, its card will stop opening.</p>
+  </div>
+</main>
+
+<footer>Computer Science · Class XI · Teacher Training Session</footer>
+
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const themeLabel = document.getElementById('theme-label');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeIcon.textContent = isDark ? '🌙' : '☀️';
+    themeLabel.textContent = isDark ? 'dark' : 'light';
+  });
+
+  // Count ready vs total chapters and animate the progress strip
+  const cards = document.querySelectorAll('.ch-card');
+  const readyCount = document.querySelectorAll('.ch-card.ready').length;
+  const total = cards.length;
+  document.getElementById('progress-count').textContent = readyCount + ' / ' + total;
+  requestAnimationFrame(() => {
+    document.getElementById('progress-fill').style.transition = 'width .6s ease';
+    document.getElementById('progress-fill').style.width = Math.round((readyCount/total)*100) + '%';
+  });
+</script>
+
+</body>
+</html>

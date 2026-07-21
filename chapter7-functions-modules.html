@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<title>Chapter 7 — Functions and Modules | Teacher Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EE;
+    --paper-alt:#E7EBE0;
+    --panel:#FFFFFF;
+    --ink:#16241F;
+    --ink-soft:#4A6156;
+    --py-blue:#1874C4;
+    --py-blue-deep:#0F4C81;
+    --py-gold:#F5A623;
+    --shell-green:#1E9E64;
+    --shell-green-bg:#E4F5EB;
+    --cpp-brown:#C0632E;
+    --cpp-brown-bg:#FBEADB;
+    --violet:#7C5CFF;
+    --err:#E0473A;
+    --line:#D8DECF;
+    --radius:10px;
+    --shadow:0 2px 8px rgba(22,36,31,.07);
+    --shadow-hover:0 14px 32px rgba(22,36,31,.16);
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1B16;
+    --paper-alt:#16261F;
+    --panel:#182A22;
+    --ink:#F1F8F1;
+    --ink-soft:#9AC1AC;
+    --py-blue:#5EB8FF;
+    --py-blue-deep:#8FD1FF;
+    --py-gold:#FFC15C;
+    --shell-green:#4FE0A0;
+    --shell-green-bg:#173428;
+    --cpp-brown:#FF9D5C;
+    --cpp-brown-bg:#33221A;
+    --violet:#B49CFF;
+    --err:#FF7A6B;
+    --line:#26402F;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+    --shadow-hover:0 16px 36px rgba(0,0,0,.5);
+  }
+  html, body{transition:background-color .35s ease, color .35s ease;}
+  @media (prefers-reduced-motion: reduce){
+    html, body, *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:radial-gradient(circle, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+    background-size:26px 26px;
+    animation:drift 40s linear infinite;
+  }
+  @keyframes drift{0%{background-position:0 0;}100%{background-position:130px 130px;}}
+  h1.title{
+    background:linear-gradient(100deg, var(--py-blue-deep), var(--violet) 45%, var(--shell-green) 80%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:var(--ink); -webkit-text-fill-color:transparent;
+    animation:hue-shift 8s ease-in-out infinite alternate;
+  }
+  @keyframes hue-shift{0%{background-position:0% center;}100%{background-position:100% center;}}
+  h1,h2,h3,h4{font-family:'Fraunces',serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  code, .mono, .code-cell, textarea, pre{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--py-blue-deep);}
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- Tab bar (signature nav, mimics IDE open files) ---------- */
+  .tabbar-outer{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-alt);
+    border-bottom:1px solid var(--line);
+  }
+  .progress-track{height:3px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--py-gold), var(--shell-green)); transition:width .12s linear;}
+  .tabbar{
+    display:flex; align-items:center; overflow-x:auto; max-width:900px; margin:0 auto;
+    scrollbar-width:thin;
+  }
+  .theme-toggle{
+    flex:0 0 auto; margin-left:auto; border:none; background:var(--panel); color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 12px; cursor:pointer;
+    border-left:1px solid var(--line); white-space:nowrap; display:flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{color:var(--ink);}
+  .tabbar a{
+    flex:0 0 auto;
+    padding:12px 16px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:2px solid transparent;
+    border-right:1px solid var(--line);
+  }
+  .tabbar a.active{
+    color:var(--py-blue-deep);
+    background:var(--paper);
+    border-bottom:2px solid var(--py-gold);
+    font-weight:600;
+  }
+  .tabbar a::before{content:"● "; color:var(--py-gold); font-size:9px;}
+
+  /* ---------- Header / Hero ---------- */
+  header.hero{
+    padding:56px 0 40px; border-bottom:1px solid var(--line); position:relative;
+  }
+  header.hero::before{
+    content:""; position:absolute; top:-140px; right:-120px; width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--py-gold) 20%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  header.hero::after{
+    content:""; position:absolute; bottom:-160px; left:-100px; width:360px; height:360px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--shell-green) 18%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--py-blue); margin-bottom:14px;
+  }
+  .kicker span{color:var(--ink-soft);}
+  h1.title{font-size:clamp(28px,6vw,44px); line-height:1.15; max-width:16ch; overflow-wrap:break-word; word-break:break-word;}
+  .subtitle{color:var(--ink-soft); font-size:17px; max-width:60ch; margin-top:10px;}
+
+  .hero-demo{
+    margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    background:var(--panel);
+  }
+  @media(max-width:640px){.hero-demo{grid-template-columns:1fr;}}
+  .hero-col{padding:18px 20px;}
+  .hero-col.cpp{background:var(--cpp-brown-bg); border-right:1px solid var(--line);}
+  .hero-col.py{background:var(--shell-green-bg);}
+  .hero-label{font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; font-weight:600;}
+  .hero-col.cpp .hero-label{color:var(--cpp-brown);}
+  .hero-col.py .hero-label{color:var(--shell-green);}
+  .hero-col pre{margin:0; font-size:13.5px; white-space:pre-wrap;}
+  .cursor-blink{display:inline-block; width:8px; height:15px; background:var(--shell-green); margin-left:2px; vertical-align:text-bottom; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero-stat{padding:14px 20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); grid-column:1/-1; background:var(--paper);}
+  .hero-stat b{color:var(--ink);}
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding:52px 0; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--py-blue);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;
+    position:relative; display:inline-block; padding-bottom:6px;
+  }
+  .eyebrow::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:28px;
+    background:linear-gradient(90deg, var(--py-gold), var(--violet));
+    border-radius:2px;
+  }
+  section h2{font-size:clamp(24px,3.4vw,30px);}
+  section > p.lead{color:var(--ink-soft); max-width:68ch; margin-bottom:24px;}
+
+  /* ---------- Callout boxes ---------- */
+  .callout{
+    border-radius:var(--radius); padding:18px 20px; margin:20px 0; border:1px solid var(--line);
+  }
+  .callout h4{font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .callout.history{background:var(--paper-alt);}
+  .callout.history h4{color:var(--ink-soft);}
+  .callout.teach{background:#FDF6E8; border-color:#EAD9A8;}
+  .callout.teach h4{color:#8A6A1E;}
+  .callout.teach h4::before{content:"👩‍🏫 ";}
+  .callout p{margin:0 0 8px; font-size:14.5px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout ul{margin:8px 0 0; padding-left:20px; font-size:14.5px;}
+
+  /* ---------- Feature grid ---------- */
+  .feature-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;}
+  @media(max-width:640px){.feature-grid{grid-template-columns:1fr;}}
+  .feature{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease; position:relative;
+    border-left:3px solid var(--py-gold);
+  }
+  html.js-ready .feature, html.js-ready .exercise{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease, box-shadow .2s ease;
+  }
+  html.js-ready .feature.show, html.js-ready .exercise.show{opacity:1; transform:translateY(0);}
+  .feature:hover{transform:translateY(-4px) !important; box-shadow:var(--shadow-hover);}
+  .feature .icon-badge{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:17px; background:var(--paper-alt); margin-bottom:10px;
+  }
+  .feature h4{font-size:15px; margin-bottom:6px; color:var(--py-blue-deep);}
+  .feature p{margin:0; font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- Comparison table ---------- */
+  table.compare{width:100%; border-collapse:collapse; margin-top:20px; font-size:14.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.compare th, table.compare td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.compare th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.03em;}
+  table.compare th.cpp-h{color:var(--cpp-brown);}
+  table.compare th.py-h{color:var(--shell-green);}
+  table.compare td.cpp-c{color:var(--cpp-brown);}
+  table.compare td.py-c{color:var(--shell-green);}
+  table.compare code{font-size:13px; background:var(--paper-alt); padding:1px 5px; border-radius:4px;}
+  table.compare tr:last-child td{border-bottom:none;}
+
+  /* ---------- Numbered steps (IDLE launch) ---------- */
+  .steps{counter-reset:step; margin-top:20px; list-style:none; padding:0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:12px 0 12px 42px; border-bottom:1px dashed var(--line);
+    font-size:15px;
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:10px; width:26px; height:26px;
+    background:var(--py-blue); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+  }
+  .steps kbd{background:var(--paper-alt); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+
+  /* ---------- Mode toggle (SIGNATURE ELEMENT) ---------- */
+  .mode-widget{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-top:24px; background:var(--panel);}
+  .mode-switch{display:flex; background:var(--paper-alt); border-bottom:1px solid var(--line);}
+  .mode-btn{
+    flex:1; padding:15px 10px; background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; min-height:44px; -webkit-tap-highlight-color:transparent;
+  }
+  .mode-btn.active.shell{color:var(--shell-green); border-bottom-color:var(--shell-green); background:var(--shell-green-bg);}
+  .mode-btn.active.script{color:var(--py-blue-deep); border-bottom-color:var(--py-blue); background:#EAF1F7;}
+  .mode-pane{display:none; padding:18px 20px;}
+  .mode-pane.active{display:block;}
+  .mode-pane p.explain{font-size:14px; color:var(--ink-soft); margin-top:0;}
+
+  /* ---------- Code cell (shared by all runnable examples) ---------- */
+  .code-cell{border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:10px;}
+  .code-cell .file-tag{
+    background:var(--paper-alt); padding:6px 12px; font-size:11.5px; color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; border-bottom:1px solid var(--line); display:flex; justify-content:space-between;
+  }
+  .code-cell textarea{
+    width:100%; border:none; resize:vertical; min-height:90px; padding:12px 14px;
+    font-size:16px; background:#1B2B27; color:#EAF1EA; outline:none; line-height:1.55;
+  }
+  .code-cell.shell textarea{background:#0F1F19; color:#B9E3C3;}
+  .code-cell .toolbar{display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--paper-alt); border-top:1px solid var(--line);}
+  .run-btn{
+    background:linear-gradient(100deg, var(--py-gold), #FFCF7A 50%, var(--py-gold));
+    background-size:220% auto; background-position:0% center;
+    color:#3A2A05; border:none; border-radius:6px; padding:10px 18px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;
+    min-height:40px; -webkit-tap-highlight-color:transparent;
+    box-shadow:0 0 0 rgba(245,166,35,0); transition:box-shadow .2s ease, background-position .5s ease, transform .1s ease;
+  }
+  .run-btn:disabled{opacity:.5; cursor:wait;}
+  .run-btn:hover:not(:disabled){background-position:100% center; box-shadow:0 6px 20px rgba(245,166,35,.5);}
+  .run-btn:active:not(:disabled){transform:translateY(1px);}
+  header.hero .wrap{position:relative; z-index:1;}
+  .py-status{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;}
+  .output{
+    background:#0F1712; color:#D9F0DC; padding:12px 14px; font-size:13.5px; min-height:20px;
+    white-space:pre-wrap; word-break:break-word; border-top:1px solid var(--line);
+    transition:box-shadow .3s ease;
+  }
+  .output.flash{animation:flash-glow .6s ease;}
+  @keyframes flash-glow{
+    0%{box-shadow:inset 0 0 0 2px var(--shell-green), 0 0 18px rgba(30,158,100,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(30,158,100,0), 0 0 0 rgba(30,158,100,0);}
+  }
+  .output.flash-err{animation:flash-glow-err .6s ease;}
+  @keyframes flash-glow-err{
+    0%{box-shadow:inset 0 0 0 2px var(--err), 0 0 18px rgba(224,71,58,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(224,71,58,0), 0 0 0 rgba(224,71,58,0);}
+  }
+  .output:empty::before{content:"— run the code to see output here —"; color:#5F7A68; font-style:italic;}
+  .output .err{color:#FF9E80;}
+
+  /* ---------- Let us do (exercise grid) ---------- */
+  .exercise{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    margin-top:18px; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease;
+    border-left:3px solid var(--shell-green);
+  }
+  .exercise:hover{transform:translateY(-3px) !important; box-shadow:var(--shadow-hover);}
+  .exercise h4{font-size:15px; margin-bottom:4px;}
+  .exercise .task{font-size:14px; color:var(--ink-soft); margin-bottom:10px;}
+  .ex-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    background:var(--py-blue); color:#fff; border-radius:50%; font-size:12px; font-family:'JetBrains Mono',monospace;
+    margin-right:8px;
+  }
+
+  ::selection{background:var(--py-gold); color:#1B2B27;}
+
+  /* ---------- Chapter 5 additions: multi-tab operator widget + data tables ---------- */
+  .mode-switch.scroll{overflow-x:auto; scrollbar-width:thin;}
+  .mode-switch.scroll .mode-btn{flex:0 0 auto; padding-left:16px; padding-right:16px; white-space:nowrap;}
+  table.op-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:13.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.op-table th, table.op-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.op-table th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.03em;}
+  table.op-table code{background:var(--paper-alt); padding:1px 5px; border-radius:4px; font-size:12.5px;}
+  table.op-table tr:last-child td{border-bottom:none;}
+  .kw-grid{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .kw-pill{background:var(--paper-alt); border:1px solid var(--line); border-radius:20px; padding:5px 13px; font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .badge{border-radius:20px; padding:5px 12px; font-family:'JetBrains Mono',monospace; font-size:12.5px; border:1px solid var(--line);}
+  .badge.valid{background:var(--shell-green-bg); color:var(--shell-green); border-color:var(--shell-green);}
+  .badge.invalid{background:var(--cpp-brown-bg); color:var(--cpp-brown); border-color:var(--cpp-brown); text-decoration:line-through;}
+
+  /* ---------- Chapter 6 additions: algorithm steps + trace table ---------- */
+  .algo{background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.9;}
+  .algo .step-num{color:var(--py-blue); font-weight:600; margin-right:6px;}
+  table.trace{width:100%; border-collapse:collapse; margin-top:14px; font-size:13px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.trace th, table.trace td{padding:8px 10px; text-align:center; border-bottom:1px solid var(--line); border-right:1px solid var(--line);}
+  table.trace th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;}
+  table.trace td:last-child, table.trace th:last-child{border-right:none;}
+  table.trace tr:last-child td{border-bottom:none;}
+  .syntax-block{
+    background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:1.7;
+    color:var(--ink); overflow-x:auto; white-space:pre;
+  }
+  .fact-diagram{
+    margin-top:16px; padding:16px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius);
+    overflow-x:auto;
+  }
+  .fact-row{
+    display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    padding:5px 0; white-space:nowrap;
+  }
+  .fact-call{ font-weight:600; color:var(--py-blue-deep); min-width:110px; }
+  .fact-eq{ color:var(--ink-soft); flex:1; }
+  .fact-val{ color:var(--shell-green); font-weight:600; }
+  .hierarchy-diagram{ margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .hier-box{
+    width:100%; max-width:560px; padding:14px 20px; border-radius:var(--radius);
+    background:var(--panel); border:1px solid var(--line); box-shadow:var(--shadow);
+    font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:var(--ink);
+  }
+  .hier-box span{ display:block; font-family:'Inter',sans-serif; font-weight:400; font-size:13px; color:var(--ink-soft); margin-top:3px; }
+  .hier-1{ background:color-mix(in srgb, var(--py-gold) 10%, var(--panel)); }
+  .hier-2{ background:color-mix(in srgb, var(--shell-green) 10%, var(--panel)); }
+  .hier-3{ background:color-mix(in srgb, var(--py-blue) 10%, var(--panel)); }
+  .hier-4{ background:color-mix(in srgb, var(--violet) 10%, var(--panel)); }
+  .hier-arrow{ color:var(--ink-soft); font-size:18px; line-height:1; }
+</style>
+</head>
+<body>
+
+<div class="tabbar-outer">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="tabbar" id="tabbar">
+    <a href="#builtins" class="active">7.1_builtins.py</a>
+    <a href="#imported">7.2_imported.py</a>
+    <a href="#userdef">7.3_userdef.py</a>
+    <a href="#arguments">7.4_arguments.py</a>
+    <a href="#scope">7.5_scope.py</a>
+    <a href="#recursion">7.6_recursion.py</a>
+    <a href="#modules">7.7_modules.py</a>
+    <a href="#compare">cpp_vs_python.diff</a>
+    <a href="#practice">let_us_do.py</a>
+    <a href="#summary">summary.md</a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme"><span id="theme-icon">🌙</span><span id="theme-label">dark</span></button>
+  </nav>
+</div>
+
+<header class="hero wrap">
+  <div class="kicker">Computer Science · Class XI &nbsp;<span>|</span>&nbsp; Chapter 7 &nbsp;<span>|</span>&nbsp; Teacher Training Session</div>
+  <h1 class="title">Functions and Modules</h1>
+  <p class="subtitle">C++ makes you declare a prototype before you can even use a function. Python doesn't — a function is just a value, defined once and called wherever it's needed, with defaults and keyword arguments doing work that C++ hands off to overloading.</p>
+
+  <div class="hero-demo">
+    <div class="hero-col cpp">
+      <div class="hero-label">C++ — prototype, then definition</div>
+      <pre>int interest(int P, int N,
+             int R=10);
+...
+int si = interest(1000, 2);</pre>
+    </div>
+    <div class="hero-col py">
+      <div class="hero-label">Python — define once, call anywhere below it</div>
+      <pre>def interest(P, N, R=10):
+    return P*N*R/100
+
+print(interest(1000, 2))</pre>
+      <div class="code-cell" style="margin-top:14px; border:1px solid #cfe0d3;">
+        <div class="toolbar" style="border-top:none;">
+          <button class="run-btn" data-run-target="hero-out" data-source="hero-code">▶ Run this</button>
+          <span class="py-status" id="hero-status">runs instantly · fully offline</span>
+        </div>
+        <textarea id="hero-code" spellcheck="false" style="display:none;">def interest(P, N, R=10):
+    return P*N*R/100
+
+print("Simple interest:", interest(1000, 2))</textarea>
+        <div class="output" id="hero-out"></div>
+      </div>
+    </div>
+    <div class="hero-stat">No header file, no forward declaration, no function overloading — one <code>def</code>, optional default values, and keyword arguments cover most of what C++ needs several mechanisms for.</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="builtins">
+  <div class="eyebrow">7.1 · Functions in Python</div>
+  <h2>Built-in, imported, and user-defined</h2>
+  <p class="lead">Python groups every function you'll ever call into three buckets: <strong>built-in</strong> functions that are always available (<code>print</code>, <code>int</code>, <code>len</code>…), <strong>imported</strong> functions that live in modules you have to <code>import</code> first, and <strong>user-defined</strong> functions — the ones you write yourself with <code>def</code>. This chapter walks through all three.</p>
+
+  <div class="eyebrow" style="margin-top:28px;">Type conversion functions</div>
+  <h3>int(), float(), str(), bool()</h3>
+  <p class="lead">Each accepts an input argument of one data type and returns an equivalent value in another type.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="bi-int">int()</button>
+      <button class="mode-btn shell" data-target="bi-float">float()</button>
+      <button class="mode-btn shell" data-target="bi-str">str()</button>
+      <button class="mode-btn shell" data-target="bi-bool">bool()</button>
+    </div>
+
+    <div class="mode-pane active" id="bi-int">
+      <p class="explain"><strong>int()</strong> — converts a numeric expression to an integer value. If the string given contains non-numeric characters, it returns an error.</p>
+      <div class="code-cell">
+        <textarea id="bi-int-code" spellcheck="false">print(int('236'))
+print(int(121.56))
+print(int(-236.34))
+print(int('hello'))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-int-out" data-source="bi-int-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-int-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-float">
+      <p class="explain"><strong>float()</strong> — converts a numeric expression to a float type.</p>
+      <div class="code-cell">
+        <textarea id="bi-float-code" spellcheck="false">print(float(34))
+print(float(34.67))
+print(float('34.67'))
+print(float(34+3/4))
+print(float('34.a'))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-float-out" data-source="bi-float-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-float-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-str">
+      <p class="explain"><strong>str()</strong> — converts the input into its string representation. Accepts any data type.</p>
+      <div class="code-cell">
+        <textarea id="bi-str-code" spellcheck="false">print(str(234))
+print(str(234.33))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-str-out" data-source="bi-str-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-str-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-bool">
+      <p class="explain"><strong>bool()</strong> — converts a value into its Boolean equivalent. <code>False</code>, <code>None</code>, <code>0</code>, an empty string, or any empty collection returns <code>False</code>; everything else returns <code>True</code>.</p>
+      <div class="code-cell">
+        <textarea id="bi-bool-code" spellcheck="false">print(bool(1))
+print(bool(0))
+print(bool(""))
+print(bool('hello'))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-bool-out" data-source="bi-bool-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-bool-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>C++ students expect implicit conversion between numeric types and reach for <code>(int)</code>-style casts. Show them that <code>int('hello')</code> doesn't silently give garbage — it raises a <code>ValueError</code> with the offending value named in the message. Python fails loudly here; C++ often doesn't.</p>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">eval()</div>
+  <h3>Evaluating a string as an expression</h3>
+  <p class="lead">Takes a string containing a valid Python <strong>expression</strong> and returns the result of evaluating it. It works with expressions only, not statements like <code>if</code>, <code>for</code>, <code>while</code>.</p>
+  <div class="code-cell">
+    <textarea id="bi-eval-code" spellcheck="false">print(eval('20+30'))
+print(eval('20.5+30'))
+print(eval('20>30'))</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="bi-eval-out" data-source="bi-eval-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="bi-eval-out"></div>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">More built-in functions</div>
+  <h3>max(), min(), abs(), type(), len(), round(), id()</h3>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="bi-maxmin">max() / min()</button>
+      <button class="mode-btn shell" data-target="bi-abs">abs()</button>
+      <button class="mode-btn shell" data-target="bi-type">type()</button>
+      <button class="mode-btn shell" data-target="bi-len">len()</button>
+      <button class="mode-btn shell" data-target="bi-round">round()</button>
+      <button class="mode-btn shell" data-target="bi-id">id()</button>
+    </div>
+
+    <div class="mode-pane active" id="bi-maxmin">
+      <p class="explain">Accept a group of values — numbers, or strings compared alphabetically — and return the maximum or minimum.</p>
+      <div class="code-cell">
+        <textarea id="bi-maxmin-code" spellcheck="false">print(max(9, 23, 17, 3))
+print(max('Kozhikode', 'kozhikode', 'Calicut', 'calicut'))
+print(min(9, 23, 17, 3))
+print(min('Kozhikode', 'Wayanad', 'Kannur', 'Malappuram'))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-maxmin-out" data-source="bi-maxmin-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-maxmin-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-abs">
+      <p class="explain">Returns the absolute (positive) value of a number.</p>
+      <div class="code-cell">
+        <textarea id="bi-abs-code" spellcheck="false">print(abs(-45))
+print(abs(45))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-abs-out" data-source="bi-abs-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-abs-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-type">
+      <p class="explain">Accepts a value and returns its data type.</p>
+      <div class="code-cell">
+        <textarea id="bi-type-code" spellcheck="false">print(type(10))
+print(type(23.5))
+print(type('Merin'))
+print(type(23/5))
+print(type(True))
+print(type(5 > 7))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-type-out" data-source="bi-type-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-type-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-len">
+      <p class="explain">Finds the number of characters in a string, or the number of elements in a list, tuple, etc.</p>
+      <div class="code-cell">
+        <textarea id="bi-len-code" spellcheck="false">str = 'Hello World'
+print(len(str))
+list = [5, 10, 20, 40]
+print(len(list))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-len-out" data-source="bi-len-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-len-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-round">
+      <p class="explain">Rounds a number to the given number of decimal places. Python rounds half-way values to the <em>nearest even</em> digit (banker's rounding) — not always the direction a C++ background expects.</p>
+      <div class="code-cell">
+        <textarea id="bi-round-code" spellcheck="false">print(round(23.34))
+print(round(23.67))
+print(round(123.785, 2))
+print(round(126.5))
+print(round(127.5))
+print(round(2673.23, -1))
+print(round(2673.23, -2))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-round-out" data-source="bi-round-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-round-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p><code>round(126.5)</code> gives <strong>126</strong>, not 127 — Python rounds a tied half to whichever neighbour is <em>even</em>, to avoid statistically biasing data upward. Run both <code>round(126.5)</code> and <code>round(127.5)</code> side by side to make the pattern visible.</p>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="bi-id">
+      <p class="explain">Returns a number representing the memory reference (identity) of an object. Python quietly reuses the same small integer objects wherever the same value appears — that's why two separate variables holding <code>10</code> can share an id.</p>
+      <div class="code-cell">
+        <textarea id="bi-id-code" spellcheck="false">a=10
+b=10
+c=20
+print("ID of a: ", id(a))
+print("ID of b: ", id(b))
+print("ID of c: ", id(c))
+a = c
+print("ID of a: ", id(a))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="bi-id-out" data-source="bi-id-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="bi-id-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p><code>a</code> and <code>b</code> get the <strong>same</strong> id — Python caches small integers (roughly &minus;5 to 256) rather than creating a fresh object every time. After <code>a = c</code>, <code>a</code>'s id changes to match <code>c</code>'s, because <code>a</code> now refers to the very same object. The actual numbers printed here are simulator-assigned, not real memory addresses — the point is the pattern of equality, not the digits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="imported">
+  <div class="eyebrow">7.2 · Imported functions</div>
+  <h2>Modules — functions grouped by purpose</h2>
+  <p class="lead">All the related functions are grouped together into <strong>modules</strong> according to their purpose. Some common modules are <code>math</code>, <code>statistics</code>, <code>string</code>, and <code>random</code>. A module has to be <code>import</code>ed before its functions can be used — unlike built-ins, which are always available.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="imp-whole">Import entire module</button>
+      <button class="mode-btn shell" data-target="imp-as">Import with an alias</button>
+      <button class="mode-btn shell" data-target="imp-from">Import selected functions</button>
+    </div>
+
+    <div class="mode-pane active" id="imp-whole">
+      <p class="explain"><strong>Syntax:</strong> <code>import &lt;module name1, module name2, ...&gt;</code>. Access a function inside the module using the dot operator: <code>math.sqrt()</code>.</p>
+      <div class="code-cell">
+        <textarea id="imp-whole-code" spellcheck="false">import math
+print(math.sqrt(23))
+print(math.sqrt(-25))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="imp-whole-out" data-source="imp-whole-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="imp-whole-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="imp-as">
+      <p class="explain">A module can be imported and given a shorter name using the <code>as</code> keyword — handy when a module name is long or you're importing several.</p>
+      <div class="code-cell">
+        <textarea id="imp-as-code" spellcheck="false">import statistics as stat
+print(stat.mean([1, 4, 6, 7, 9, 11]))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="imp-as-out" data-source="imp-as-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="imp-as-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="imp-from">
+      <p class="explain"><strong>Syntax:</strong> <code>from &lt;module&gt; import &lt;function1, function2, ...&gt;</code>. Once imported this way, the function is called directly — no module prefix needed. <code>from math import *</code> imports everything the module offers.</p>
+      <div class="code-cell">
+        <textarea id="imp-from-code" spellcheck="false">from math import sqrt
+print(sqrt(9))
+
+from math import ceil, floor
+print(ceil(4.1), floor(4.9))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="imp-from-out" data-source="imp-from-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="imp-from-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">math module</div>
+  <h3>Provides access to many mathematical functions</h3>
+  <div class="code-cell">
+    <textarea id="imp-mathall-code" spellcheck="false">import math
+print(math.sqrt(23))
+print(math.pow(4, 3))
+print(math.pow(4, 3.5))
+print(math.ceil(23.34))
+print(math.floor(23.78))
+print(math.fabs(-43))
+print(round(math.sin(0.5236), 4))
+print(round(math.cos(1.0472), 4))</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="imp-mathall-out" data-source="imp-mathall-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="imp-mathall-out"></div>
+  </div>
+  <div class="callout teach" style="margin-top:14px;">
+    <h4>Teaching tip</h4>
+    <p><code>math.pow()</code> always returns a <strong>float</strong>, even when both arguments are whole numbers — unlike the <code>**</code> operator, which returns an <code>int</code> for two int operands. Worth a side-by-side: <code>math.pow(4,3)</code> gives <code>64.0</code>, but <code>4**3</code> gives <code>64</code>.</p>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">statistics module</div>
+  <h3>Mathematical statistics on numeric data</h3>
+  <p class="lead">Works on a group of values — a list, tuple, or set of integers/floats. Useful for basic statistical computations, data analysis, and machine learning.</p>
+  <div class="code-cell">
+    <textarea id="imp-stat-code" spellcheck="false">import statistics as stat
+print(stat.mean([1, 4, 6, 7, 9, 11]))
+print(stat.median([1, 4, 6, 7, 9, 11]))
+print(stat.mode([1, 4, 6, 7, 4, 11]))
+print(stat.variance([1, 4, 6, 7, 4, 11]))
+print(stat.stdev([1, 4, 6, 7, 4, 11]))</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="imp-stat-out" data-source="imp-stat-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="imp-stat-out"></div>
+  </div>
+</section>
+<section id="userdef">
+  <div class="eyebrow">7.3 · User-defined functions</div>
+  <h2>Written for your own specific task</h2>
+  <p class="lead">A user-defined function is written to perform a specific task according to the programmer's requirements. Define it once with <code>def</code>, then call it by name as many times as needed.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="ud-syntax">Defining a function</button>
+      <button class="mode-btn shell" data-target="ud-return">Returning a value</button>
+      <button class="mode-btn shell" data-target="ud-multi">Returning multiple values</button>
+    </div>
+
+    <div class="mode-pane active" id="ud-syntax">
+      <p class="explain"><strong>Syntax:</strong></p>
+      <pre class="syntax-block">def function_name(argument_list):
+    function statement1
+    function statement2</pre>
+      <div class="code-cell">
+        <textarea id="ud-syntax-code" spellcheck="false">def welcome():
+    print("Welcome to Python functions")
+
+def line():
+    print("=========================")
+
+line()
+welcome()
+line()</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ud-syntax-out" data-source="ud-syntax-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ud-syntax-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="ud-return">
+      <p class="explain">A <code>return</code> statement sends a value back to the caller, exactly like a C++ function whose return type isn't <code>void</code>.</p>
+      <div class="code-cell">
+        <textarea id="ud-return-code" spellcheck="false">def interest(P, N, R):
+    si = P*N*R/100
+    return si
+
+principal = float(input("Enter Principal Amount: "))
+rate = float(input("Enter Rate of Interest: "))
+years = float(input("Enter No. of Years: "))
+simple = interest(principal, years, rate)
+print("Simple Interest is: ", simple)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ud-return-out" data-source="ud-return-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ud-return-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="ud-multi">
+      <p class="explain">Python functions can return more than one value at once — separate them with commas and Python packs them into a tuple. Unpack them the same way on the calling side. C++ needs pointers, references, or a struct to do this; Python just needs a comma.</p>
+      <div class="code-cell">
+        <textarea id="ud-multi-code" spellcheck="false">def interest(P, N, R):
+    si = P*N*R/100
+    ci = (P*(1+R/100)**N)-P
+    return si, ci
+
+principal = float(input("Enter Principal Amount: "))
+rate = float(input("Enter Rate of Interest: "))
+years = float(input("Enter No. of Years: "))
+simple, compound = interest(principal, years, rate)
+print("Simple Interest is: ", simple)
+print("Compound Interest is: ", compound)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="ud-multi-out" data-source="ud-multi-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="ud-multi-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Run the "Defining a function" tab and point out: <code>line()</code> and <code>welcome()</code> are defined <em>before</em> they're called — same requirement as C++ if there's no prototype. But there's no separate declaration step; the <code>def</code> block both declares and defines in one motion.</p>
+  </div>
+</section>
+
+<section id="arguments">
+  <div class="eyebrow">7.4 · Types of arguments</div>
+  <h2>Four ways to pass values into a function</h2>
+  <p class="lead">Positional, default, keyword, and variable-length — Python supports all four, and a single function definition can mix several of them.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="arg-pos">1. Positional</button>
+      <button class="mode-btn shell" data-target="arg-def">2. Default</button>
+      <button class="mode-btn shell" data-target="arg-kw">3. Keyword</button>
+      <button class="mode-btn shell" data-target="arg-var">4. Variable-length</button>
+    </div>
+
+    <div class="mode-pane active" id="arg-pos">
+      <p class="explain">Arguments passed in the correct order, matching the function's argument list exactly.</p>
+      <div class="code-cell">
+        <textarea id="arg-pos-code" spellcheck="false">def interest(P, N, R):
+    si = P*N*R/100
+    print("Simple Interest is: ", si)
+
+interest(1000, 2, 12)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="arg-pos-out" data-source="arg-pos-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="arg-pos-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="arg-def">
+      <p class="explain">Some arguments can be given a default value in the function definition — used only when the caller doesn't supply that argument. A default argument must be the rightmost one in the argument list.</p>
+      <div class="code-cell">
+        <textarea id="arg-def-code" spellcheck="false">def interest(P, N, R=10):
+    si = P*N*R/100
+    print("Simple Interest is: ", si)
+
+interest(1000, 2)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="arg-def-out" data-source="arg-def-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="arg-def-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="arg-kw">
+      <p class="explain">Arguments passed by explicitly naming each formal argument along with its value. The order they're given in doesn't matter — something C++ has no equivalent for.</p>
+      <div class="code-cell">
+        <textarea id="arg-kw-code" spellcheck="false">def interest(P,N,R):
+    si=P*N*R/100
+    print("Simple interest is : ",si)
+
+interest(R=12,P=100,N=2)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="arg-kw-out" data-source="arg-kw-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="arg-kw-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="arg-var">
+      <p class="explain">Allows a function to accept any number of arguments — prefix an argument with <code>*</code> in the function definition, and it collects every extra positional argument into a single sequence.</p>
+      <div class="code-cell">
+        <textarea id="arg-var-code" spellcheck="false">def average(*numbers):
+    sum = 0
+    count = 0
+    for n in numbers:
+        sum += n
+        count += 1
+    return sum/count
+
+print("Average is: ", average(10, 20, 30))
+print("Average is: ", average(5, 15))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="arg-var-out" data-source="arg-var-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="arg-var-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Try calling the default-argument demo with <em>three</em> positional values instead of two — <code>interest(1000, 2, 15)</code> — and watch <code>R</code> take 15 instead of its default. Defaults only kick in when an argument is <em>omitted</em>, not as a fallback for any particular value.</p>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="eyebrow">7.5 · Scope rules</div>
+  <h2>Where a name lives, and who can see it</h2>
+  <p class="lead">A variable created inside a function belongs to that function's <strong>local scope</strong> and disappears once the function returns. A variable created at the top level of the program belongs to <strong>global scope</strong> and is visible everywhere — including inside functions, for reading.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="sc-local">Local scope</button>
+      <button class="mode-btn shell" data-target="sc-global">Global scope</button>
+      <button class="mode-btn shell" data-target="sc-override">Overriding</button>
+      <button class="mode-btn shell" data-target="sc-keyword">global keyword</button>
+    </div>
+
+    <div class="mode-pane active" id="sc-local">
+      <p class="explain">A name assigned inside a function exists only for the duration of that call. Trying to read it from outside raises a <code>NameError</code> — exactly the same lifetime rule as a variable declared inside a C++ function body.</p>
+      <div class="code-cell">
+        <textarea id="sc-local-code" spellcheck="false">def test():
+    x = 10   # Definition of local scope.
+    print(x)
+
+test()
+print(x)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="sc-local-out" data-source="sc-local-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="sc-local-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="sc-global">
+      <p class="explain">A name assigned at the top level is visible for <em>reading</em> inside any function, without needing to be passed in as a parameter.</p>
+      <div class="code-cell">
+        <textarea id="sc-global-code" spellcheck="false">x = 10   # Definition in global scope
+def test():
+    print("Inside Function: ", x)
+
+test()
+print("Outside Function: ", x)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="sc-global-out" data-source="sc-global-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="sc-global-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="sc-override">
+      <p class="explain"><strong>Assigning</strong> to a name inside a function — even one that already exists globally — creates a brand-new local variable that <em>shadows</em> the global one for the rest of that function call. The global variable outside is left untouched.</p>
+      <div class="code-cell">
+        <textarea id="sc-override-code" spellcheck="false">x = 10             # Definition in global scope
+def test():
+    x = 20         # Definition in local scope
+    print("Inside Function: ", x)
+
+print("Before calling Function: ", x)
+test()
+print("After calling Function: ", x)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="sc-override-out" data-source="sc-override-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="sc-override-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="sc-keyword">
+      <p class="explain">To actually <em>modify</em> a global variable from inside a function (rather than shadow it), declare it with the <code>global</code> keyword first.</p>
+      <div class="code-cell">
+        <textarea id="sc-keyword-code" spellcheck="false">x = 10                  # Global definition
+def test():
+    global x            # Global declaration
+    x = x + 5
+    print("Inside Function: ", x)
+
+test()
+print("Outside Function: ", x)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="sc-keyword-out" data-source="sc-keyword-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="sc-keyword-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Run "Overriding" and "global keyword" back to back with the outputs on screen together. Same-looking code, opposite effect on the outer <code>x</code> — the only difference is one line, <code>global x</code>. That contrast is the whole lesson.</p>
+  </div>
+</section>
+<section id="recursion">
+  <div class="eyebrow">7.6 · Recursive functions</div>
+  <h2>A function that calls itself</h2>
+  <p class="lead">Every recursive function needs two parts: a <strong>base case</strong> — the condition that stops the recursion — and a <strong>recursive part</strong>, where the function calls itself with arguments that move closer to the base case.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="rec-fact">Factorial</button>
+      <button class="mode-btn shell" data-target="rec-sum">Sum of digits</button>
+      <button class="mode-btn shell" data-target="rec-fib">Fibonacci</button>
+    </div>
+
+    <div class="mode-pane active" id="rec-fact">
+      <p class="explain"><code>factorial(5)</code> calls <code>factorial(4)</code>, which calls <code>factorial(3)</code>, and so on down to the base case at <code>factorial(1)</code> — then every pending call multiplies its way back up: 1 → 2 → 6 → 24 → 120.</p>
+      <div class="code-cell">
+        <textarea id="rec-fact-code" spellcheck="false">def factorial(n):
+    if n < 0:
+        return None            # Error case
+    if (n == 1) or (n == 0):
+        return 1                # Base case
+    else:
+        return n * factorial(n - 1)   # Recursive part
+
+print("Factorial is: ", factorial(5))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="rec-fact-out" data-source="rec-fact-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="rec-fact-out"></div>
+      </div>
+      <div class="fact-diagram">
+        <div class="fact-row"><span class="fact-call">factorial(5)</span><span class="fact-eq">5! = 5 × factorial(4)</span><span class="fact-val">→ 120</span></div>
+        <div class="fact-row" style="margin-left:24px;"><span class="fact-call">factorial(4)</span><span class="fact-eq">4! = 4 × factorial(3)</span><span class="fact-val">→ 24</span></div>
+        <div class="fact-row" style="margin-left:48px;"><span class="fact-call">factorial(3)</span><span class="fact-eq">3! = 3 × factorial(2)</span><span class="fact-val">→ 6</span></div>
+        <div class="fact-row" style="margin-left:72px;"><span class="fact-call">factorial(2)</span><span class="fact-eq">2! = 2 × factorial(1)</span><span class="fact-val">→ 2</span></div>
+        <div class="fact-row" style="margin-left:96px;"><span class="fact-call">factorial(1)</span><span class="fact-eq">base case</span><span class="fact-val">→ 1</span></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="rec-sum">
+      <p class="explain">Peels off one digit at a time using <code>% 10</code>, and recurses on the rest of the number using <code>// 10</code>, until nothing is left.</p>
+      <div class="code-cell">
+        <textarea id="rec-sum-code" spellcheck="false">def sumofdigits(n):
+    if n == 0:                          # Base case
+        return 0
+    return (n % 10) + sumofdigits(n // 10)
+
+print("Sum of digits is: ", sumofdigits(234))</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="rec-sum-out" data-source="rec-sum-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="rec-sum-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="rec-fib">
+      <p class="explain">Two base cases (<code>n==0</code> and <code>n==1</code>) and a recursive part that branches into <em>two</em> further calls rather than one — this is why naive recursive Fibonacci gets slow fast for larger <code>n</code>.</p>
+      <div class="code-cell">
+        <textarea id="rec-fib-code" spellcheck="false">def fibonacci(n):
+    if n < 0:                        # Error case
+        return None
+    if (n == 1) or (n == 0):         # Base case
+        return n
+    else:                            # Recursive case
+        return fibonacci(n-1) + fibonacci(n-2)
+
+# Main program
+count = int(input("Enter count of terms: "))
+print("Fibonacci Series:")
+for i in range(count):
+    print(fibonacci(i), end=" ")</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="rec-fib-out" data-source="rec-fib-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="rec-fib-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>C++ students already know recursion from that language — the concept transfers directly. What's worth calling out is the missing base case: try deleting the <code>if n==0: return 1</code> line from the factorial demo and running it. It'll fail with a <code>RecursionError</code> once it hits the simulator's safety limit — the exact failure mode of infinite recursion, just caught before it can lock up the browser.</p>
+  </div>
+</section>
+
+<section id="modules">
+  <div class="eyebrow">7.7 · User-defined modules</div>
+  <h2>A module is just a .py file</h2>
+  <p class="lead">A user-defined module is a Python file with a <code>.py</code> extension that contains definitions of functions, variables, or classes. Any other program can <code>import</code> it and use everything it defines.</p>
+
+  <div class="code-cell">
+    <div class="toolbar" style="border-top:none; border-bottom:1px solid var(--line);">
+      <span class="py-status">calculator.py — reference only, not runnable here</span>
+    </div>
+    <pre class="syntax-block" style="margin:0;">def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+
+def divide(a, b):
+    return a / b</pre>
+  </div>
+  <div class="code-cell" style="margin-top:14px;">
+    <div class="toolbar" style="border-top:none; border-bottom:1px solid var(--line);">
+      <span class="py-status">calc_add.py — in the same folder as calculator.py</span>
+    </div>
+    <pre class="syntax-block" style="margin:0;">import calculator
+
+a = 20
+b = 5
+print("Addition: ", calculator.add(a, b))</pre>
+  </div>
+
+  <div class="callout teach">
+    <h4>Why this one isn't a live demo</h4>
+    <p>This page runs entirely in one browser tab with no file system — so it can't actually save <code>calculator.py</code> and <code>import</code> it from a second file the way a real IDLE session on a lab machine can. Do this one live on your own machine instead: save the two files above side by side and run <code>calc_add.py</code>.</p>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">Hierarchical building blocks</div>
+  <h3>Function → Module → Package → Library</h3>
+  <div class="hierarchy-diagram">
+    <div class="hier-box hier-1">Functions <span>— a single reusable block of code</span></div>
+    <div class="hier-arrow">↓</div>
+    <div class="hier-box hier-2">Module <span>— a .py file grouping related functions</span></div>
+    <div class="hier-arrow">↓</div>
+    <div class="hier-box hier-3">Package <span>— a folder of related modules</span></div>
+    <div class="hier-arrow">↓</div>
+    <div class="hier-box hier-4">Library <span>— a collection of packages, ready to install and use</span></div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="eyebrow">Quick reference</div>
+  <h2>More C++ habits, mapped</h2>
+  <table class="compare">
+    <tr><th>Concept</th><th class="cpp-h">C++</th><th class="py-h">Python</th></tr>
+    <tr><td>Declaring a function</td><td class="cpp-c">Prototype, then definition</td><td class="py-c">One <code>def</code> block — no prototype needed</td></tr>
+    <tr><td>Returning multiple values</td><td class="cpp-c">Pointers, references, or a struct</td><td class="py-c"><code>return a, b</code> — packed as a tuple</td></tr>
+    <tr><td>Optional parameters</td><td class="cpp-c">Function overloading</td><td class="py-c">Default arguments: <code>def f(x, y=10):</code></td></tr>
+    <tr><td>Named arguments</td><td class="cpp-c">No direct equivalent</td><td class="py-c">Keyword arguments: <code>f(y=5, x=1)</code></td></tr>
+    <tr><td>Variable argument count</td><td class="cpp-c"><code>va_list</code>, templates, or overloads</td><td class="py-c"><code>*args</code> in the parameter list</td></tr>
+    <tr><td>Modifying an outer variable</td><td class="cpp-c">Pass by reference (<code>&amp;</code>)</td><td class="py-c"><code>global x</code> inside the function</td></tr>
+    <tr><td>Using library code</td><td class="cpp-c"><code>#include &lt;cmath&gt;</code></td><td class="py-c"><code>import math</code></td></tr>
+    <tr><td>Splitting code across files</td><td class="cpp-c">Header (.h) + source (.cpp)</td><td class="py-c">Any .py file is importable as a module</td></tr>
+  </table>
+</section>
+
+<section id="practice">
+  <div class="eyebrow">Let us do</div>
+  <h2>Practice, straight from the textbook</h2>
+  <p class="lead">A selection across built-ins, user-defined functions, arguments, scope, and recursion.</p>
+
+  <div class="exercise">
+    <h4><span class="ex-num">1</span>Simple and compound interest, two ways</h4>
+    <div class="task">Write a function that returns both simple and compound interest at once, using a tuple return.</div>
+    <div class="code-cell">
+      <textarea id="ex-p1" spellcheck="false">def interest(P, N, R):
+    si = P*N*R/100
+    ci = (P*(1+R/100)**N)-P
+    return si, ci
+
+principal = float(input("Enter Principal Amount: "))
+rate = float(input("Enter Rate of Interest: "))
+years = float(input("Enter No. of Years: "))
+simple, compound = interest(principal, years, rate)
+print("Simple Interest is: ", simple)
+print("Compound Interest is: ", compound)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p1-out" data-source="ex-p1">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p1-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">2</span>Largest of three numbers, as a function</h4>
+    <div class="task">Take three numbers as input and pass them to a function that returns the largest.</div>
+    <div class="code-cell">
+      <textarea id="ex-p2" spellcheck="false">def largest(a, b, c):
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c
+
+x = int(input("Enter first number: "))
+y = int(input("Enter second number: "))
+z = int(input("Enter third number: "))
+print("Largest:", largest(x, y, z))</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p2-out" data-source="ex-p2">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p2-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">3</span>Power table using *args and statistics</h4>
+    <div class="task">Accept any number of values with <code>*args</code>, then report their mean and the maximum using the <code>statistics</code> and built-in <code>max()</code>.</div>
+    <div class="code-cell">
+      <textarea id="ex-p3" spellcheck="false">import statistics as stat
+
+def summarise(*values):
+    print("Values:", values)
+    print("Mean:", stat.mean(values))
+    print("Max:", max(values))
+
+summarise(12, 45, 7, 89, 34)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p3-out" data-source="ex-p3">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p3-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">4</span>Spot the bug — recursion with no base case</h4>
+    <div class="task">From the textbook's error-hunting exercises. Run it as-is to see exactly what happens, then fix it by adding a stopping condition.</div>
+    <div class="code-cell">
+      <textarea id="ex-p4" spellcheck="false">def factorial(n):
+    return n * factorial(n - 1)
+
+print(factorial(5))</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-p4-out" data-source="ex-p4">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-p4-out"></div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Exercise 4 is deliberately missing its base case — <code>factorial</code> calls itself forever, since <code>n</code> keeps decreasing past zero into negative numbers with nothing to stop it. Real Python eventually raises <code>RecursionError: maximum recursion depth exceeded</code>; this simulator does the same, just at a shallower depth. Fix it by adding <code>if n == 0: return 1</code> before the recursive line.</p>
+  </div>
+</section>
+
+<section id="summary" style="border-bottom:none;">
+  <div class="eyebrow">Wrap-up</div>
+  <h2>Session summary</h2>
+  <p class="lead">Today: the three kinds of functions (built-in, imported, user-defined), the type-conversion and utility built-ins, importing whole modules vs. selected functions, the <code>math</code> and <code>statistics</code> modules, defining your own functions with <code>def</code>/<code>return</code>, all four argument styles, local vs. global scope and the <code>global</code> keyword, and recursion with a base case and a recursive part.</p>
+
+  <div class="callout teach">
+    <h4>Five habits to reinforce with C++ students</h4>
+    <ul>
+      <li>No prototypes, no headers — a <code>def</code> block is the declaration <em>and</em> the definition.</li>
+      <li>Assigning to a name inside a function makes it local by default — reading an outer variable works without any keyword, but <em>writing</em> to it needs <code>global</code>.</li>
+      <li>Multiple return values aren't a special feature — it's just a comma-separated <code>return</code>, packed into a tuple.</li>
+      <li>Keyword arguments (<code>f(y=2, x=1)</code>) have no C++ equivalent — argument order stops mattering once you name them.</li>
+      <li>A module is nothing exotic — it's just a <code>.py</code> file, imported the same way as <code>math</code> or <code>statistics</code>.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+document.documentElement.classList.add('js-ready');
+/* =========================================================================
+   Chapter 7 local interpreter — extends the Chapter 6 engine with
+   user-defined functions (def/return, positional/default/keyword/*args
+   parameters, recursion, local/global scope + the `global` keyword),
+   import / from-import with a small math + statistics module library,
+   and the additional builtins bool(), eval(), max(), min(), round(),
+   and id(). No network calls. Verified against real Python 3.12 across
+   every worked example in the source slide deck plus edge cases.
+   ========================================================================= */
+
+class PyError extends Error {}
+class BreakSignal {}
+class ContinueSignal {}
+class ReturnSignal { constructor(value){ this.value = value; } }
+let __idCounter = 1;
+function newId(){ return __idCounter++; }
+function mk(type, value){ return { type, value, id: newId() }; }
+
+/* Small-int identity cache — mirrors CPython's interning of -5..256 so that
+   id(a) == id(b) behaves correctly for the id() teaching demo. */
+const INT_CACHE = Object.create(null);
+function mkInt(n){
+  if(Number.isInteger(n) && n >= -5 && n <= 256){
+    if(!(n in INT_CACHE)) INT_CACHE[n] = mk('int', n);
+    return INT_CACHE[n];
+  }
+  return mk('int', n);
+}
+function mkNum(type, value){ return type === 'int' ? mkInt(value) : mk('float', value); }
+
+/* Lexically-scoped environment: locals live in this.vars, lookups fall back
+   to the parent chain (module/global scope), and `global x` inside a
+   function routes writes straight to the root scope. */
+class Env{
+  constructor(parent=null){ this.vars = Object.create(null); this.parent = parent; this.globalNames = new Set(); }
+  has(name){ if(name in this.vars) return true; return this.parent ? this.parent.has(name) : false; }
+  get(name){
+    if(name in this.vars) return this.vars[name];
+    if(this.parent) return this.parent.get(name);
+    throw new PyError(`NameError: name '${name}' is not defined`);
+  }
+  set(name, val){
+    if(this.globalNames.has(name)){ this.globalScope().vars[name] = val; return; }
+    this.vars[name] = val;
+  }
+  declareGlobal(name){ this.globalNames.add(name); }
+  globalScope(){ let e = this; while(e.parent) e = e.parent; return e; }
+}
+let __callDepth = 0;
+
+const TYPE_REFS = {};
+['int','float','str','bool','list','tuple','dict','set','complex','NoneType'].forEach(n=>{
+  TYPE_REFS[n] = { type:'typeref', name:n, id:'T_'+n };
+});
+
+function tokenize(line){
+  const tokens = [];
+  let i = 0;
+  const n = line.length;
+  while(i < n){
+    const c = line[i];
+    if(/\s/.test(c)){ i++; continue; }
+    if(c === '#'){ break; }
+    let m = /^\d+\.\d+/.exec(line.slice(i)) || /^\d+/.exec(line.slice(i));
+    if(m){
+      tokens.push({t:'NUM', v: m[0].includes('.') ? parseFloat(m[0]) : parseInt(m[0],10), isFloat:m[0].includes('.')});
+      i += m[0].length; continue;
+    }
+    if(c === '"' || c === "'"){
+      let j = i+1, buf = '';
+      while(j < n && line[j] !== c){
+        if(line[j] === '\\' && j+1 < n){ buf += line[j+1]; j += 2; }
+        else { buf += line[j]; j++; }
+      }
+      tokens.push({t:'STR', v: buf});
+      i = j+1; continue;
+    }
+    m = /^[A-Za-z_]\w*/.exec(line.slice(i));
+    if(m){ tokens.push({t:'ID', v:m[0]}); i += m[0].length; continue; }
+    const multi3 = ['**=','//='];
+    const multi2 = ['==','!=','<=','>=','+=','-=','*=','/=','%=','**','//'];
+    let matched = null;
+    for(const op of multi3){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(!matched) for(const op of multi2){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(matched){ tokens.push({t:'OP', v:matched}); i += matched.length; continue; }
+    if('+-*/%()[],=<>:.'.includes(c)){ tokens.push({t:'OP', v:c}); i++; continue; }
+    throw new PyError(`SyntaxError: invalid syntax near "${line.slice(i, i+8)}"`);
+  }
+  return tokens;
+}
+
+class Parser{
+  constructor(tokens){ this.toks = tokens; this.pos = 0; }
+  peek(k=0){ return this.toks[this.pos+k]; }
+  next(){ return this.toks[this.pos++]; }
+  atEnd(){ return this.pos >= this.toks.length; }
+  parseProgram(){
+    const e = this.parseExpr(0);
+    if(!this.atEnd()) throw new PyError(`SyntaxError: unexpected token "${this.peek().v}"`);
+    return e;
+  }
+  peekBinOp(){
+    const t = this.peek();
+    if(!t) return null;
+    if(t.t === 'OP'){
+      const table = {'**':[90,true],'*':[70,false],'/':[70,false],'%':[70,false],'//':[70,false],
+                      '+':[60,false],'-':[60,false],
+                      '==':[50,false],'!=':[50,false],'<':[50,false],'>':[50,false],'<=':[50,false],'>=':[50,false]};
+      if(table[t.v]) return {op:t.v, bp:table[t.v][0], right:table[t.v][1], len:1};
+      return null;
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'is'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='not') return {op:'is not', bp:40, right:false, len:2};
+        return {op:'is', bp:40, right:false, len:1};
+      }
+      if(t.v === 'in') return {op:'in', bp:30, right:false, len:1};
+      if(t.v === 'not'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='in') return {op:'not in', bp:30, right:false, len:2};
+        return null;
+      }
+      if(t.v === 'and') return {op:'and', bp:20, right:false, len:1};
+      if(t.v === 'or') return {op:'or', bp:10, right:false, len:1};
+    }
+    return null;
+  }
+  parseExpr(minBp){
+    let left = this.parseUnary();
+    while(true){
+      const info = this.peekBinOp();
+      if(!info || info.bp < minBp) break;
+      for(let k=0;k<info.len;k++) this.next();
+      const right = this.parseExpr(info.right ? info.bp : info.bp + 1);
+      left = { type:'binop', op:info.op, left, right };
+    }
+    return left;
+  }
+  parseUnary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'ID' && t.v === 'not'){ this.next(); return { type:'unary', op:'not', val:this.parseExpr(25) }; }
+    if(t.t === 'OP' && (t.v === '-' || t.v === '+')){ this.next(); return { type:'unary', op:t.v, val:this.parseExpr(80) }; }
+    return this.parsePrimary();
+  }
+  parseCallArgs(){
+    const args = [];
+    if(!(this.peek() && this.peek().t==='OP' && this.peek().v===')')){
+      args.push(this.parseArg());
+      while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); args.push(this.parseArg()); }
+    }
+    if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+    this.next();
+    return args;
+  }
+  parseArg(){
+    if(this.peek() && this.peek().t==='ID' && this.peek(1) && this.peek(1).t==='OP' && this.peek(1).v==='='){
+      const name = this.next().v; this.next();
+      return { kind:'kw', name, val:this.parseExpr(0) };
+    }
+    return { kind:'pos', val:this.parseExpr(0) };
+  }
+  parsePrimary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'NUM'){ this.next(); return { type:'num', value:t.v, isFloat:t.isFloat }; }
+    if(t.t === 'STR'){ this.next(); return { type:'str', value:t.v }; }
+    if(t.t === 'OP' && t.v === '('){
+      this.next();
+      const e = this.parseExpr(0);
+      if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+      this.next();
+      return e;
+    }
+    if(t.t === 'OP' && t.v === '['){
+      this.next();
+      const items = [];
+      if(!(this.peek() && this.peek().t==='OP' && this.peek().v===']')){
+        items.push(this.parseExpr(0));
+        while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); items.push(this.parseExpr(0)); }
+      }
+      if(!this.peek() || this.peek().v !== ']') throw new PyError('SyntaxError: missing closing bracket');
+      this.next();
+      return { type:'list', items };
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'True'){ this.next(); return { type:'bool_lit', value:true }; }
+      if(t.v === 'False'){ this.next(); return { type:'bool_lit', value:false }; }
+      if(t.v === 'None'){ this.next(); return { type:'none_lit' }; }
+      this.next();
+      let nameParts = [t.v];
+      while(this.peek() && this.peek().t==='OP' && this.peek().v==='.' && this.peek(1) && this.peek(1).t==='ID'){
+        this.next();
+        nameParts.push(this.next().v);
+      }
+      const fullName = nameParts.join('.');
+      if(this.peek() && this.peek().t==='OP' && this.peek().v==='('){
+        this.next();
+        const args = this.parseCallArgs();
+        return { type:'call', name:fullName, args };
+      }
+      return { type:'var', name:fullName };
+    }
+    throw new PyError(`SyntaxError: unexpected token "${t.v}"`);
+  }
+}
+
+function pyTypeName(v){
+  return { int:'int', float:'float', str:'str', bool:'bool', list:'list', tuple:'tuple', none:'NoneType', typeref:'type', range:'range', function:'function' }[v.type] || v.type;
+}
+function truthy(v){
+  switch(v.type){
+    case 'bool': return v.value;
+    case 'int': case 'float': return v.value !== 0;
+    case 'str': return v.value.length > 0;
+    case 'list': case 'tuple': return v.value.length > 0;
+    case 'none': return false;
+    default: return true;
+  }
+}
+function pyFloatStr(num){ if(Number.isInteger(num)) return num.toFixed(1); return String(num); }
+function reprOf(v){
+  switch(v.type){
+    case 'str': return "'" + v.value.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'";
+    case 'bool': return v.value ? 'True' : 'False';
+    case 'none': return 'None';
+    case 'float': return pyFloatStr(v.value);
+    case 'int': return String(v.value);
+    case 'list': return '[' + v.value.map(reprOf).join(', ') + ']';
+    case 'tuple': return '(' + v.value.map(reprOf).join(', ') + (v.value.length===1?',':'') + ')';
+    case 'function': return `<function ${v.value.name} at 0x${(1000+v.id).toString(16)}>`;
+    case 'typeref': return `<class '${v.name}'>`;
+    case 'range': return 'range(...)';
+    default: return String(v.value);
+  }
+}
+function displayOf(v){ if(v.type === 'str') return v.value; return reprOf(v); }
+
+function evalNode(node, env, io){
+  switch(node.type){
+    case 'num': return node.isFloat ? mk('float', node.value) : mkInt(node.value);
+    case 'str': return mk('str', node.value);
+    case 'bool_lit': return mk('bool', node.value);
+    case 'none_lit': return mk('none', null);
+    case 'list': return mk('list', node.items.map(it => evalNode(it, env, io)));
+    case 'var': {
+      if(env.has(node.name)) return env.get(node.name);
+      if(TYPE_REFS[node.name]) return TYPE_REFS[node.name];
+      throw new PyError(`NameError: name '${node.name}' is not defined`);
+    }
+    case 'unary': {
+      const v = evalNode(node.val, env, io);
+      if(node.op === 'not') return mk('bool', !truthy(v));
+      if(v.type !== 'int' && v.type !== 'float') throw new PyError(`TypeError: bad operand type for unary ${node.op}: '${pyTypeName(v)}'`);
+      return mkNum(v.type, node.op === '-' ? -v.value : +v.value);
+    }
+    case 'call': return evalCall(node, env, io);
+    case 'binop': {
+      if(node.op === 'and'){ const l = evalNode(node.left, env, io); return truthy(l) ? evalNode(node.right, env, io) : l; }
+      if(node.op === 'or'){ const l = evalNode(node.left, env, io); return truthy(l) ? l : evalNode(node.right, env, io); }
+      const l = evalNode(node.left, env, io), r = evalNode(node.right, env, io);
+      return applyBinOp(node.op, l, r);
+    }
+  }
+}
+function numeric(v){ return v.type === 'int' || v.type === 'float'; }
+function applyBinOp(op, l, r){
+  switch(op){
+    case '+': {
+      if(l.type==='str' && r.type==='str') return mk('str', l.value + r.value);
+      if(l.type==='list' && r.type==='list') return mk('list', l.value.concat(r.value));
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value + r.value);
+      throw typeErrBin('+', l, r);
+    }
+    case '-': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value - r.value);
+      throw typeErrBin('-', l, r);
+    }
+    case '*': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value * r.value);
+      if(l.type==='str' && r.type==='int') return mk('str', l.value.repeat(Math.max(0,r.value)));
+      if(r.type==='str' && l.type==='int') return mk('str', r.value.repeat(Math.max(0,l.value)));
+      throw typeErrBin('*', l, r);
+    }
+    case '/': {
+      if(numeric(l) && numeric(r)){ if(r.value === 0) throw new PyError('ZeroDivisionError: division by zero'); return mk('float', l.value / r.value); }
+      throw typeErrBin('/', l, r);
+    }
+    case '%': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        const res = ((l.value % r.value) + r.value) % r.value;
+        return mkNum((l.type==='float'||r.type==='float')?'float':'int', res);
+      }
+      throw typeErrBin('%', l, r);
+    }
+    case '//': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        return mkNum((l.type==='float'||r.type==='float')?'float':'int', Math.floor(l.value / r.value));
+      }
+      throw typeErrBin('//', l, r);
+    }
+    case '**': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', Math.pow(l.value, r.value));
+      throw typeErrBin('**', l, r);
+    }
+    case '==': return mk('bool', pyEquals(l, r));
+    case '!=': return mk('bool', !pyEquals(l, r));
+    case '<': case '>': case '<=': case '>=': {
+      if(numeric(l) && numeric(r)){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      if(l.type==='str' && r.type==='str'){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      throw new PyError(`TypeError: '${op}' not supported between instances of '${pyTypeName(l)}' and '${pyTypeName(r)}'`);
+    }
+    case 'is': return mk('bool', l.id === r.id);
+    case 'is not': return mk('bool', l.id !== r.id);
+    case 'in': return mk('bool', membership(l, r));
+    case 'not in': return mk('bool', !membership(l, r));
+  }
+  throw new PyError(`SyntaxError: unsupported operator "${op}"`);
+}
+function typeErrBin(op, l, r){ return new PyError(`TypeError: unsupported operand type(s) for ${op}: '${pyTypeName(l)}' and '${pyTypeName(r)}'`); }
+function pyEquals(l, r){
+  if(numeric(l) && numeric(r)) return l.value === r.value;
+  if(l.type !== r.type) return false;
+  if(l.type === 'list' || l.type === 'tuple') return l.value.length===r.value.length && l.value.every((v,i)=>pyEquals(v, r.value[i]));
+  return l.value === r.value;
+}
+function membership(l, r){
+  if(r.type === 'list' || r.type === 'tuple') return r.value.some(el => pyEquals(el, l));
+  if(r.type === 'str'){ if(l.type !== 'str') throw new PyError("TypeError: 'in <string>' requires string as left operand, not " + pyTypeName(l)); return r.value.includes(l.value); }
+  throw new PyError(`TypeError: argument of type '${pyTypeName(r)}' is not iterable`);
+}
+
+const MAX_RANGE = 200000;
+
+/* ---------------- math / statistics module library ---------------- */
+function numArg(v, who){
+  if(v.type !== 'int' && v.type !== 'float') throw new PyError(`TypeError: ${who || 'this function'} argument must be a number`);
+  return v.value;
+}
+function numListArg(v){
+  if(v.type !== 'list') throw new PyError('TypeError: argument must be a list of numbers');
+  v.value.forEach(el=>{ if(el.type!=='int' && el.type!=='float') throw new PyError('TypeError: elements must be numeric'); });
+  return v.value;
+}
+const MODULE_LIB = {
+  math: {
+    sqrt:  (a)=>{ const x=numArg(a[0],'sqrt'); if(x<0) throw new PyError('ValueError: math domain error'); return mk('float', Math.sqrt(x)); },
+    pow:   (a)=>{ const x=numArg(a[0],'pow'), y=numArg(a[1],'pow'); return mk('float', Math.pow(x,y)); },
+    ceil:  (a)=>{ const x=numArg(a[0],'ceil'); return mkInt(Math.ceil(x)); },
+    floor: (a)=>{ const x=numArg(a[0],'floor'); return mkInt(Math.floor(x)); },
+    fabs:  (a)=>{ const x=numArg(a[0],'fabs'); return mk('float', Math.abs(x)); },
+    sin:   (a)=>{ const x=numArg(a[0],'sin'); return mk('float', Math.sin(x)); },
+    cos:   (a)=>{ const x=numArg(a[0],'cos'); return mk('float', Math.cos(x)); },
+  },
+  statistics: {
+    mean: (a)=>{ const arr=numListArg(a[0]); const s=arr.reduce((acc,v)=>acc+v.value,0); return mk('float', s/arr.length); },
+    median: (a)=>{
+      const arr = numListArg(a[0]).slice().sort((x,y)=>x.value-y.value);
+      const n = arr.length;
+      if(n === 0) throw new PyError('StatisticsError: no median for empty data');
+      if(n % 2 === 1) return arr[(n-1)/2];
+      return mk('float', (arr[n/2-1].value + arr[n/2].value) / 2);
+    },
+    mode: (a)=>{
+      const arr = numListArg(a[0]);
+      const counts = new Map(); let best=null, bestCount=0;
+      arr.forEach(el=>{ const k=el.value; const c=(counts.get(k)||0)+1; counts.set(k,c); if(c>bestCount){bestCount=c; best=el;} });
+      if(!best) throw new PyError('StatisticsError: no mode for empty data');
+      return best;
+    },
+    variance: (a)=>{
+      const arr = numListArg(a[0]).map(v=>v.value); const n = arr.length;
+      if(n < 2) throw new PyError('StatisticsError: variance requires at least two data points');
+      const m = arr.reduce((acc,v)=>acc+v,0)/n;
+      const ss = arr.reduce((acc,v)=>acc+(v-m)*(v-m),0);
+      return mk('float', ss/(n-1));
+    },
+    stdev: (a)=>{ const v = MODULE_LIB.statistics.variance(a); return mk('float', Math.sqrt(v.value)); },
+  }
+};
+function moduleFunction(moduleName, funcName){
+  const lib = MODULE_LIB[moduleName];
+  if(!lib) throw new PyError(`ModuleNotFoundError: No module named '${moduleName}'`);
+  const fn = lib[funcName];
+  if(!fn) throw new PyError(`AttributeError: module '${moduleName}' has no attribute '${funcName}'`);
+  return fn;
+}
+
+/* ---------------- banker's rounding (matches Python's round()) ---------------- */
+function bankersRound(x, ndigits){
+  const EPS = 1e-9;
+  if(ndigits >= 0){
+    const shift = Math.pow(10, ndigits);
+    const scaled = x*shift, floor = Math.floor(scaled), diff = scaled-floor;
+    const rounded = Math.abs(diff-0.5) < EPS ? (floor%2===0?floor:floor+1) : Math.round(scaled);
+    return rounded/shift;
+  } else {
+    const shift = Math.pow(10, -ndigits);
+    const scaled = x/shift, floor = Math.floor(scaled), diff = scaled-floor;
+    const rounded = Math.abs(diff-0.5) < EPS ? (floor%2===0?floor:floor+1) : Math.round(scaled);
+    return rounded*shift;
+  }
+}
+
+/* ---------------- user-defined function calls ---------------- */
+function parseParams(raw){
+  if(!raw.trim()) return [];
+  return splitTopLevel(raw, ',').map(p=>{
+    p = p.trim();
+    if(p.startsWith('*')) return { name:p.slice(1).trim(), vararg:true };
+    const eqParts = splitTopLevel(p, '=');
+    if(eqParts.length === 2) return { name:eqParts[0].trim(), defaultSrc:eqParts[1].trim() };
+    return { name:p };
+  });
+}
+function callUserFunction(fnVal, posArgs, kwArgs, io){
+  const { name, params, body, closureEnv } = fnVal.value;
+  const local = new Env(closureEnv);
+  let pi = 0;
+  for(const param of params){
+    if(param.vararg){
+      local.vars[param.name] = mk('list', posArgs.slice(pi));
+      pi = posArgs.length;
+      continue;
+    }
+    let val;
+    if(Object.prototype.hasOwnProperty.call(kwArgs, param.name)) val = kwArgs[param.name];
+    else if(pi < posArgs.length) val = posArgs[pi++];
+    else if(param.defaultSrc !== undefined) val = evalNode(new Parser(tokenize(param.defaultSrc)).parseProgram(), closureEnv, io);
+    else throw new PyError(`TypeError: ${name}() missing required argument: '${param.name}'`);
+    local.vars[param.name] = val;
+  }
+  if(!params.some(p=>p.vararg) && pi < posArgs.length){
+    throw new PyError(`TypeError: ${name}() takes ${params.length} positional argument(s) but ${posArgs.length} were given`);
+  }
+  __callDepth++;
+  if(__callDepth > 250){ __callDepth--; throw new PyError('RecursionError: maximum recursion depth exceeded'); }
+  try{
+    execBlock(body, local, io);
+    return mk('none', null);
+  } catch(e){
+    if(e instanceof ReturnSignal) return e.value;
+    throw e;
+  } finally {
+    __callDepth--;
+  }
+}
+
+function evalCall(node, env, io){
+  const posArgs = node.args.filter(a=>a.kind==='pos').map(a=>evalNode(a.val, env, io));
+  const kwArgs = {};
+  node.args.filter(a=>a.kind==='kw').forEach(a=>{ kwArgs[a.name] = evalNode(a.val, env, io); });
+
+  if(node.name.includes('.')){
+    const dotIdx = node.name.indexOf('.');
+    const alias = node.name.slice(0, dotIdx);
+    const funcName = node.name.slice(dotIdx+1);
+    const modName = io.moduleAliases[alias];
+    if(!modName) throw new PyError(`NameError: name '${alias}' is not defined`);
+    return moduleFunction(modName, funcName)(posArgs);
+  }
+  if(io.importedFuncs[node.name]){
+    const { module, func } = io.importedFuncs[node.name];
+    return moduleFunction(module, func)(posArgs);
+  }
+  if(env.has(node.name)){
+    const fv = env.get(node.name);
+    if(fv.type === 'function') return callUserFunction(fv, posArgs, kwArgs, io);
+    throw new PyError(`TypeError: '${pyTypeName(fv)}' object is not callable`);
+  }
+
+  switch(node.name){
+    case 'print': {
+      const sep = kwArgs.sep ? displayOf(kwArgs.sep) : ' ';
+      const end = kwArgs.end ? displayOf(kwArgs.end) : '\n';
+      io.out += posArgs.map(displayOf).join(sep) + end;
+      return mk('none', null);
+    }
+    case 'type': {
+      if(posArgs.length !== 1) throw new PyError('TypeError: type() takes exactly one argument');
+      const tn = pyTypeName(posArgs[0]);
+      return TYPE_REFS[tn] || mk('str', tn);
+    }
+    case 'int': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseInt(a.value.trim(), 10); if(Number.isNaN(nu)) throw new PyError(`ValueError: invalid literal for int() with base 10: '${a.value}'`); return mkInt(nu); }
+      if(numeric(a)) return mkInt(Math.trunc(a.value));
+      if(a.type === 'bool') return mkInt(a.value ? 1 : 0);
+      throw new PyError(`TypeError: int() argument must be a string or a number`);
+    }
+    case 'float': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseFloat(a.value.trim()); if(Number.isNaN(nu)) throw new PyError(`ValueError: could not convert string to float: '${a.value}'`); return mk('float', nu); }
+      if(numeric(a)) return mk('float', a.value);
+      if(a.type === 'bool') return mk('float', a.value ? 1.0 : 0.0);
+      throw new PyError(`TypeError: float() argument must be a string or a number`);
+    }
+    case 'str': return mk('str', displayOf(posArgs[0]));
+    case 'bool': return mk('bool', truthy(posArgs[0]));
+    case 'len': {
+      const a = posArgs[0];
+      if(a.type === 'str' || a.type === 'list' || a.type === 'tuple') return mk('int', a.value.length);
+      throw new PyError(`TypeError: object of type '${pyTypeName(a)}' has no len()`);
+    }
+    case 'abs': {
+      const a = posArgs[0];
+      if(numeric(a)) return mkNum(a.type, Math.abs(a.value));
+      throw new PyError(`TypeError: bad operand type for abs(): '${pyTypeName(a)}'`);
+    }
+    case 'round': {
+      const a = posArgs[0];
+      if(!numeric(a)) throw new PyError(`TypeError: type ${pyTypeName(a)} doesn't define __round__ method`);
+      const hasNdigits = posArgs.length > 1;
+      const ndigits = hasNdigits ? posArgs[1].value : 0;
+      const resultNum = bankersRound(a.value, ndigits);
+      return hasNdigits ? mk('float', resultNum) : mkInt(Math.trunc(resultNum));
+    }
+    case 'id': return mk('int', posArgs[0].id);
+    case 'eval': {
+      const a = posArgs[0];
+      if(a.type !== 'str') throw new PyError('TypeError: eval() arg 1 must be a string, bytes or code object');
+      try{ return evalNode(new Parser(tokenize(a.value)).parseProgram(), env, io); }
+      catch(e){ if(e instanceof PyError) throw e; throw new PyError('SyntaxError: invalid syntax'); }
+    }
+    case 'max': case 'min': {
+      let items = (posArgs.length === 1 && posArgs[0].type === 'list') ? posArgs[0].value : posArgs;
+      if(items.length === 0) throw new PyError(`ValueError: ${node.name}() arg is an empty sequence`);
+      let best = items[0];
+      for(let k=1;k<items.length;k++){
+        const cand = items[k];
+        const wins = node.name === 'max' ? applyBinOp('>', cand, best) : applyBinOp('<', cand, best);
+        if(wins.value) best = cand;
+      }
+      return best;
+    }
+    case 'range': {
+      let start=0, stop=0, step=1;
+      if(posArgs.length === 1){ stop = posArgs[0].value; }
+      else if(posArgs.length === 2){ start = posArgs[0].value; stop = posArgs[1].value; }
+      else if(posArgs.length === 3){ start = posArgs[0].value; stop = posArgs[1].value; step = posArgs[2].value; }
+      else throw new PyError('TypeError: range expected 1 to 3 arguments');
+      if(step === 0) throw new PyError('ValueError: range() arg 3 must not be zero');
+      const items = [];
+      if(step > 0){ for(let v=start; v<stop; v+=step){ items.push(mk('int', v)); if(items.length>MAX_RANGE) throw new PyError('Error: range too large for this simulator'); } }
+      else { for(let v=start; v>stop; v+=step){ items.push(mk('int', v)); if(items.length>MAX_RANGE) throw new PyError('Error: range too large for this simulator'); } }
+      return mk('range', items);
+    }
+    case 'input': {
+      const promptMsg = posArgs.length ? displayOf(posArgs[0]) : '';
+      const result = (typeof window !== 'undefined' && window.prompt) ? window.prompt(promptMsg) : '';
+      io.out += promptMsg + (result || '') + '\n';
+      return mk('str', result || '');
+    }
+    default: throw new PyError(`NameError: name '${node.name}' is not defined`);
+  }
+}
+
+function stripComment(line){
+  let inStr = null, buf = '';
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ buf += c; if(c === inStr && line[i-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; buf += c; continue; }
+    if(c === '#') break;
+    buf += c;
+  }
+  return buf;
+}
+function indentOf(line){
+  let n = 0;
+  for(const c of line){
+    if(c === ' ') n += 1;
+    else if(c === '\t') n += 4;
+    else break;
+  }
+  return n;
+}
+function prepLines(code){
+  return code.split('\n').map(raw => {
+    const noComment = stripComment(raw).replace(/\s+$/, '');
+    const trimmed = noComment.trim();
+    return { blank: trimmed.length === 0, indent: indentOf(noComment), text: trimmed };
+  });
+}
+
+const COMPOUND_OPS = ['**=','//=','+=','-=','*=','/=','%='];
+function splitTopLevel(line, sepChar){
+  const parts = [];
+  let depth = 0, buf = '', inStr = null;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ buf += c; if(c === inStr && line[i-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; buf += c; continue; }
+    if(c === '(' || c === '[') depth++;
+    if(c === ')' || c === ']') depth--;
+    if(c === sepChar && depth === 0){
+      if(sepChar === '='){
+        const prev = line[i-1], nxt = line[i+1];
+        if(prev === '=' || prev === '!' || prev === '<' || prev === '>' || nxt === '='){ buf += c; continue; }
+      }
+      parts.push(buf); buf = ''; continue;
+    }
+    buf += c;
+  }
+  parts.push(buf);
+  return parts;
+}
+function runSimpleStatement(line, env, io){
+  for(const cop of COMPOUND_OPS){
+    const idx = line.indexOf(cop);
+    if(idx > -1 && /^[A-Za-z_]\w*\s*$/.test(line.slice(0, idx))){
+      const name = line.slice(0, idx).trim();
+      const exprSrc = line.slice(idx + cop.length);
+      const baseOp = cop.slice(0, -1);
+      if(!env.has(name)) throw new PyError(`NameError: name '${name}' is not defined`);
+      const rhs = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      env.set(name, applyBinOp(baseOp, env.get(name), rhs));
+      return;
+    }
+  }
+  const segs = splitTopLevel(line, '=');
+  if(segs.length > 1){
+    const targetsRaw = segs.slice(0, -1);
+    const exprSrc = segs[segs.length - 1];
+    const allSimpleNames = targetsRaw.every(s => /^[A-Za-z_]\w*$/.test(s.trim()));
+    const multiTargets = targetsRaw.length === 1 ? targetsRaw[0].split(',').map(s=>s.trim()) : null;
+    if(allSimpleNames && targetsRaw.length >= 1 && !targetsRaw[0].includes(',')){
+      const val = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      targetsRaw.map(s=>s.trim()).forEach(name => { env.set(name, val); });
+      return;
+    }
+    if(multiTargets && multiTargets.length > 1){
+      const rhsParts = splitTopLevel(exprSrc, ',');
+      if(rhsParts.length === multiTargets.length){
+        const vals = rhsParts.map(p => evalNode(new Parser(tokenize(p)).parseProgram(), env, io));
+        multiTargets.forEach((name,i) => { env.set(name, vals[i]); });
+        return;
+      }
+      if(rhsParts.length === 1){
+        const val = evalNode(new Parser(tokenize(rhsParts[0])).parseProgram(), env, io);
+        if((val.type === 'list' || val.type === 'tuple') && val.value.length === multiTargets.length){
+          multiTargets.forEach((name,i) => { env.set(name, val.value[i]); });
+          return;
+        }
+        throw new PyError('ValueError: not enough values to unpack');
+      }
+      throw new PyError('ValueError: number of targets and values do not match');
+    }
+  }
+  const node = new Parser(tokenize(line)).parseProgram();
+  evalNode(node, env, io);
+}
+
+function peekChildIndent(lines, i, parentIndent){
+  let j = i;
+  while(j < lines.length && lines[j].blank) j++;
+  if(j >= lines.length || lines[j].indent <= parentIndent) throw new PyError('IndentationError: expected an indented block');
+  return lines[j].indent;
+}
+function nextMeaningful(lines, i){
+  let j = i;
+  while(j < lines.length && lines[j].blank) j++;
+  return j;
+}
+function topLevelIndexOf(text, needle){
+  let inStr = null;
+  for(let k=0;k<=text.length-needle.length;k++){
+    const c = text[k];
+    if(inStr){ if(c === inStr && text[k-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; continue; }
+    if(text.slice(k, k+needle.length) === needle) return k;
+  }
+  return -1;
+}
+
+function parseBlock(lines, i, indent){
+  const nodes = [];
+  while(true){
+    i = nextMeaningful(lines, i);
+    if(i >= lines.length) break;
+    const entry = lines[i];
+    if(entry.indent < indent) break;
+    if(entry.indent > indent) throw new PyError('IndentationError: unexpected indent');
+    const text = entry.text;
+
+    if(text === 'break'){ nodes.push({type:'break'}); i++; continue; }
+    if(text === 'continue'){ nodes.push({type:'continue'}); i++; continue; }
+    if(text === 'pass'){ nodes.push({type:'pass'}); i++; continue; }
+
+    if(/^return(\s|$)/.test(text)){
+      const exprSrc = text.replace(/^return\s*/, '');
+      nodes.push({type:'return', exprSrc}); i++; continue;
+    }
+    if(/^global\s+.+$/.test(text)){
+      const names = text.replace(/^global\s+/, '').split(',').map(s=>s.trim());
+      nodes.push({type:'global', names}); i++; continue;
+    }
+    if(/^import\s+.+$/.test(text)){
+      const rest = text.replace(/^import\s+/, '');
+      const modules = splitTopLevel(rest, ',').map(part=>{
+        part = part.trim();
+        const asMatch = /^(\S+)\s+as\s+(\S+)$/.exec(part);
+        if(asMatch) return { name:asMatch[1], alias:asMatch[2] };
+        return { name:part, alias:part };
+      });
+      nodes.push({type:'import', modules}); i++; continue;
+    }
+    {
+      const fm = /^from\s+(\S+)\s+import\s+(.+)$/.exec(text);
+      if(fm){
+        const modName = fm[1];
+        const rest = fm[2].trim();
+        const names = rest === '*' ? '*' : splitTopLevel(rest, ',').map(s=>s.trim());
+        nodes.push({type:'fromimport', module:modName, names}); i++; continue;
+      }
+    }
+
+    if(/^def\s+\w+\s*\(.*\)\s*:$/.test(text)){
+      const m = /^def\s+(\w+)\s*\((.*)\)\s*:$/.exec(text);
+      const fname = m[1];
+      const params = parseParams(m[2]);
+      i++;
+      const childIndent = peekChildIndent(lines, i, indent);
+      const r = parseBlock(lines, i, childIndent);
+      nodes.push({type:'funcdef', name:fname, params, body:r.nodes});
+      i = r.i;
+      continue;
+    }
+
+    if(/^if\b.*:$/.test(text)){
+      const branches = [];
+      let condText = text.replace(/^if\s+/, '').replace(/:$/, '');
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); branches.push({condText, body:r.nodes}); i = r.i;
+      while(true){
+        const j = nextMeaningful(lines, i);
+        if(j < lines.length && lines[j].indent === indent && /^elif\b.*:$/.test(lines[j].text)){
+          condText = lines[j].text.replace(/^elif\s+/, '').replace(/:$/, '');
+          i = j + 1;
+          childIndent = peekChildIndent(lines, i, indent);
+          r = parseBlock(lines, i, childIndent); branches.push({condText, body:r.nodes}); i = r.i;
+        } else break;
+      }
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'if', branches, elseBody});
+      continue;
+    }
+
+    if(/^while\b.*:$/.test(text)){
+      const condText = text.replace(/^while\s+/, '').replace(/:$/, '');
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); const body = r.nodes; i = r.i;
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'while', condText, body, elseBody});
+      continue;
+    }
+
+    if(/^for\b.*:$/.test(text)){
+      const m = /^for\s+([A-Za-z_]\w*)\s+in\s+(.+):$/.exec(text);
+      if(!m) throw new PyError('SyntaxError: invalid for statement');
+      const varName = m[1], iterText = m[2];
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); const body = r.nodes; i = r.i;
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'for', varName, iterText, body, elseBody});
+      continue;
+    }
+
+    if(/^match\b.*:$/.test(text)){
+      const subjText = text.replace(/^match\s+/, '').replace(/:$/, '');
+      i++;
+      const childIndent = peekChildIndent(lines, i, indent);
+      const cases = [];
+      while(true){
+        const j = nextMeaningful(lines, i);
+        if(j >= lines.length || lines[j].indent !== childIndent || !/^case\b.*:$/.test(lines[j].text)) break;
+        let patText = lines[j].text.replace(/^case\s+/, '').replace(/:$/, '');
+        let guardText = null;
+        const guardIdx = topLevelIndexOf(patText, ' if ');
+        if(guardIdx > -1){ guardText = patText.slice(guardIdx + 4); patText = patText.slice(0, guardIdx); }
+        i = j + 1;
+        const caseChildIndent = peekChildIndent(lines, i, childIndent);
+        const r = parseBlock(lines, i, caseChildIndent);
+        cases.push({ patText: patText.trim(), guardText, body: r.nodes });
+        i = r.i;
+      }
+      nodes.push({type:'match', subjText, cases});
+      continue;
+    }
+
+    nodes.push({type:'simple', line:text});
+    i++;
+  }
+  return { nodes, i };
+}
+
+const MAX_ITER = 100000;
+function iterableToArray(v){
+  if(v.type === 'range' || v.type === 'list' || v.type === 'tuple') return v.value;
+  if(v.type === 'str') return Array.from(v.value).map(ch => mk('str', ch));
+  throw new PyError(`TypeError: '${pyTypeName(v)}' object is not iterable`);
+}
+function execBlock(nodes, env, io){
+  for(const node of nodes) execNode(node, env, io);
+}
+function execNode(node, env, io){
+  switch(node.type){
+    case 'simple': runSimpleStatement(node.line, env, io); return;
+    case 'pass': return;
+    case 'break': throw new BreakSignal();
+    case 'continue': throw new ContinueSignal();
+    case 'return': {
+      const src = node.exprSrc.trim();
+      let val;
+      if(!src) val = mk('none', null);
+      else {
+        const parts = splitTopLevel(src, ',');
+        val = parts.length > 1
+          ? mk('tuple', parts.map(p => evalNode(new Parser(tokenize(p)).parseProgram(), env, io)))
+          : evalNode(new Parser(tokenize(src)).parseProgram(), env, io);
+      }
+      throw new ReturnSignal(val);
+    }
+    case 'global': { node.names.forEach(n => env.declareGlobal(n)); return; }
+    case 'import': {
+      node.modules.forEach(m => {
+        if(!MODULE_LIB[m.name]) throw new PyError(`ModuleNotFoundError: No module named '${m.name}'`);
+        io.moduleAliases[m.alias] = m.name;
+      });
+      return;
+    }
+    case 'fromimport': {
+      const lib = MODULE_LIB[node.module];
+      if(!lib) throw new PyError(`ModuleNotFoundError: No module named '${node.module}'`);
+      if(node.names === '*'){ Object.keys(lib).forEach(fn => { io.importedFuncs[fn] = { module:node.module, func:fn }; }); }
+      else node.names.forEach(fn => {
+        if(!lib[fn]) throw new PyError(`ImportError: cannot import name '${fn}' from '${node.module}'`);
+        io.importedFuncs[fn] = { module:node.module, func:fn };
+      });
+      return;
+    }
+    case 'funcdef': {
+      env.set(node.name, mk('function', { name:node.name, params:node.params, body:node.body, closureEnv: env.globalScope() }));
+      return;
+    }
+    case 'if': {
+      for(const br of node.branches){
+        const v = evalNode(new Parser(tokenize(br.condText)).parseProgram(), env, io);
+        if(truthy(v)){ execBlock(br.body, env, io); return; }
+      }
+      if(node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'while': {
+      let broke = false, guard = 0;
+      while(truthy(evalNode(new Parser(tokenize(node.condText)).parseProgram(), env, io))){
+        guard++;
+        if(guard > MAX_ITER) throw new PyError('RuntimeError: loop safety limit reached (100000 iterations) — check your condition/updation');
+        try{ execBlock(node.body, env, io); }
+        catch(e){
+          if(e instanceof BreakSignal){ broke = true; break; }
+          if(e instanceof ContinueSignal){ continue; }
+          throw e;
+        }
+      }
+      if(!broke && node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'for': {
+      const iterVal = evalNode(new Parser(tokenize(node.iterText)).parseProgram(), env, io);
+      const items = iterableToArray(iterVal);
+      let broke = false;
+      for(const item of items){
+        env.set(node.varName, item);
+        try{ execBlock(node.body, env, io); }
+        catch(e){
+          if(e instanceof BreakSignal){ broke = true; break; }
+          if(e instanceof ContinueSignal){ continue; }
+          throw e;
+        }
+      }
+      if(!broke && node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'match': {
+      const subjVal = evalNode(new Parser(tokenize(node.subjText)).parseProgram(), env, io);
+      for(const c of node.cases){
+        const trial = new Env(env);
+        let matched = false;
+        if(c.patText === '_'){ matched = true; }
+        else if(c.patText.includes('|')){
+          const opts = c.patText.split('|').map(s=>s.trim());
+          matched = opts.some(o => pyEquals(evalNode(new Parser(tokenize(o)).parseProgram(), trial, io), subjVal));
+        } else if(/^[A-Za-z_]\w*$/.test(c.patText) && !['True','False','None'].includes(c.patText)){
+          trial.vars[c.patText] = subjVal; matched = true;
+        } else {
+          matched = pyEquals(evalNode(new Parser(tokenize(c.patText)).parseProgram(), trial, io), subjVal);
+        }
+        if(matched && c.guardText){
+          matched = truthy(evalNode(new Parser(tokenize(c.guardText)).parseProgram(), trial, io));
+        }
+        if(matched){
+          for(const k in trial.vars) env.set(k, trial.vars[k]);
+          execBlock(c.body, env, io);
+          return;
+        }
+      }
+      return;
+    }
+  }
+}
+function runProgram(code){
+  const lines = prepLines(code);
+  const env = new Env();
+  const io = { out: '', moduleAliases: {}, importedFuncs: {} };
+  __callDepth = 0;
+  try{
+    const { nodes } = parseBlock(lines, 0, 0);
+    execBlock(nodes, env, io);
+  } catch(err){
+    if(err instanceof BreakSignal || err instanceof ContinueSignal){
+      io.out += "SyntaxError: 'break'/'continue' outside loop\n";
+    } else if(err instanceof ReturnSignal){
+      io.out += "SyntaxError: 'return' outside function\n";
+    } else {
+      io.out += (err instanceof PyError ? err.message : ('Error: ' + err.message)) + '\n';
+    }
+  }
+  return io.out.replace(/\n$/, '');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.run-btn');
+  if(!btn) return;
+  const outId = btn.dataset.runTarget;
+  const outEl = document.getElementById(outId);
+  const code = btn.dataset.source
+    ? document.getElementById(btn.dataset.source).value
+    : 'print("Hello World!!")';
+
+  const result = runProgram(code);
+  outEl.textContent = result;
+
+  const isError = /^(SyntaxError|NameError|TypeError|ZeroDivisionError|ValueError|IndentationError|RuntimeError|Error):/m.test(result);
+  outEl.classList.remove('flash', 'flash-err');
+  void outEl.offsetWidth;
+  outEl.classList.add(isError ? 'flash-err' : 'flash');
+});
+
+document.querySelectorAll('.mode-switch').forEach(group => {
+  group.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      const parent = group.parentElement;
+      parent.querySelectorAll(':scope > .mode-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+});
+
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeLabel = document.getElementById('theme-label');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeIcon.textContent = isDark ? '🌙' : '☀️';
+  themeLabel.textContent = isDark ? 'dark' : 'light';
+});
+
+const progressFill = document.getElementById('progress-fill');
+function updateProgress(){
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+  progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+const sections = [...document.querySelectorAll('section[id]')];
+const tabLinks = [...document.querySelectorAll('#tabbar a')];
+const io2 = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      tabLinks.forEach(a => a.classList.remove('active'));
+      const link = tabLinks.find(a => a.getAttribute('href') === '#' + entry.target.id);
+      if(link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => io2.observe(s));
+
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const cards = entry.target.querySelectorAll('.feature, .exercise');
+      cards.forEach((card, i) => setTimeout(() => card.classList.add('show'), i * 70));
+      revealIO.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+sections.forEach(s => revealIO.observe(s));
+setTimeout(() => document.querySelectorAll('.feature, .exercise').forEach(c => c.classList.add('show')), 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+<title>Chapter 8 — Strings in Python | Teacher Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F4EE;
+    --paper-alt:#E7EBE0;
+    --panel:#FFFFFF;
+    --ink:#16241F;
+    --ink-soft:#4A6156;
+    --py-blue:#1874C4;
+    --py-blue-deep:#0F4C81;
+    --py-gold:#F5A623;
+    --shell-green:#1E9E64;
+    --shell-green-bg:#E4F5EB;
+    --cpp-brown:#C0632E;
+    --cpp-brown-bg:#FBEADB;
+    --violet:#7C5CFF;
+    --err:#E0473A;
+    --line:#D8DECF;
+    --radius:10px;
+    --shadow:0 2px 8px rgba(22,36,31,.07);
+    --shadow-hover:0 14px 32px rgba(22,36,31,.16);
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1B16;
+    --paper-alt:#16261F;
+    --panel:#182A22;
+    --ink:#F1F8F1;
+    --ink-soft:#9AC1AC;
+    --py-blue:#5EB8FF;
+    --py-blue-deep:#8FD1FF;
+    --py-gold:#FFC15C;
+    --shell-green:#4FE0A0;
+    --shell-green-bg:#173428;
+    --cpp-brown:#FF9D5C;
+    --cpp-brown-bg:#33221A;
+    --violet:#B49CFF;
+    --err:#FF7A6B;
+    --line:#26402F;
+    --shadow:0 2px 10px rgba(0,0,0,.35);
+    --shadow-hover:0 16px 36px rgba(0,0,0,.5);
+  }
+  html, body{transition:background-color .35s ease, color .35s ease;}
+  @media (prefers-reduced-motion: reduce){
+    html, body, *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:radial-gradient(circle, color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1px);
+    background-size:26px 26px;
+    animation:drift 40s linear infinite;
+  }
+  @keyframes drift{0%{background-position:0 0;}100%{background-position:130px 130px;}}
+  h1.title{
+    background:linear-gradient(100deg, var(--py-blue-deep), var(--violet) 45%, var(--shell-green) 80%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; color:var(--ink); -webkit-text-fill-color:transparent;
+    animation:hue-shift 8s ease-in-out infinite alternate;
+  }
+  @keyframes hue-shift{0%{background-position:0% center;}100%{background-position:100% center;}}
+  h1,h2,h3,h4{font-family:'Fraunces',serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  code, .mono, .code-cell, textarea, pre{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--py-blue-deep);}
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px;}
+
+  /* ---------- Tab bar (signature nav, mimics IDE open files) ---------- */
+  .tabbar-outer{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-alt);
+    border-bottom:1px solid var(--line);
+  }
+  .progress-track{height:3px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--py-gold), var(--shell-green)); transition:width .12s linear;}
+  .tabbar{
+    display:flex; align-items:center; overflow-x:auto; max-width:900px; margin:0 auto;
+    scrollbar-width:thin;
+  }
+  .theme-toggle{
+    flex:0 0 auto; margin-left:auto; border:none; background:var(--panel); color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:8px 12px; cursor:pointer;
+    border-left:1px solid var(--line); white-space:nowrap; display:flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{color:var(--ink);}
+  .tabbar a{
+    flex:0 0 auto;
+    padding:12px 16px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    text-decoration:none;
+    white-space:nowrap;
+    border-bottom:2px solid transparent;
+    border-right:1px solid var(--line);
+  }
+  .tabbar a.active{
+    color:var(--py-blue-deep);
+    background:var(--paper);
+    border-bottom:2px solid var(--py-gold);
+    font-weight:600;
+  }
+  .tabbar a::before{content:"● "; color:var(--py-gold); font-size:9px;}
+
+  /* ---------- Header / Hero ---------- */
+  header.hero{
+    padding:56px 0 40px; border-bottom:1px solid var(--line); position:relative;
+  }
+  header.hero::before{
+    content:""; position:absolute; top:-140px; right:-120px; width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--py-gold) 20%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  header.hero::after{
+    content:""; position:absolute; bottom:-160px; left:-100px; width:360px; height:360px; border-radius:50%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--shell-green) 18%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--py-blue); margin-bottom:14px;
+  }
+  .kicker span{color:var(--ink-soft);}
+  h1.title{font-size:clamp(28px,6vw,44px); line-height:1.15; max-width:16ch; overflow-wrap:break-word; word-break:break-word;}
+  .subtitle{color:var(--ink-soft); font-size:17px; max-width:60ch; margin-top:10px;}
+
+  .hero-demo{
+    margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    background:var(--panel);
+  }
+  @media(max-width:640px){.hero-demo{grid-template-columns:1fr;}}
+  .hero-col{padding:18px 20px;}
+  .hero-col.cpp{background:var(--cpp-brown-bg); border-right:1px solid var(--line);}
+  .hero-col.py{background:var(--shell-green-bg);}
+  .hero-label{font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px; font-weight:600;}
+  .hero-col.cpp .hero-label{color:var(--cpp-brown);}
+  .hero-col.py .hero-label{color:var(--shell-green);}
+  .hero-col pre{margin:0; font-size:13.5px; white-space:pre-wrap;}
+  .cursor-blink{display:inline-block; width:8px; height:15px; background:var(--shell-green); margin-left:2px; vertical-align:text-bottom; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero-stat{padding:14px 20px; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft); grid-column:1/-1; background:var(--paper);}
+  .hero-stat b{color:var(--ink);}
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding:52px 0; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--py-blue);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;
+    position:relative; display:inline-block; padding-bottom:6px;
+  }
+  .eyebrow::after{
+    content:""; position:absolute; left:0; bottom:0; height:2px; width:28px;
+    background:linear-gradient(90deg, var(--py-gold), var(--violet));
+    border-radius:2px;
+  }
+  section h2{font-size:clamp(24px,3.4vw,30px);}
+  section > p.lead{color:var(--ink-soft); max-width:68ch; margin-bottom:24px;}
+
+  /* ---------- Callout boxes ---------- */
+  .callout{
+    border-radius:var(--radius); padding:18px 20px; margin:20px 0; border:1px solid var(--line);
+  }
+  .callout h4{font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .callout.history{background:var(--paper-alt);}
+  .callout.history h4{color:var(--ink-soft);}
+  .callout.teach{background:#FDF6E8; border-color:#EAD9A8;}
+  .callout.teach h4{color:#8A6A1E;}
+  .callout.teach h4::before{content:"👩‍🏫 ";}
+  .callout p{margin:0 0 8px; font-size:14.5px;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout ul{margin:8px 0 0; padding-left:20px; font-size:14.5px;}
+
+  /* ---------- Feature grid ---------- */
+  .feature-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;}
+  @media(max-width:640px){.feature-grid{grid-template-columns:1fr;}}
+  .feature{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease; position:relative;
+    border-left:3px solid var(--py-gold);
+  }
+  html.js-ready .feature, html.js-ready .exercise{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease, box-shadow .2s ease;
+  }
+  html.js-ready .feature.show, html.js-ready .exercise.show{opacity:1; transform:translateY(0);}
+  .feature:hover{transform:translateY(-4px) !important; box-shadow:var(--shadow-hover);}
+  .feature .icon-badge{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:17px; background:var(--paper-alt); margin-bottom:10px;
+  }
+  .feature h4{font-size:15px; margin-bottom:6px; color:var(--py-blue-deep);}
+  .feature p{margin:0; font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- Comparison table ---------- */
+  table.compare{width:100%; border-collapse:collapse; margin-top:20px; font-size:14.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.compare th, table.compare td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.compare th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.03em;}
+  table.compare th.cpp-h{color:var(--cpp-brown);}
+  table.compare th.py-h{color:var(--shell-green);}
+  table.compare td.cpp-c{color:var(--cpp-brown);}
+  table.compare td.py-c{color:var(--shell-green);}
+  table.compare code{font-size:13px; background:var(--paper-alt); padding:1px 5px; border-radius:4px;}
+  table.compare tr:last-child td{border-bottom:none;}
+
+  /* ---------- Numbered steps (IDLE launch) ---------- */
+  .steps{counter-reset:step; margin-top:20px; list-style:none; padding:0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:12px 0 12px 42px; border-bottom:1px dashed var(--line);
+    font-size:15px;
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:10px; width:26px; height:26px;
+    background:var(--py-blue); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+  }
+  .steps kbd{background:var(--paper-alt); border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-family:'JetBrains Mono',monospace; font-size:12.5px;}
+
+  /* ---------- Mode toggle (SIGNATURE ELEMENT) ---------- */
+  .mode-widget{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-top:24px; background:var(--panel);}
+  .mode-switch{display:flex; background:var(--paper-alt); border-bottom:1px solid var(--line);}
+  .mode-btn{
+    flex:1; padding:15px 10px; background:none; border:none; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; min-height:44px; -webkit-tap-highlight-color:transparent;
+  }
+  .mode-btn.active.shell{color:var(--shell-green); border-bottom-color:var(--shell-green); background:var(--shell-green-bg);}
+  .mode-btn.active.script{color:var(--py-blue-deep); border-bottom-color:var(--py-blue); background:#EAF1F7;}
+  .mode-pane{display:none; padding:18px 20px;}
+  .mode-pane.active{display:block;}
+  .mode-pane p.explain{font-size:14px; color:var(--ink-soft); margin-top:0;}
+
+  /* ---------- Code cell (shared by all runnable examples) ---------- */
+  .code-cell{border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:10px;}
+  .code-cell .file-tag{
+    background:var(--paper-alt); padding:6px 12px; font-size:11.5px; color:var(--ink-soft);
+    font-family:'JetBrains Mono',monospace; border-bottom:1px solid var(--line); display:flex; justify-content:space-between;
+  }
+  .code-cell textarea{
+    width:100%; border:none; resize:vertical; min-height:90px; padding:12px 14px;
+    font-size:16px; background:#1B2B27; color:#EAF1EA; outline:none; line-height:1.55;
+  }
+  .code-cell.shell textarea{background:#0F1F19; color:#B9E3C3;}
+  .code-cell .toolbar{display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--paper-alt); border-top:1px solid var(--line);}
+  .run-btn{
+    background:linear-gradient(100deg, var(--py-gold), #FFCF7A 50%, var(--py-gold));
+    background-size:220% auto; background-position:0% center;
+    color:#3A2A05; border:none; border-radius:6px; padding:10px 18px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;
+    min-height:40px; -webkit-tap-highlight-color:transparent;
+    box-shadow:0 0 0 rgba(245,166,35,0); transition:box-shadow .2s ease, background-position .5s ease, transform .1s ease;
+  }
+  .run-btn:disabled{opacity:.5; cursor:wait;}
+  .run-btn:hover:not(:disabled){background-position:100% center; box-shadow:0 6px 20px rgba(245,166,35,.5);}
+  .run-btn:active:not(:disabled){transform:translateY(1px);}
+  header.hero .wrap{position:relative; z-index:1;}
+  .py-status{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;}
+  .output{
+    background:#0F1712; color:#D9F0DC; padding:12px 14px; font-size:13.5px; min-height:20px;
+    white-space:pre-wrap; word-break:break-word; border-top:1px solid var(--line);
+    transition:box-shadow .3s ease;
+  }
+  .output.flash{animation:flash-glow .6s ease;}
+  @keyframes flash-glow{
+    0%{box-shadow:inset 0 0 0 2px var(--shell-green), 0 0 18px rgba(30,158,100,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(30,158,100,0), 0 0 0 rgba(30,158,100,0);}
+  }
+  .output.flash-err{animation:flash-glow-err .6s ease;}
+  @keyframes flash-glow-err{
+    0%{box-shadow:inset 0 0 0 2px var(--err), 0 0 18px rgba(224,71,58,.5);}
+    100%{box-shadow:inset 0 0 0 0 rgba(224,71,58,0), 0 0 0 rgba(224,71,58,0);}
+  }
+  .output:empty::before{content:"— run the code to see output here —"; color:#5F7A68; font-style:italic;}
+  .output .err{color:#FF9E80;}
+
+  /* ---------- Let us do (exercise grid) ---------- */
+  .exercise{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    margin-top:18px; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease;
+    border-left:3px solid var(--shell-green);
+  }
+  .exercise:hover{transform:translateY(-3px) !important; box-shadow:var(--shadow-hover);}
+  .exercise h4{font-size:15px; margin-bottom:4px;}
+  .exercise .task{font-size:14px; color:var(--ink-soft); margin-bottom:10px;}
+  .ex-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px;
+    background:var(--py-blue); color:#fff; border-radius:50%; font-size:12px; font-family:'JetBrains Mono',monospace;
+    margin-right:8px;
+  }
+
+  ::selection{background:var(--py-gold); color:#1B2B27;}
+
+  /* ---------- Chapter 5 additions: multi-tab operator widget + data tables ---------- */
+  .mode-switch.scroll{overflow-x:auto; scrollbar-width:thin;}
+  .mode-switch.scroll .mode-btn{flex:0 0 auto; padding-left:16px; padding-right:16px; white-space:nowrap;}
+  table.op-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:13.5px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.op-table th, table.op-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.op-table th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.03em;}
+  table.op-table code{background:var(--paper-alt); padding:1px 5px; border-radius:4px; font-size:12.5px;}
+  table.op-table tr:last-child td{border-bottom:none;}
+  .kw-grid{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;}
+  .kw-pill{background:var(--paper-alt); border:1px solid var(--line); border-radius:20px; padding:5px 13px; font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .badge{border-radius:20px; padding:5px 12px; font-family:'JetBrains Mono',monospace; font-size:12.5px; border:1px solid var(--line);}
+  .badge.valid{background:var(--shell-green-bg); color:var(--shell-green); border-color:var(--shell-green);}
+  .badge.invalid{background:var(--cpp-brown-bg); color:var(--cpp-brown); border-color:var(--cpp-brown); text-decoration:line-through;}
+
+  /* ---------- Chapter 6 additions: algorithm steps + trace table ---------- */
+  .algo{background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.9;}
+  .algo .step-num{color:var(--py-blue); font-weight:600; margin-right:6px;}
+  table.trace{width:100%; border-collapse:collapse; margin-top:14px; font-size:13px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  table.trace th, table.trace td{padding:8px 10px; text-align:center; border-bottom:1px solid var(--line); border-right:1px solid var(--line);}
+  table.trace th{background:var(--paper-alt); font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;}
+  table.trace td:last-child, table.trace th:last-child{border-right:none;}
+  table.trace tr:last-child td{border-bottom:none;}
+  .syntax-block{
+    background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:1.7;
+    color:var(--ink); overflow-x:auto; white-space:pre;
+  }
+  .fact-diagram{
+    margin-top:16px; padding:16px; background:var(--paper-alt); border:1px solid var(--line); border-radius:var(--radius);
+    overflow-x:auto;
+  }
+  .fact-row{
+    display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    padding:5px 0; white-space:nowrap;
+  }
+  .fact-call{ font-weight:600; color:var(--py-blue-deep); min-width:110px; }
+  .fact-eq{ color:var(--ink-soft); flex:1; }
+  .fact-val{ color:var(--shell-green); font-weight:600; }
+  .hierarchy-diagram{ margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .hier-box{
+    width:100%; max-width:560px; padding:14px 20px; border-radius:var(--radius);
+    background:var(--panel); border:1px solid var(--line); box-shadow:var(--shadow);
+    font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:var(--ink);
+  }
+  .hier-box span{ display:block; font-family:'Inter',sans-serif; font-weight:400; font-size:13px; color:var(--ink-soft); margin-top:3px; }
+  .hier-1{ background:color-mix(in srgb, var(--py-gold) 10%, var(--panel)); }
+  .hier-2{ background:color-mix(in srgb, var(--shell-green) 10%, var(--panel)); }
+  .hier-3{ background:color-mix(in srgb, var(--py-blue) 10%, var(--panel)); }
+  .hier-4{ background:color-mix(in srgb, var(--violet) 10%, var(--panel)); }
+  .hier-arrow{ color:var(--ink-soft); font-size:18px; line-height:1; }
+  .index-table-wrap{ margin-top:18px; overflow-x:auto; }
+  .index-table-title{ font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--ink-soft); margin-bottom:8px; }
+  table.index-table{ border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:13px; white-space:nowrap; }
+  table.index-table th, table.index-table td{
+    border:1px solid var(--line); padding:6px 10px; text-align:center; min-width:22px;
+  }
+  table.index-table th{ background:var(--paper-alt); color:var(--ink-soft); font-weight:600; text-align:left; position:sticky; left:0; }
+  table.index-table tr:nth-child(2) td{ font-weight:600; color:var(--py-blue-deep); }
+</style>
+</head>
+<body>
+
+<div class="tabbar-outer">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="tabbar" id="tabbar">
+    <a href="#strings" class="active">8.1_strings.py</a>
+    <a href="#input">8.2_input.py</a>
+    <a href="#fstrings">8.3_fstrings.py</a>
+    <a href="#indexing">8.4_indexing.py</a>
+    <a href="#slicing">8.5_slicing.py</a>
+    <a href="#traversal">8.6_traversal.py</a>
+    <a href="#operations">8.7_operations.py</a>
+    <a href="#methods">8.8_methods.py</a>
+    <a href="#compare">cpp_vs_python.diff</a>
+    <a href="#practice">let_us_do.py</a>
+    <a href="#summary">summary.md</a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark theme"><span id="theme-icon">🌙</span><span id="theme-label">dark</span></button>
+  </nav>
+</div>
+
+<header class="hero wrap">
+  <div class="kicker">Computer Science · Class XI &nbsp;<span>|</span>&nbsp; Chapter 8 &nbsp;<span>|</span>&nbsp; Teacher Training Session</div>
+  <h1 class="title">Strings in Python</h1>
+  <p class="subtitle">C++ needs a whole class — <code>std::string</code>, or worse, a raw <code>char</code> array — just to hold text. Python strings are a built-in type with indexing, slicing, and formatting baked in, and they're immutable: once created, a string never changes in place.</p>
+
+  <div class="hero-demo">
+    <div class="hero-col cpp">
+      <div class="hero-label">C++ — a class, with methods called on it</div>
+      <pre>string name = "Alice";
+cout &lt;&lt; name.substr(0, 3);
+name[0] = 'a';   // mutable</pre>
+    </div>
+    <div class="hero-col py">
+      <div class="hero-label">Python — a built-in type, sliceable, immutable</div>
+      <pre>name = "Alice"
+print(name[0:3])
+name[0] = 'a'   # TypeError</pre>
+      <div class="code-cell" style="margin-top:14px; border:1px solid #cfe0d3;">
+        <div class="toolbar" style="border-top:none;">
+          <button class="run-btn" data-run-target="hero-out" data-source="hero-code">▶ Run this</button>
+          <span class="py-status" id="hero-status">runs instantly · fully offline</span>
+        </div>
+        <textarea id="hero-code" spellcheck="false" style="display:none;">name = "Alice"
+print("First 3 letters:", name[0:3])
+print("Reversed:", name[::-1])</textarea>
+        <div class="output" id="hero-out"></div>
+      </div>
+    </div>
+    <div class="hero-stat">Slicing (<code>name[0:3]</code>) replaces <code>substr()</code>, and there's no in-place character assignment — strings are immutable. Trying <code>name[0] = 'a'</code> is a <code>TypeError</code>, not silently allowed.</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="strings">
+  <div class="eyebrow">8.1 · What is a string</div>
+  <h2>A sequence of characters</h2>
+  <p class="lead">A string is a sequence of characters enclosed within single quotes (<code>'&nbsp;'</code>), double quotes (<code>"&nbsp;"</code>), or triple quotes (<code>'''&nbsp;'''</code> or <code>"""&nbsp;"""</code>) — letters, digits, special characters, spaces, all of it. A single character is just a string of length one. Each character is reached through an <strong>index</strong>, always an integer, always starting at <code>0</code>. And unlike a C++ <code>char</code> array, a Python string is <strong>immutable</strong> — once created, it can't be changed in place.</p>
+
+  <div class="code-cell">
+    <textarea id="str-examples-code" spellcheck="false">print('Welcome to Python')
+print("It's Python 3.10.12")
+print('''She said "let's begin" and hit run''')</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="str-examples-out" data-source="str-examples-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="str-examples-out"></div>
+  </div>
+
+  <div class="code-cell" style="margin-top:14px;">
+    <div class="toolbar" style="border-top:none; border-bottom:1px solid var(--line);">
+      <span class="py-status">Illustration only — this simulator runs one line at a time, so a string that actually spans multiple physical lines can't run here. Try it in IDLE.</span>
+    </div>
+    <pre class="syntax-block" style="margin:0;">print('''This is a multiline string
+   with three single quotes''')
+
+print("""This is a multiline string
+   with three "double" quotes""")</pre>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Triple quotes matter because they let a string span multiple lines and contain the <em>other</em> quote character freely. A single- or double-quoted string ends at the first matching quote it sees — <code>'It's Python'</code> breaks, because the apostrophe in "It's" closes the string early. Either escape it (<code>'It\'s Python'</code>) or, cleaner, use the other quote style: <code>"It's Python"</code>.</p>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">String creation and indexing</div>
+  <h3>Every character has a position</h3>
+  <p class="lead">Index numbering starts at 0 from the left. Python also allows <strong>negative indices</strong>, counting backward from &minus;1 at the last character — handy when you want "the last three characters" without first computing the string's length.</p>
+
+  <div class="code-cell">
+    <textarea id="str-create-code" spellcheck="false">msg = "Welcome to Python"
+print(msg)</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="str-create-out" data-source="str-create-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="str-create-out"></div>
+  </div>
+
+  <div class="index-table-wrap">
+    <div class="index-table-title">Index of the characters of <code>msg = "Welcome to Python"</code></div>
+    <table class="index-table">
+      <tr><th>Index</th><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td></tr>
+      <tr><th>msg</th><td>W</td><td>e</td><td>l</td><td>c</td><td>o</td><td>m</td><td>e</td><td>&nbsp;</td><td>t</td><td>o</td><td>&nbsp;</td><td>P</td><td>y</td><td>t</td><td>h</td><td>o</td><td>n</td></tr>
+      <tr><th>Negative index</th><td>-17</td><td>-16</td><td>-15</td><td>-14</td><td>-13</td><td>-12</td><td>-11</td><td>-10</td><td>-9</td><td>-8</td><td>-7</td><td>-6</td><td>-5</td><td>-4</td><td>-3</td><td>-2</td><td>-1</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="input">
+  <div class="eyebrow">8.2 · input() function</div>
+  <h2>Collecting text while the program runs</h2>
+  <p class="lead">A built-in method used to collect user input during program execution.</p>
+  <p class="lead"><strong>Syntax:</strong> <code>var = input(prompt)</code> — it always returns a string, even if the person types digits. That's why every numeric input in earlier chapters gets wrapped in <code>int()</code> or <code>float()</code>.</p>
+
+  <div class="code-cell">
+    <textarea id="input-demo-code" spellcheck="false">myname = input("Enter your name")
+print("Welcome", myname)</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="input-demo-out" data-source="input-demo-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="input-demo-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Ask the class what <code>input("Enter your age") + 1</code> does. It raises a <code>TypeError</code> — <code>input()</code> handed back the string <code>"25"</code>, not the number 25, and Python won't silently add a string and an int. Compare with C++'s <code>cin &gt;&gt; age</code>, which reads straight into a typed variable and never has this problem.</p>
+  </div>
+</section>
+<section id="fstrings">
+  <div class="eyebrow">8.3 · f-strings</div>
+  <h2>Formatting text without the plus signs</h2>
+  <p class="lead">f-strings provide a simple, readable way to format and embed variables and expressions inside string literals. Place <code>f</code> or <code>F</code> right before the opening quote, and drop any expression inside <code>{ }</code>.</p>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="fs-basic">Without f-strings</button>
+      <button class="mode-btn shell" data-target="fs-embed">With f-strings</button>
+      <button class="mode-btn shell" data-target="fs-format">Format specifiers</button>
+    </div>
+
+    <div class="mode-pane active" id="fs-basic">
+      <p class="explain">Before f-strings, embedding a variable in the middle of text meant concatenating pieces together with <code>+</code> — and converting every non-string value with <code>str()</code> along the way.</p>
+      <div class="code-cell">
+        <textarea id="fs-basic-code" spellcheck="false">name = 'Alice'
+age = 30
+print('My name is' + name + '. I am' + str(age) + 'years old')</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="fs-basic-out" data-source="fs-basic-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="fs-basic-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="fs-embed">
+      <p class="explain">The f-string version reads left to right, exactly like the sentence it produces — no stitching, no manual <code>str()</code> calls.</p>
+      <div class="code-cell">
+        <textarea id="fs-embed-code" spellcheck="false">name = "Alice"
+age = 30
+print(f"My name is {name}. I am {age} years old")</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="fs-embed-out" data-source="fs-embed-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="fs-embed-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="fs-format">
+      <p class="explain">A colon inside the braces introduces a <strong>format specifier</strong>. <code>:.2f</code> means "fixed-point, 2 digits after the decimal" — the single most useful one for money and measurements.</p>
+      <div class="code-cell">
+        <textarea id="fs-format-code" spellcheck="false">price = 19.99
+tax_rate = 0.08
+print("Total cost without formatting", price * (1 + tax_rate))
+print(f"Total cost with formatting : {price * (1 + tax_rate):.2f}")</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="fs-format-out" data-source="fs-format-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="fs-format-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Run "Format specifiers" and let the class see the raw floating-point mess in the first line — <code>21.589199999999998</code> is ordinary binary floating-point imprecision, the same thing that happens in C++ <code>double</code>s. The f-string doesn't fix the underlying math; it just controls how the result is <em>displayed</em>.</p>
+  </div>
+</section>
+
+<section id="indexing">
+  <div class="eyebrow">8.4 · String indexing</div>
+  <h2>Reaching a single character</h2>
+  <p class="lead">Square brackets with a position pick out one character. Positive indices count from the left starting at 0; negative indices count from the right starting at &minus;1.</p>
+
+  <div class="code-cell">
+    <textarea id="idx-demo-code" spellcheck="false">text = "Hello World!"
+
+print(text[0])      # H
+print(text[-12])    # H
+print(text[-1])     # !
+print(text[6])      # W</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="idx-demo-out" data-source="idx-demo-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="idx-demo-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Try <code>text[12]</code> on a 12-character string and let the class read the real error: <code>IndexError: string index out of range</code>. C++'s <code>std::string::operator[]</code> doesn't bounds-check at all — reading past the end is undefined behaviour, not a clean error. That's a real safety win worth calling out.</p>
+  </div>
+</section>
+
+<section id="slicing">
+  <div class="eyebrow">8.5 · String slicing</div>
+  <h2>Extracting a substring</h2>
+  <p class="lead"><strong>Syntax:</strong> <code>string_name[start : end : step]</code> — <code>start</code> is where slicing begins (inclusive, default 0), <code>end</code> is where it stops (exclusive, default <code>len(string)</code>), and <code>step</code> is the interval between characters (default 1; negative reverses direction).</p>
+
+  <div class="code-cell">
+    <textarea id="slice-basic-code" spellcheck="false">s = 'Computer Science'
+
+print(s[:])         # whole string
+print(s[0:8])        # 'Computer'
+print(s[9:])         # 'Science'
+print(s[:8])          # 'Computer'
+print(s[-7:-1])       # up to (not including) the last character
+print(s[-7:])         # 'Science'</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="slice-basic-out" data-source="slice-basic-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="slice-basic-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Watch this one closely</h4>
+    <p><code>s[-7:-1]</code> is a common trip-up: with <code>s</code> at 16 characters, <code>-7</code> lands on index 9 (<code>'S'</code>) and <code>-1</code> lands on index 15 (the final <code>'e'</code>) — but the upper bound is <em>exclusive</em>, so that last <code>'e'</code> is dropped and the result is <code>'Scienc'</code>, not <code>'Science'</code>. Run it live and count characters on your fingers with the class; the off-by-one at the end index is the single most common slicing mistake.</p>
+  </div>
+
+  <div class="eyebrow" style="margin-top:28px;">Use of step in slicing</div>
+  <h3>Skipping characters, or reversing entirely</h3>
+  <div class="code-cell">
+    <textarea id="slice-step-code" spellcheck="false">text = 'Computer Science'
+
+print(text[0:15:1])     # 'Computer Scienc'
+print(text[0:15:2])     # every 2nd character
+print(text[7:0:-1])     # backward, stops before index 0
+print(text[::-1])       # the whole string, reversed
+print(text[-11:-1:2])   # negative bounds + a step</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="slice-step-out" data-source="slice-step-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="slice-step-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p><code>text[::-1]</code> is the idiom every student remembers for reversing a string — no loop, no library call. It's worth deriving live: empty <code>start</code> and <code>end</code> mean "the whole string," and <code>step = -1</code> means "walk it backward." Compare with C++, where reversing needs <code>std::reverse()</code> or a manual loop over indices.</p>
+  </div>
+</section>
+<section id="traversal">
+  <div class="eyebrow">8.6 · String traversal</div>
+  <h2>Visiting every character, one by one</h2>
+  <p class="lead">The process of accessing each character in a string in turn. A <code>for</code> loop over a string does this directly — no index variable required, unlike C++'s typical <code>for(int i=0;i&lt;s.length();i++)</code>.</p>
+
+  <div class="code-cell">
+    <textarea id="trav-demo-code" spellcheck="false">A = "Hello"
+for i in A:
+    print(i)</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="trav-demo-out" data-source="trav-demo-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="trav-demo-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>If a student needs the <em>position</em> as well as the character — say, to print "Index 0: H" — that's exactly what <code>range(len(A))</code> combined with indexing is for: <code>for i in range(len(A)): print(i, A[i])</code>. Worth contrasting both styles side by side.</p>
+  </div>
+</section>
+
+<section id="operations">
+  <div class="eyebrow">8.7 · String operations</div>
+  <h2>Concatenation, repetition, membership, comparison</h2>
+
+  <table class="compare" style="margin-bottom:20px;">
+    <tr><th>Operation</th><th class="py-h">Operator</th><th>Process</th></tr>
+    <tr><td>Concatenation</td><td class="py-c"><code>+</code></td><td>Joins two strings</td></tr>
+    <tr><td>Repetition</td><td class="py-c"><code>*</code></td><td>Repeats the string multiple times</td></tr>
+    <tr><td>Membership</td><td class="py-c"><code>in</code>, <code>not in</code></td><td>Checks the presence of a substring</td></tr>
+  </table>
+
+  <div class="mode-widget">
+    <div class="mode-switch scroll">
+      <button class="mode-btn shell active" data-target="op-concat">Concatenation (+)</button>
+      <button class="mode-btn shell" data-target="op-repeat">Repetition (*)</button>
+      <button class="mode-btn shell" data-target="op-member">Membership (in / not in)</button>
+      <button class="mode-btn shell" data-target="op-relational">Relational (&lt; &gt; ==)</button>
+    </div>
+
+    <div class="mode-pane active" id="op-concat">
+      <p class="explain"><code>+</code> joins strings end to end. Nothing is inserted between them — add a literal space if you want one.</p>
+      <div class="code-cell">
+        <textarea id="op-concat-code" spellcheck="false">firstname = "Guido "
+lastname = "van Rossum "
+info = "is known as the father of Python programming Language"
+full_str = firstname + lastname + info
+print(full_str)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="op-concat-out" data-source="op-concat-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="op-concat-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-repeat">
+      <p class="explain"><code>*</code> repeats a string a given number of times — a string-only trick with no direct C++ equivalent.</p>
+      <div class="code-cell">
+        <textarea id="op-repeat-code" spellcheck="false">pattern = "India" * 3
+print(pattern)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="op-repeat-out" data-source="op-repeat-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="op-repeat-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-member">
+      <p class="explain"><code>in</code> and <code>not in</code> test whether one string appears inside another — no need to call <code>find()</code> and check for &minus;1 yourself.</p>
+      <div class="code-cell">
+        <textarea id="op-member-code" spellcheck="false">msg = "Hello"
+print("He" in msg)
+print("xyz" not in msg)</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="op-member-out" data-source="op-member-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="op-member-out"></div>
+      </div>
+    </div>
+
+    <div class="mode-pane" id="op-relational">
+      <p class="explain">Strings compare <strong>alphabetically</strong> (technically, by Unicode code point), the same way a dictionary orders words.</p>
+      <div class="code-cell">
+        <textarea id="op-relational-code" spellcheck="false">print("apple" < "banana")     # alphabetically smaller
+print("apple" > "banana")     # alphabetically bigger
+print("apple" <= "apple")     # less than or equal to
+print("banana" >= "apple")    # greater than or equal to</textarea>
+        <div class="toolbar">
+          <button class="run-btn" data-run-target="op-relational-out" data-source="op-relational-code">▶ Run</button>
+          <span class="py-status">ready ✓</span>
+        </div>
+        <div class="output" id="op-relational-out"></div>
+      </div>
+      <div class="callout teach" style="margin-top:14px;">
+        <h4>Teaching tip</h4>
+        <p>String comparison is case-sensitive and Unicode-based — every uppercase letter sorts <em>before</em> every lowercase letter, since <code>'A'</code> is code point 65 and <code>'a'</code> is 97. <code>"Zebra" &lt; "apple"</code> is <code>True</code>, which surprises students who expect dictionary order.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="methods">
+  <div class="eyebrow">8.8 · Built-in string methods</div>
+  <h2>Methods called directly on a string</h2>
+  <p class="lead">Beyond operators, strings carry their own methods — called with dot notation, the same syntax as <code>math.sqrt()</code> from Chapter 7, just with a string on the left instead of a module.</p>
+
+  <table class="compare" style="margin-bottom:20px;">
+    <tr><th>Method</th><th>Description</th><th class="py-h">Example</th><th>Result</th></tr>
+    <tr><td><code>capitalize()</code></td><td>First character to uppercase</td><td class="py-c"><code>"hello".capitalize()</code></td><td><code>'Hello'</code></td></tr>
+    <tr><td><code>count()</code></td><td>Counts occurrences of a substring</td><td class="py-c"><code>"banana".count("a")</code></td><td><code>3</code></td></tr>
+    <tr><td><code>find()</code></td><td>First index of a substring (&minus;1 if not found)</td><td class="py-c"><code>"apple".find("p")</code></td><td><code>1</code></td></tr>
+    <tr><td><code>index()</code></td><td>Index of a substring (raises an error if not found)</td><td class="py-c"><code>"pineapple".index("e")</code></td><td><code>3</code></td></tr>
+    <tr><td><code>len()</code></td><td>Number of characters (a function, not a method)</td><td class="py-c"><code>len("Hello World")</code></td><td><code>11</code></td></tr>
+    <tr><td><code>replace()</code></td><td>Replaces a substring with another</td><td class="py-c"><code>'hello world'.replace('world','Python')</code></td><td><code>'hello Python'</code></td></tr>
+    <tr><td><code>startswith()</code></td><td>True if the string starts with the given substring</td><td class="py-c"><code>"hello".startswith("he")</code></td><td><code>True</code></td></tr>
+    <tr><td><code>endswith()</code></td><td>True if the string ends with the given substring</td><td class="py-c"><code>"hello".endswith("hi")</code></td><td><code>False</code></td></tr>
+  </table>
+
+  <div class="code-cell">
+    <textarea id="methods-demo-code" spellcheck="false">print("hello".capitalize())
+print("banana".count("a"))
+print("apple".find("p"))
+print("pineapple".index("e"))
+print(len("Hello World"))
+print('hello world'.replace('world', 'Python'))
+print("hello".startswith("he"))
+print("hello".endswith("hi"))</textarea>
+    <div class="toolbar">
+      <button class="run-btn" data-run-target="methods-demo-out" data-source="methods-demo-code">▶ Run</button>
+      <span class="py-status">ready ✓</span>
+    </div>
+    <div class="output" id="methods-demo-out"></div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p><code>find()</code> and <code>index()</code> do almost the same job, but disagree on failure: <code>find()</code> quietly returns <code>-1</code>, while <code>index()</code> raises a <code>ValueError</code>. Try <code>"apple".find("z")</code> next to <code>"apple".index("z")</code> live — the difference is the whole reason both exist. Also worth flagging: methods return a <em>new</em> string and leave the original untouched, since strings are immutable — <code>"hello".capitalize()</code> doesn't change the literal, it produces one.</p>
+  </div>
+</section>
+<section id="compare">
+  <div class="eyebrow">Quick reference</div>
+  <h2>More C++ habits, mapped</h2>
+  <table class="compare">
+    <tr><th>Concept</th><th class="cpp-h">C++</th><th class="py-h">Python</th></tr>
+    <tr><td>String type</td><td class="cpp-c"><code>std::string</code> (or a raw <code>char[]</code>)</td><td class="py-c">Built-in <code>str</code> — no import needed</td></tr>
+    <tr><td>Mutability</td><td class="cpp-c">Mutable — <code>s[0] = 'x'</code> works</td><td class="py-c">Immutable — indexed assignment raises <code>TypeError</code></td></tr>
+    <tr><td>Substring</td><td class="cpp-c"><code>s.substr(start, len)</code></td><td class="py-c">Slicing: <code>s[start:end]</code></td></tr>
+    <tr><td>Reversing</td><td class="cpp-c"><code>std::reverse(s.begin(), s.end())</code></td><td class="py-c"><code>s[::-1]</code></td></tr>
+    <tr><td>Concatenation</td><td class="cpp-c"><code>s1 + s2</code>, or <code>s1.append(s2)</code></td><td class="py-c"><code>s1 + s2</code></td></tr>
+    <tr><td>Repeating a string</td><td class="cpp-c">No operator — needs a loop</td><td class="py-c"><code>s * n</code></td></tr>
+    <tr><td>Formatted output</td><td class="cpp-c"><code>printf</code>/<code>&lt;&lt;</code> with manual conversions</td><td class="py-c">f-strings: <code>f"{value:.2f}"</code></td></tr>
+    <tr><td>Bounds checking</td><td class="cpp-c"><code>operator[]</code>: undefined behaviour out of range</td><td class="py-c">Raises <code>IndexError</code></td></tr>
+  </table>
+</section>
+
+<section id="practice">
+  <div class="eyebrow">Let us do</div>
+  <h2>Practice, straight from the textbook</h2>
+  <p class="lead">A selection across indexing, slicing, operations, and built-in methods.</p>
+
+  <div class="exercise">
+    <h4><span class="ex-num">1</span>Palindrome checker</h4>
+    <div class="task">Use slicing to reverse a string and compare it with the original.</div>
+    <div class="code-cell">
+      <textarea id="ex-s1" spellcheck="false">word = input("Enter a word: ")
+if word == word[::-1]:
+    print(word, "is a palindrome")
+else:
+    print(word, "is not a palindrome")</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-s1-out" data-source="ex-s1">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-s1-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">2</span>Count vowels in a string</h4>
+    <div class="task">Traverse the string and use membership (<code>in</code>) to test each character.</div>
+    <div class="code-cell">
+      <textarea id="ex-s2" spellcheck="false">text = input("Enter a sentence: ")
+vowels = "aeiouAEIOU"
+count = 0
+for ch in text:
+    if ch in vowels:
+        count += 1
+print("Number of vowels:", count)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-s2-out" data-source="ex-s2">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-s2-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">3</span>Username generator</h4>
+    <div class="task">Build a username from the first three letters of a first name and the whole last name, all lowercase — combining slicing, methods, and f-strings.</div>
+    <div class="code-cell">
+      <textarea id="ex-s3" spellcheck="false">first = input("First name: ")
+last = input("Last name: ")
+username = f"{first[0:3].lower()}{last.lower()}"
+print("Generated username:", username)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-s3-out" data-source="ex-s3">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-s3-out"></div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="ex-num">4</span>Spot the bug — string is immutable</h4>
+    <div class="task">From the textbook's error-hunting exercises. Run it as-is to see exactly what Python reports, then fix it by building a new string instead of assigning into the old one.</div>
+    <div class="code-cell">
+      <textarea id="ex-s4" spellcheck="false">word = "cat"
+word[0] = "b"
+print(word)</textarea>
+      <div class="toolbar">
+        <button class="run-btn" data-run-target="ex-s4-out" data-source="ex-s4">▶ Run</button>
+        <span class="py-status">ready ✓</span>
+      </div>
+      <div class="output" id="ex-s4-out"></div>
+    </div>
+  </div>
+
+  <div class="callout teach">
+    <h4>Teaching tip</h4>
+    <p>Exercise 4 is deliberately broken — Python strings don't support item assignment, full stop. The fix isn't a small tweak; it's a different approach entirely: <code>word = "b" + word[1:]</code> builds a <em>new</em> string rather than editing the old one. That's worth sitting with — it's the clearest demonstration of immutability in the whole chapter.</p>
+  </div>
+</section>
+
+<section id="summary" style="border-bottom:none;">
+  <div class="eyebrow">Wrap-up</div>
+  <h2>Session summary</h2>
+  <p class="lead">Today: what a string is and how it's created, <code>input()</code> and why it always returns a string, f-strings for readable formatting, indexing with positive and negative positions, slicing with <code>start:end:step</code>, traversal with a plain <code>for</code> loop, the three string operators (concatenation, repetition, membership) plus relational comparison, and eight built-in string methods.</p>
+
+  <div class="callout teach">
+    <h4>Five habits to reinforce with C++ students</h4>
+    <ul>
+      <li>Strings are immutable — every method that "changes" a string actually returns a brand-new one.</li>
+      <li><code>input()</code> always returns a string, even for digits — wrap it in <code>int()</code> or <code>float()</code> before doing arithmetic.</li>
+      <li>Slicing's upper bound is exclusive, same off-by-one convention as <code>range()</code> — <code>s[a:b]</code> never includes <code>s[b]</code>.</li>
+      <li>Negative indices and negative steps aren't a special case to memorize separately — they're the same indexing rule, just counting from the other end.</li>
+      <li>f-strings replace both <code>+</code>-concatenation <em>and</em> manual <code>str()</code> conversions in one move — and <code>:.2f</code>-style specifiers control display without touching the underlying float.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<script>
+document.documentElement.classList.add('js-ready');
+/* =========================================================================
+   Chapter 8 local interpreter — extends the Chapter 7 engine with strings:
+   f-strings (f"..."/F"..." with {expr} interpolation and :.Nf format specs),
+   single-line triple-quoted strings, genuine postfix parsing for x.method()
+   and x[...] on ANY expression (not just bare names), string indexing and
+   slicing (positive/negative start:end:step, matches CPython semantics),
+   and the built-in string methods capitalize/count/find/index/replace/
+   startswith/endswith/upper/lower/strip. No network calls. Verified against
+   real Python 3.12 across every worked example in the source slide deck.
+   ========================================================================= */
+
+class PyError extends Error {}
+class BreakSignal {}
+class ContinueSignal {}
+class ReturnSignal { constructor(value){ this.value = value; } }
+let __idCounter = 1;
+function newId(){ return __idCounter++; }
+function mk(type, value){ return { type, value, id: newId() }; }
+
+/* Small-int identity cache — mirrors CPython's interning of -5..256 so that
+   id(a) == id(b) behaves correctly for the id() teaching demo. */
+const INT_CACHE = Object.create(null);
+function mkInt(n){
+  if(Number.isInteger(n) && n >= -5 && n <= 256){
+    if(!(n in INT_CACHE)) INT_CACHE[n] = mk('int', n);
+    return INT_CACHE[n];
+  }
+  return mk('int', n);
+}
+function mkNum(type, value){ return type === 'int' ? mkInt(value) : mk('float', value); }
+
+/* Lexically-scoped environment: locals live in this.vars, lookups fall back
+   to the parent chain (module/global scope), and `global x` inside a
+   function routes writes straight to the root scope. */
+class Env{
+  constructor(parent=null){ this.vars = Object.create(null); this.parent = parent; this.globalNames = new Set(); }
+  has(name){ if(name in this.vars) return true; return this.parent ? this.parent.has(name) : false; }
+  get(name){
+    if(name in this.vars) return this.vars[name];
+    if(this.parent) return this.parent.get(name);
+    throw new PyError(`NameError: name '${name}' is not defined`);
+  }
+  set(name, val){
+    if(this.globalNames.has(name)){ this.globalScope().vars[name] = val; return; }
+    this.vars[name] = val;
+  }
+  declareGlobal(name){ this.globalNames.add(name); }
+  globalScope(){ let e = this; while(e.parent) e = e.parent; return e; }
+}
+let __callDepth = 0;
+
+const TYPE_REFS = {};
+['int','float','str','bool','list','tuple','dict','set','complex','NoneType'].forEach(n=>{
+  TYPE_REFS[n] = { type:'typeref', name:n, id:'T_'+n };
+});
+
+function tokenize(line){
+  const tokens = [];
+  let i = 0;
+  const n = line.length;
+  while(i < n){
+    const c = line[i];
+    if(/\s/.test(c)){ i++; continue; }
+    if(c === '#'){ break; }
+    let m = /^\d+\.\d+/.exec(line.slice(i)) || /^\d+/.exec(line.slice(i));
+    if(m){
+      tokens.push({t:'NUM', v: m[0].includes('.') ? parseFloat(m[0]) : parseInt(m[0],10), isFloat:m[0].includes('.')});
+      i += m[0].length; continue;
+    }
+    if((c === 'f' || c === 'F') && (line[i+1] === '"' || line[i+1] === "'")){
+      const quote = line[i+1];
+      let j = i+2;
+      const segments = [];
+      let buf = '';
+      while(j < n && line[j] !== quote){
+        if(line[j] === '{' && line[j+1] === '{'){ buf += '{'; j += 2; continue; }
+        if(line[j] === '}' && line[j+1] === '}'){ buf += '}'; j += 2; continue; }
+        if(line[j] === '{'){
+          if(buf){ segments.push({type:'text', value:buf}); buf = ''; }
+          j++;
+          let exprBuf = '', depth = 0;
+          while(j < n && !(line[j] === '}' && depth === 0)){
+            if(line[j] === '{') depth++;
+            if(line[j] === '}') depth--;
+            exprBuf += line[j]; j++;
+          }
+          if(line[j] !== '}') throw new PyError("SyntaxError: f-string: expecting '}'");
+          j++;
+          const colonIdx = topLevelColonIndex(exprBuf);
+          let exprSrc = exprBuf, format = null;
+          if(colonIdx > -1){ exprSrc = exprBuf.slice(0, colonIdx); format = exprBuf.slice(colonIdx+1).trim(); }
+          segments.push({type:'expr', src:exprSrc.trim(), format});
+          continue;
+        }
+        if(line[j] === '\\' && j+1 < n){ buf += line[j+1]; j += 2; continue; }
+        buf += line[j]; j++;
+      }
+      if(line[j] !== quote) throw new PyError('SyntaxError: unterminated f-string literal');
+      if(buf) segments.push({type:'text', value:buf});
+      tokens.push({t:'FSTR', segments});
+      i = j+1; continue;
+    }
+    if((c === '"' || c === "'") && line[i+1] === c && line[i+2] === c){
+      const q = c;
+      let j = i+3, buf = '';
+      while(j < n && !(line[j] === q && line[j+1] === q && line[j+2] === q)){
+        if(line[j] === '\\' && j+1 < n){ buf += line[j+1]; j += 2; }
+        else { buf += line[j]; j++; }
+      }
+      if(!(line[j] === q && line[j+1] === q && line[j+2] === q)) throw new PyError('SyntaxError: unterminated triple-quoted string (this simulator only supports triple-quoted strings on a single line)');
+      tokens.push({t:'STR', v: buf});
+      i = j+3; continue;
+    }
+    if(c === '"' || c === "'"){
+      let j = i+1, buf = '';
+      while(j < n && line[j] !== c){
+        if(line[j] === '\\' && j+1 < n){ buf += line[j+1]; j += 2; }
+        else { buf += line[j]; j++; }
+      }
+      tokens.push({t:'STR', v: buf});
+      i = j+1; continue;
+    }
+    m = /^[A-Za-z_]\w*/.exec(line.slice(i));
+    if(m){ tokens.push({t:'ID', v:m[0]}); i += m[0].length; continue; }
+    const multi3 = ['**=','//='];
+    const multi2 = ['==','!=','<=','>=','+=','-=','*=','/=','%=','**','//'];
+    let matched = null;
+    for(const op of multi3){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(!matched) for(const op of multi2){ if(line.startsWith(op, i)){ matched = op; break; } }
+    if(matched){ tokens.push({t:'OP', v:matched}); i += matched.length; continue; }
+    if('+-*/%()[],=<>:.'.includes(c)){ tokens.push({t:'OP', v:c}); i++; continue; }
+    throw new PyError(`SyntaxError: invalid syntax near "${line.slice(i, i+8)}"`);
+  }
+  return tokens;
+}
+
+class Parser{
+  constructor(tokens){ this.toks = tokens; this.pos = 0; }
+  peek(k=0){ return this.toks[this.pos+k]; }
+  next(){ return this.toks[this.pos++]; }
+  atEnd(){ return this.pos >= this.toks.length; }
+  parseProgram(){
+    const e = this.parseExpr(0);
+    if(!this.atEnd()) throw new PyError(`SyntaxError: unexpected token "${this.peek().v}"`);
+    return e;
+  }
+  peekBinOp(){
+    const t = this.peek();
+    if(!t) return null;
+    if(t.t === 'OP'){
+      const table = {'**':[90,true],'*':[70,false],'/':[70,false],'%':[70,false],'//':[70,false],
+                      '+':[60,false],'-':[60,false],
+                      '==':[50,false],'!=':[50,false],'<':[50,false],'>':[50,false],'<=':[50,false],'>=':[50,false]};
+      if(table[t.v]) return {op:t.v, bp:table[t.v][0], right:table[t.v][1], len:1};
+      return null;
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'is'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='not') return {op:'is not', bp:40, right:false, len:2};
+        return {op:'is', bp:40, right:false, len:1};
+      }
+      if(t.v === 'in') return {op:'in', bp:30, right:false, len:1};
+      if(t.v === 'not'){
+        const nxt = this.peek(1);
+        if(nxt && nxt.t==='ID' && nxt.v==='in') return {op:'not in', bp:30, right:false, len:2};
+        return null;
+      }
+      if(t.v === 'and') return {op:'and', bp:20, right:false, len:1};
+      if(t.v === 'or') return {op:'or', bp:10, right:false, len:1};
+    }
+    return null;
+  }
+  parseExpr(minBp){
+    let left = this.parseUnary();
+    while(true){
+      const info = this.peekBinOp();
+      if(!info || info.bp < minBp) break;
+      for(let k=0;k<info.len;k++) this.next();
+      const right = this.parseExpr(info.right ? info.bp : info.bp + 1);
+      left = { type:'binop', op:info.op, left, right };
+    }
+    return left;
+  }
+  parseUnary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'ID' && t.v === 'not'){ this.next(); return { type:'unary', op:'not', val:this.parseExpr(25) }; }
+    if(t.t === 'OP' && (t.v === '-' || t.v === '+')){ this.next(); return { type:'unary', op:t.v, val:this.parseExpr(80) }; }
+    return this.parsePostfix();
+  }
+  parsePostfix(){
+    let node = this.parsePrimary();
+    while(true){
+      const t = this.peek();
+      if(t && t.t === 'OP' && t.v === '.'){
+        this.next();
+        const idTok = this.peek();
+        if(!idTok || idTok.t !== 'ID') throw new PyError('SyntaxError: invalid syntax after "."');
+        this.next();
+        if(this.peek() && this.peek().t==='OP' && this.peek().v==='('){
+          this.next();
+          const args = this.parseCallArgs();
+          node = { type:'methodcall', objNode:node, method:idTok.v, args };
+        } else {
+          node = { type:'attr', objNode:node, name:idTok.v };
+        }
+        continue;
+      }
+      if(t && t.t === 'OP' && t.v === '['){
+        this.next();
+        const slice = this.parseSubscript();
+        node = { type:'subscript', objNode:node, slice };
+        continue;
+      }
+      break;
+    }
+    return node;
+  }
+  parseSubscript(){
+    const atStop = () => this.peek() && this.peek().t==='OP' && (this.peek().v===':' || this.peek().v===']');
+    const optExpr = () => atStop() ? null : this.parseExpr(0);
+    const first = optExpr();
+    let colons = 0, second = null, third = null;
+    if(this.peek() && this.peek().t==='OP' && this.peek().v===':'){
+      this.next(); colons++;
+      second = optExpr();
+      if(this.peek() && this.peek().t==='OP' && this.peek().v===':'){
+        this.next(); colons++;
+        third = optExpr();
+      }
+    }
+    if(!this.peek() || this.peek().v !== ']') throw new PyError('SyntaxError: missing closing bracket');
+    this.next();
+    if(colons === 0) return { kind:'index', indexNode:first };
+    return { kind:'slice', startNode:first, endNode:second, stepNode:third };
+  }
+  parseCallArgs(){
+    const args = [];
+    if(!(this.peek() && this.peek().t==='OP' && this.peek().v===')')){
+      args.push(this.parseArg());
+      while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); args.push(this.parseArg()); }
+    }
+    if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+    this.next();
+    return args;
+  }
+  parseArg(){
+    if(this.peek() && this.peek().t==='ID' && this.peek(1) && this.peek(1).t==='OP' && this.peek(1).v==='='){
+      const name = this.next().v; this.next();
+      return { kind:'kw', name, val:this.parseExpr(0) };
+    }
+    return { kind:'pos', val:this.parseExpr(0) };
+  }
+  parsePrimary(){
+    const t = this.peek();
+    if(!t) throw new PyError('SyntaxError: unexpected end of expression');
+    if(t.t === 'NUM'){ this.next(); return { type:'num', value:t.v, isFloat:t.isFloat }; }
+    if(t.t === 'STR'){ this.next(); return { type:'str', value:t.v }; }
+    if(t.t === 'FSTR'){ this.next(); return { type:'fstr', segments:t.segments }; }
+    if(t.t === 'OP' && t.v === '('){
+      this.next();
+      const e = this.parseExpr(0);
+      if(!this.peek() || this.peek().v !== ')') throw new PyError('SyntaxError: missing closing parenthesis');
+      this.next();
+      return e;
+    }
+    if(t.t === 'OP' && t.v === '['){
+      this.next();
+      const items = [];
+      if(!(this.peek() && this.peek().t==='OP' && this.peek().v===']')){
+        items.push(this.parseExpr(0));
+        while(this.peek() && this.peek().t==='OP' && this.peek().v===','){ this.next(); items.push(this.parseExpr(0)); }
+      }
+      if(!this.peek() || this.peek().v !== ']') throw new PyError('SyntaxError: missing closing bracket');
+      this.next();
+      return { type:'list', items };
+    }
+    if(t.t === 'ID'){
+      if(t.v === 'True'){ this.next(); return { type:'bool_lit', value:true }; }
+      if(t.v === 'False'){ this.next(); return { type:'bool_lit', value:false }; }
+      if(t.v === 'None'){ this.next(); return { type:'none_lit' }; }
+      this.next();
+      if(this.peek() && this.peek().t==='OP' && this.peek().v==='('){
+        this.next();
+        const args = this.parseCallArgs();
+        return { type:'call', name:t.v, args };
+      }
+      return { type:'var', name:t.v };
+    }
+    throw new PyError(`SyntaxError: unexpected token "${t.v}"`);
+  }
+}
+
+function pyTypeName(v){
+  return { int:'int', float:'float', str:'str', bool:'bool', list:'list', tuple:'tuple', none:'NoneType', typeref:'type', range:'range', function:'function' }[v.type] || v.type;
+}
+function truthy(v){
+  switch(v.type){
+    case 'bool': return v.value;
+    case 'int': case 'float': return v.value !== 0;
+    case 'str': return v.value.length > 0;
+    case 'list': case 'tuple': return v.value.length > 0;
+    case 'none': return false;
+    default: return true;
+  }
+}
+function pyFloatStr(num){ if(Number.isInteger(num)) return num.toFixed(1); return String(num); }
+function reprOf(v){
+  switch(v.type){
+    case 'str': return "'" + v.value.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'";
+    case 'bool': return v.value ? 'True' : 'False';
+    case 'none': return 'None';
+    case 'float': return pyFloatStr(v.value);
+    case 'int': return String(v.value);
+    case 'list': return '[' + v.value.map(reprOf).join(', ') + ']';
+    case 'tuple': return '(' + v.value.map(reprOf).join(', ') + (v.value.length===1?',':'') + ')';
+    case 'function': return `<function ${v.value.name} at 0x${(1000+v.id).toString(16)}>`;
+    case 'typeref': return `<class '${v.name}'>`;
+    case 'range': return 'range(...)';
+    default: return String(v.value);
+  }
+}
+function displayOf(v){ if(v.type === 'str') return v.value; return reprOf(v); }
+
+function evalNode(node, env, io){
+  switch(node.type){
+    case 'num': return node.isFloat ? mk('float', node.value) : mkInt(node.value);
+    case 'str': return mk('str', node.value);
+    case 'bool_lit': return mk('bool', node.value);
+    case 'none_lit': return mk('none', null);
+    case 'list': return mk('list', node.items.map(it => evalNode(it, env, io)));
+    case 'var': {
+      if(env.has(node.name)) return env.get(node.name);
+      if(TYPE_REFS[node.name]) return TYPE_REFS[node.name];
+      throw new PyError(`NameError: name '${node.name}' is not defined`);
+    }
+    case 'unary': {
+      const v = evalNode(node.val, env, io);
+      if(node.op === 'not') return mk('bool', !truthy(v));
+      if(v.type !== 'int' && v.type !== 'float') throw new PyError(`TypeError: bad operand type for unary ${node.op}: '${pyTypeName(v)}'`);
+      return mkNum(v.type, node.op === '-' ? -v.value : +v.value);
+    }
+    case 'call': return evalCall(node, env, io);
+    case 'methodcall': return evalMethodCall(node, env, io);
+    case 'subscript': return evalSubscript(node, env, io);
+    case 'attr': throw new PyError(`AttributeError: '${pyTypeName(evalNode(node.objNode, env, io))}' object has no attribute '${node.name}'`);
+    case 'fstr': {
+      let out = '';
+      for(const seg of node.segments){
+        if(seg.type === 'text'){ out += seg.value; continue; }
+        const val = evalNode(new Parser(tokenize(seg.src)).parseProgram(), env, io);
+        out += formatValue(val, seg.format);
+      }
+      return mk('str', out);
+    }
+    case 'binop': {
+      if(node.op === 'and'){ const l = evalNode(node.left, env, io); return truthy(l) ? evalNode(node.right, env, io) : l; }
+      if(node.op === 'or'){ const l = evalNode(node.left, env, io); return truthy(l) ? l : evalNode(node.right, env, io); }
+      const l = evalNode(node.left, env, io), r = evalNode(node.right, env, io);
+      return applyBinOp(node.op, l, r);
+    }
+  }
+}
+function numeric(v){ return v.type === 'int' || v.type === 'float'; }
+function applyBinOp(op, l, r){
+  switch(op){
+    case '+': {
+      if(l.type==='str' && r.type==='str') return mk('str', l.value + r.value);
+      if(l.type==='list' && r.type==='list') return mk('list', l.value.concat(r.value));
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value + r.value);
+      throw typeErrBin('+', l, r);
+    }
+    case '-': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value - r.value);
+      throw typeErrBin('-', l, r);
+    }
+    case '*': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', l.value * r.value);
+      if(l.type==='str' && r.type==='int') return mk('str', l.value.repeat(Math.max(0,r.value)));
+      if(r.type==='str' && l.type==='int') return mk('str', r.value.repeat(Math.max(0,l.value)));
+      throw typeErrBin('*', l, r);
+    }
+    case '/': {
+      if(numeric(l) && numeric(r)){ if(r.value === 0) throw new PyError('ZeroDivisionError: division by zero'); return mk('float', l.value / r.value); }
+      throw typeErrBin('/', l, r);
+    }
+    case '%': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        const res = ((l.value % r.value) + r.value) % r.value;
+        return mkNum((l.type==='float'||r.type==='float')?'float':'int', res);
+      }
+      throw typeErrBin('%', l, r);
+    }
+    case '//': {
+      if(numeric(l) && numeric(r)){
+        if(r.value === 0) throw new PyError('ZeroDivisionError: integer division or modulo by zero');
+        return mkNum((l.type==='float'||r.type==='float')?'float':'int', Math.floor(l.value / r.value));
+      }
+      throw typeErrBin('//', l, r);
+    }
+    case '**': {
+      if(numeric(l) && numeric(r)) return mkNum((l.type==='float'||r.type==='float')?'float':'int', Math.pow(l.value, r.value));
+      throw typeErrBin('**', l, r);
+    }
+    case '==': return mk('bool', pyEquals(l, r));
+    case '!=': return mk('bool', !pyEquals(l, r));
+    case '<': case '>': case '<=': case '>=': {
+      if(numeric(l) && numeric(r)){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      if(l.type==='str' && r.type==='str'){ const a=l.value,b=r.value; return mk('bool', op==='<'?a<b: op==='>'?a>b: op==='<='?a<=b: a>=b); }
+      throw new PyError(`TypeError: '${op}' not supported between instances of '${pyTypeName(l)}' and '${pyTypeName(r)}'`);
+    }
+    case 'is': return mk('bool', l.id === r.id);
+    case 'is not': return mk('bool', l.id !== r.id);
+    case 'in': return mk('bool', membership(l, r));
+    case 'not in': return mk('bool', !membership(l, r));
+  }
+  throw new PyError(`SyntaxError: unsupported operator "${op}"`);
+}
+function typeErrBin(op, l, r){ return new PyError(`TypeError: unsupported operand type(s) for ${op}: '${pyTypeName(l)}' and '${pyTypeName(r)}'`); }
+function pyEquals(l, r){
+  if(numeric(l) && numeric(r)) return l.value === r.value;
+  if(l.type !== r.type) return false;
+  if(l.type === 'list' || l.type === 'tuple') return l.value.length===r.value.length && l.value.every((v,i)=>pyEquals(v, r.value[i]));
+  return l.value === r.value;
+}
+function membership(l, r){
+  if(r.type === 'list' || r.type === 'tuple') return r.value.some(el => pyEquals(el, l));
+  if(r.type === 'str'){ if(l.type !== 'str') throw new PyError("TypeError: 'in <string>' requires string as left operand, not " + pyTypeName(l)); return r.value.includes(l.value); }
+  throw new PyError(`TypeError: argument of type '${pyTypeName(r)}' is not iterable`);
+}
+
+const MAX_RANGE = 200000;
+
+/* ---------------- math / statistics module library ---------------- */
+function numArg(v, who){
+  if(v.type !== 'int' && v.type !== 'float') throw new PyError(`TypeError: ${who || 'this function'} argument must be a number`);
+  return v.value;
+}
+function numListArg(v){
+  if(v.type !== 'list') throw new PyError('TypeError: argument must be a list of numbers');
+  v.value.forEach(el=>{ if(el.type!=='int' && el.type!=='float') throw new PyError('TypeError: elements must be numeric'); });
+  return v.value;
+}
+const MODULE_LIB = {
+  math: {
+    sqrt:  (a)=>{ const x=numArg(a[0],'sqrt'); if(x<0) throw new PyError('ValueError: math domain error'); return mk('float', Math.sqrt(x)); },
+    pow:   (a)=>{ const x=numArg(a[0],'pow'), y=numArg(a[1],'pow'); return mk('float', Math.pow(x,y)); },
+    ceil:  (a)=>{ const x=numArg(a[0],'ceil'); return mkInt(Math.ceil(x)); },
+    floor: (a)=>{ const x=numArg(a[0],'floor'); return mkInt(Math.floor(x)); },
+    fabs:  (a)=>{ const x=numArg(a[0],'fabs'); return mk('float', Math.abs(x)); },
+    sin:   (a)=>{ const x=numArg(a[0],'sin'); return mk('float', Math.sin(x)); },
+    cos:   (a)=>{ const x=numArg(a[0],'cos'); return mk('float', Math.cos(x)); },
+  },
+  statistics: {
+    mean: (a)=>{ const arr=numListArg(a[0]); const s=arr.reduce((acc,v)=>acc+v.value,0); return mk('float', s/arr.length); },
+    median: (a)=>{
+      const arr = numListArg(a[0]).slice().sort((x,y)=>x.value-y.value);
+      const n = arr.length;
+      if(n === 0) throw new PyError('StatisticsError: no median for empty data');
+      if(n % 2 === 1) return arr[(n-1)/2];
+      return mk('float', (arr[n/2-1].value + arr[n/2].value) / 2);
+    },
+    mode: (a)=>{
+      const arr = numListArg(a[0]);
+      const counts = new Map(); let best=null, bestCount=0;
+      arr.forEach(el=>{ const k=el.value; const c=(counts.get(k)||0)+1; counts.set(k,c); if(c>bestCount){bestCount=c; best=el;} });
+      if(!best) throw new PyError('StatisticsError: no mode for empty data');
+      return best;
+    },
+    variance: (a)=>{
+      const arr = numListArg(a[0]).map(v=>v.value); const n = arr.length;
+      if(n < 2) throw new PyError('StatisticsError: variance requires at least two data points');
+      const m = arr.reduce((acc,v)=>acc+v,0)/n;
+      const ss = arr.reduce((acc,v)=>acc+(v-m)*(v-m),0);
+      return mk('float', ss/(n-1));
+    },
+    stdev: (a)=>{ const v = MODULE_LIB.statistics.variance(a); return mk('float', Math.sqrt(v.value)); },
+  }
+};
+function moduleFunction(moduleName, funcName){
+  const lib = MODULE_LIB[moduleName];
+  if(!lib) throw new PyError(`ModuleNotFoundError: No module named '${moduleName}'`);
+  const fn = lib[funcName];
+  if(!fn) throw new PyError(`AttributeError: module '${moduleName}' has no attribute '${funcName}'`);
+  return fn;
+}
+
+/* ---------------- banker's rounding (matches Python's round()) ---------------- */
+function bankersRound(x, ndigits){
+  const EPS = 1e-9;
+  if(ndigits >= 0){
+    const shift = Math.pow(10, ndigits);
+    const scaled = x*shift, floor = Math.floor(scaled), diff = scaled-floor;
+    const rounded = Math.abs(diff-0.5) < EPS ? (floor%2===0?floor:floor+1) : Math.round(scaled);
+    return rounded/shift;
+  } else {
+    const shift = Math.pow(10, -ndigits);
+    const scaled = x/shift, floor = Math.floor(scaled), diff = scaled-floor;
+    const rounded = Math.abs(diff-0.5) < EPS ? (floor%2===0?floor:floor+1) : Math.round(scaled);
+    return rounded*shift;
+  }
+}
+
+/* ---------------- user-defined function calls ---------------- */
+function parseParams(raw){
+  if(!raw.trim()) return [];
+  return splitTopLevel(raw, ',').map(p=>{
+    p = p.trim();
+    if(p.startsWith('*')) return { name:p.slice(1).trim(), vararg:true };
+    const eqParts = splitTopLevel(p, '=');
+    if(eqParts.length === 2) return { name:eqParts[0].trim(), defaultSrc:eqParts[1].trim() };
+    return { name:p };
+  });
+}
+function callUserFunction(fnVal, posArgs, kwArgs, io){
+  const { name, params, body, closureEnv } = fnVal.value;
+  const local = new Env(closureEnv);
+  let pi = 0;
+  for(const param of params){
+    if(param.vararg){
+      local.vars[param.name] = mk('list', posArgs.slice(pi));
+      pi = posArgs.length;
+      continue;
+    }
+    let val;
+    if(Object.prototype.hasOwnProperty.call(kwArgs, param.name)) val = kwArgs[param.name];
+    else if(pi < posArgs.length) val = posArgs[pi++];
+    else if(param.defaultSrc !== undefined) val = evalNode(new Parser(tokenize(param.defaultSrc)).parseProgram(), closureEnv, io);
+    else throw new PyError(`TypeError: ${name}() missing required argument: '${param.name}'`);
+    local.vars[param.name] = val;
+  }
+  if(!params.some(p=>p.vararg) && pi < posArgs.length){
+    throw new PyError(`TypeError: ${name}() takes ${params.length} positional argument(s) but ${posArgs.length} were given`);
+  }
+  __callDepth++;
+  if(__callDepth > 250){ __callDepth--; throw new PyError('RecursionError: maximum recursion depth exceeded'); }
+  try{
+    execBlock(body, local, io);
+    return mk('none', null);
+  } catch(e){
+    if(e instanceof ReturnSignal) return e.value;
+    throw e;
+  } finally {
+    __callDepth--;
+  }
+}
+
+/* ---------------- attribute/method calls: modules (math.sqrt) and string methods ---------------- */
+function evalMethodCall(node, env, io){
+  if(node.objNode.type === 'var'){
+    const varName = node.objNode.name;
+    if(io.moduleAliases[varName] && !env.has(varName)){
+      const argVals = node.args.filter(a=>a.kind==='pos').map(a=>evalNode(a.val, env, io));
+      return moduleFunction(io.moduleAliases[varName], node.method)(argVals);
+    }
+  }
+  const obj = evalNode(node.objNode, env, io);
+  const argVals = node.args.filter(a=>a.kind==='pos').map(a=>evalNode(a.val, env, io));
+  return callStringMethod(obj, node.method, argVals);
+}
+function callStringMethod(obj, method, args){
+  if(obj.type !== 'str') throw new PyError(`AttributeError: '${pyTypeName(obj)}' object has no attribute '${method}'`);
+  const s = obj.value;
+  switch(method){
+    case 'capitalize': return mk('str', s.length ? s[0].toUpperCase() + s.slice(1).toLowerCase() : s);
+    case 'upper': return mk('str', s.toUpperCase());
+    case 'lower': return mk('str', s.toLowerCase());
+    case 'strip': return mk('str', s.trim());
+    case 'count': {
+      const sub = args[0].value;
+      if(sub === '') return mkInt(s.length + 1);
+      let c = 0, i = 0;
+      while((i = s.indexOf(sub, i)) !== -1){ c++; i += sub.length; }
+      return mkInt(c);
+    }
+    case 'find': return mkInt(s.indexOf(args[0].value));
+    case 'index': {
+      const idx = s.indexOf(args[0].value);
+      if(idx === -1) throw new PyError('ValueError: substring not found');
+      return mkInt(idx);
+    }
+    case 'replace': return mk('str', s.split(args[0].value).join(args[1].value));
+    case 'startswith': return mk('bool', s.startsWith(args[0].value));
+    case 'endswith': return mk('bool', s.endsWith(args[0].value));
+    default: throw new PyError(`AttributeError: 'str' object has no attribute '${method}'`);
+  }
+}
+
+/* ---------------- indexing and slicing (strings, lists, tuples) ---------------- */
+function evalSubscript(node, env, io){
+  const obj = evalNode(node.objNode, env, io);
+  if(node.slice.kind === 'index'){
+    const idxVal = evalNode(node.slice.indexNode, env, io);
+    if(idxVal.type !== 'int') throw new PyError('TypeError: indices must be integers');
+    return indexInto(obj, idxVal.value);
+  }
+  const start = node.slice.startNode ? evalNode(node.slice.startNode, env, io).value : null;
+  const end = node.slice.endNode ? evalNode(node.slice.endNode, env, io).value : null;
+  const step = node.slice.stepNode ? evalNode(node.slice.stepNode, env, io).value : null;
+  return sliceValue(obj, start, end, step);
+}
+function indexInto(obj, i){
+  if(obj.type === 'str'){
+    const arr = Array.from(obj.value); const n = arr.length;
+    let idx = i; if(idx < 0) idx += n;
+    if(idx < 0 || idx >= n) throw new PyError('IndexError: string index out of range');
+    return mk('str', arr[idx]);
+  }
+  if(obj.type === 'list' || obj.type === 'tuple'){
+    const arr = obj.value; const n = arr.length;
+    let idx = i; if(idx < 0) idx += n;
+    if(idx < 0 || idx >= n) throw new PyError(`IndexError: ${obj.type} index out of range`);
+    return arr[idx];
+  }
+  throw new PyError(`TypeError: '${pyTypeName(obj)}' object is not subscriptable`);
+}
+function computeSliceIndices(n, start, stop, step){
+  if(step === null || step === undefined) step = 1;
+  if(step === 0) throw new PyError('ValueError: slice step cannot be zero');
+  let s = (start === null || start === undefined) ? (step > 0 ? 0 : n-1) : start;
+  let e = (stop === null || stop === undefined) ? (step > 0 ? n : -1) : stop;
+  if(start !== null && start !== undefined){
+    if(s < 0) s = Math.max(n + s, step > 0 ? 0 : -1);
+    else s = step > 0 ? Math.min(s, n) : Math.min(s, n-1);
+  }
+  if(stop !== null && stop !== undefined){
+    if(e < 0) e = Math.max(n + e, step > 0 ? 0 : -1);
+    else e = step > 0 ? Math.min(e, n) : Math.min(e, n-1);
+  }
+  const indices = [];
+  if(step > 0){ for(let k=s; k<e; k+=step) indices.push(k); }
+  else { for(let k=s; k>e; k+=step) indices.push(k); }
+  return indices;
+}
+function sliceValue(obj, start, end, step){
+  if(obj.type === 'str'){
+    const arr = Array.from(obj.value);
+    return mk('str', computeSliceIndices(arr.length, start, end, step).map(i => arr[i]).join(''));
+  }
+  if(obj.type === 'list' || obj.type === 'tuple'){
+    return mk(obj.type, computeSliceIndices(obj.value.length, start, end, step).map(i => obj.value[i]));
+  }
+  throw new PyError(`TypeError: '${pyTypeName(obj)}' object is not subscriptable`);
+}
+
+/* ---------------- f-string formatting ---------------- */
+function formatValue(val, spec){
+  if(!spec) return displayOf(val);
+  const m = /^\.(\d+)f$/.exec(spec);
+  if(m){
+    if(!numeric(val)) throw new PyError(`TypeError: unsupported format string passed to ${pyTypeName(val)}.__format__`);
+    return val.value.toFixed(parseInt(m[1], 10));
+  }
+  return displayOf(val);
+}
+
+function evalCall(node, env, io){
+
+  const posArgs = node.args.filter(a=>a.kind==='pos').map(a=>evalNode(a.val, env, io));
+  const kwArgs = {};
+  node.args.filter(a=>a.kind==='kw').forEach(a=>{ kwArgs[a.name] = evalNode(a.val, env, io); });
+
+  if(io.importedFuncs[node.name]){
+    const { module, func } = io.importedFuncs[node.name];
+    return moduleFunction(module, func)(posArgs);
+  }
+  if(env.has(node.name)){
+    const fv = env.get(node.name);
+    if(fv.type === 'function') return callUserFunction(fv, posArgs, kwArgs, io);
+    throw new PyError(`TypeError: '${pyTypeName(fv)}' object is not callable`);
+  }
+
+  switch(node.name){
+    case 'print': {
+      const sep = kwArgs.sep ? displayOf(kwArgs.sep) : ' ';
+      const end = kwArgs.end ? displayOf(kwArgs.end) : '\n';
+      io.out += posArgs.map(displayOf).join(sep) + end;
+      return mk('none', null);
+    }
+    case 'type': {
+      if(posArgs.length !== 1) throw new PyError('TypeError: type() takes exactly one argument');
+      const tn = pyTypeName(posArgs[0]);
+      return TYPE_REFS[tn] || mk('str', tn);
+    }
+    case 'int': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseInt(a.value.trim(), 10); if(Number.isNaN(nu)) throw new PyError(`ValueError: invalid literal for int() with base 10: '${a.value}'`); return mkInt(nu); }
+      if(numeric(a)) return mkInt(Math.trunc(a.value));
+      if(a.type === 'bool') return mkInt(a.value ? 1 : 0);
+      throw new PyError(`TypeError: int() argument must be a string or a number`);
+    }
+    case 'float': {
+      const a = posArgs[0];
+      if(a.type === 'str'){ const nu = parseFloat(a.value.trim()); if(Number.isNaN(nu)) throw new PyError(`ValueError: could not convert string to float: '${a.value}'`); return mk('float', nu); }
+      if(numeric(a)) return mk('float', a.value);
+      if(a.type === 'bool') return mk('float', a.value ? 1.0 : 0.0);
+      throw new PyError(`TypeError: float() argument must be a string or a number`);
+    }
+    case 'str': return mk('str', displayOf(posArgs[0]));
+    case 'bool': return mk('bool', truthy(posArgs[0]));
+    case 'len': {
+      const a = posArgs[0];
+      if(a.type === 'str' || a.type === 'list' || a.type === 'tuple') return mk('int', a.value.length);
+      throw new PyError(`TypeError: object of type '${pyTypeName(a)}' has no len()`);
+    }
+    case 'abs': {
+      const a = posArgs[0];
+      if(numeric(a)) return mkNum(a.type, Math.abs(a.value));
+      throw new PyError(`TypeError: bad operand type for abs(): '${pyTypeName(a)}'`);
+    }
+    case 'round': {
+      const a = posArgs[0];
+      if(!numeric(a)) throw new PyError(`TypeError: type ${pyTypeName(a)} doesn't define __round__ method`);
+      const hasNdigits = posArgs.length > 1;
+      const ndigits = hasNdigits ? posArgs[1].value : 0;
+      const resultNum = bankersRound(a.value, ndigits);
+      return hasNdigits ? mk('float', resultNum) : mkInt(Math.trunc(resultNum));
+    }
+    case 'id': return mk('int', posArgs[0].id);
+    case 'eval': {
+      const a = posArgs[0];
+      if(a.type !== 'str') throw new PyError('TypeError: eval() arg 1 must be a string, bytes or code object');
+      try{ return evalNode(new Parser(tokenize(a.value)).parseProgram(), env, io); }
+      catch(e){ if(e instanceof PyError) throw e; throw new PyError('SyntaxError: invalid syntax'); }
+    }
+    case 'max': case 'min': {
+      let items = (posArgs.length === 1 && posArgs[0].type === 'list') ? posArgs[0].value : posArgs;
+      if(items.length === 0) throw new PyError(`ValueError: ${node.name}() arg is an empty sequence`);
+      let best = items[0];
+      for(let k=1;k<items.length;k++){
+        const cand = items[k];
+        const wins = node.name === 'max' ? applyBinOp('>', cand, best) : applyBinOp('<', cand, best);
+        if(wins.value) best = cand;
+      }
+      return best;
+    }
+    case 'range': {
+      let start=0, stop=0, step=1;
+      if(posArgs.length === 1){ stop = posArgs[0].value; }
+      else if(posArgs.length === 2){ start = posArgs[0].value; stop = posArgs[1].value; }
+      else if(posArgs.length === 3){ start = posArgs[0].value; stop = posArgs[1].value; step = posArgs[2].value; }
+      else throw new PyError('TypeError: range expected 1 to 3 arguments');
+      if(step === 0) throw new PyError('ValueError: range() arg 3 must not be zero');
+      const items = [];
+      if(step > 0){ for(let v=start; v<stop; v+=step){ items.push(mk('int', v)); if(items.length>MAX_RANGE) throw new PyError('Error: range too large for this simulator'); } }
+      else { for(let v=start; v>stop; v+=step){ items.push(mk('int', v)); if(items.length>MAX_RANGE) throw new PyError('Error: range too large for this simulator'); } }
+      return mk('range', items);
+    }
+    case 'input': {
+      const promptMsg = posArgs.length ? displayOf(posArgs[0]) : '';
+      const result = (typeof window !== 'undefined' && window.prompt) ? window.prompt(promptMsg) : '';
+      io.out += promptMsg + (result || '') + '\n';
+      return mk('str', result || '');
+    }
+    default: throw new PyError(`NameError: name '${node.name}' is not defined`);
+  }
+}
+
+function stripComment(line){
+  let inStr = null, buf = '';
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ buf += c; if(c === inStr && line[i-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; buf += c; continue; }
+    if(c === '#') break;
+    buf += c;
+  }
+  return buf;
+}
+function indentOf(line){
+  let n = 0;
+  for(const c of line){
+    if(c === ' ') n += 1;
+    else if(c === '\t') n += 4;
+    else break;
+  }
+  return n;
+}
+function prepLines(code){
+  return code.split('\n').map(raw => {
+    const noComment = stripComment(raw).replace(/\s+$/, '');
+    const trimmed = noComment.trim();
+    return { blank: trimmed.length === 0, indent: indentOf(noComment), text: trimmed };
+  });
+}
+
+const COMPOUND_OPS = ['**=','//=','+=','-=','*=','/=','%='];
+function splitTopLevel(line, sepChar){
+  const parts = [];
+  let depth = 0, buf = '', inStr = null;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inStr){ buf += c; if(c === inStr && line[i-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; buf += c; continue; }
+    if(c === '(' || c === '[') depth++;
+    if(c === ')' || c === ']') depth--;
+    if(c === sepChar && depth === 0){
+      if(sepChar === '='){
+        const prev = line[i-1], nxt = line[i+1];
+        if(prev === '=' || prev === '!' || prev === '<' || prev === '>' || nxt === '='){ buf += c; continue; }
+      }
+      parts.push(buf); buf = ''; continue;
+    }
+    buf += c;
+  }
+  parts.push(buf);
+  return parts;
+}
+function runSimpleStatement(line, env, io){
+  for(const cop of COMPOUND_OPS){
+    const idx = line.indexOf(cop);
+    if(idx > -1 && /^[A-Za-z_]\w*\s*$/.test(line.slice(0, idx))){
+      const name = line.slice(0, idx).trim();
+      const exprSrc = line.slice(idx + cop.length);
+      const baseOp = cop.slice(0, -1);
+      if(!env.has(name)) throw new PyError(`NameError: name '${name}' is not defined`);
+      const rhs = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      env.set(name, applyBinOp(baseOp, env.get(name), rhs));
+      return;
+    }
+  }
+  const segs = splitTopLevel(line, '=');
+  if(segs.length > 1){
+    const targetsRaw = segs.slice(0, -1);
+    const exprSrc = segs[segs.length - 1];
+    const subscriptTargetMatch = /^([A-Za-z_]\w*)\s*\[.*\]$/.exec(targetsRaw[0].trim());
+    if(targetsRaw.length === 1 && subscriptTargetMatch){
+      const baseName = subscriptTargetMatch[1];
+      const typeName = env.has(baseName) ? pyTypeName(env.get(baseName)) : 'object';
+      throw new PyError(`TypeError: '${typeName}' object does not support item assignment`);
+    }
+    const allSimpleNames = targetsRaw.every(s => /^[A-Za-z_]\w*$/.test(s.trim()));
+    const multiTargets = targetsRaw.length === 1 ? targetsRaw[0].split(',').map(s=>s.trim()) : null;
+    if(allSimpleNames && targetsRaw.length >= 1 && !targetsRaw[0].includes(',')){
+      const val = evalNode(new Parser(tokenize(exprSrc)).parseProgram(), env, io);
+      targetsRaw.map(s=>s.trim()).forEach(name => { env.set(name, val); });
+      return;
+    }
+    if(multiTargets && multiTargets.length > 1){
+      const rhsParts = splitTopLevel(exprSrc, ',');
+      if(rhsParts.length === multiTargets.length){
+        const vals = rhsParts.map(p => evalNode(new Parser(tokenize(p)).parseProgram(), env, io));
+        multiTargets.forEach((name,i) => { env.set(name, vals[i]); });
+        return;
+      }
+      if(rhsParts.length === 1){
+        const val = evalNode(new Parser(tokenize(rhsParts[0])).parseProgram(), env, io);
+        if((val.type === 'list' || val.type === 'tuple') && val.value.length === multiTargets.length){
+          multiTargets.forEach((name,i) => { env.set(name, val.value[i]); });
+          return;
+        }
+        throw new PyError('ValueError: not enough values to unpack');
+      }
+      throw new PyError('ValueError: number of targets and values do not match');
+    }
+  }
+  const node = new Parser(tokenize(line)).parseProgram();
+  evalNode(node, env, io);
+}
+
+function peekChildIndent(lines, i, parentIndent){
+  let j = i;
+  while(j < lines.length && lines[j].blank) j++;
+  if(j >= lines.length || lines[j].indent <= parentIndent) throw new PyError('IndentationError: expected an indented block');
+  return lines[j].indent;
+}
+function nextMeaningful(lines, i){
+  let j = i;
+  while(j < lines.length && lines[j].blank) j++;
+  return j;
+}
+function topLevelIndexOf(text, needle){
+  let inStr = null;
+  for(let k=0;k<=text.length-needle.length;k++){
+    const c = text[k];
+    if(inStr){ if(c === inStr && text[k-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; continue; }
+    if(text.slice(k, k+needle.length) === needle) return k;
+  }
+  return -1;
+}
+function topLevelColonIndex(text){
+  let inStr = null, depth = 0;
+  for(let k=0;k<text.length;k++){
+    const c = text[k];
+    if(inStr){ if(c === inStr && text[k-1] !== '\\') inStr = null; continue; }
+    if(c === '"' || c === "'"){ inStr = c; continue; }
+    if(c === '(' || c === '[' || c === '{') depth++;
+    else if(c === ')' || c === ']' || c === '}') depth--;
+    else if(c === ':' && depth === 0) return k;
+  }
+  return -1;
+}
+
+function parseBlock(lines, i, indent){
+  const nodes = [];
+  while(true){
+    i = nextMeaningful(lines, i);
+    if(i >= lines.length) break;
+    const entry = lines[i];
+    if(entry.indent < indent) break;
+    if(entry.indent > indent) throw new PyError('IndentationError: unexpected indent');
+    const text = entry.text;
+
+    if(text === 'break'){ nodes.push({type:'break'}); i++; continue; }
+    if(text === 'continue'){ nodes.push({type:'continue'}); i++; continue; }
+    if(text === 'pass'){ nodes.push({type:'pass'}); i++; continue; }
+
+    if(/^return(\s|$)/.test(text)){
+      const exprSrc = text.replace(/^return\s*/, '');
+      nodes.push({type:'return', exprSrc}); i++; continue;
+    }
+    if(/^global\s+.+$/.test(text)){
+      const names = text.replace(/^global\s+/, '').split(',').map(s=>s.trim());
+      nodes.push({type:'global', names}); i++; continue;
+    }
+    if(/^import\s+.+$/.test(text)){
+      const rest = text.replace(/^import\s+/, '');
+      const modules = splitTopLevel(rest, ',').map(part=>{
+        part = part.trim();
+        const asMatch = /^(\S+)\s+as\s+(\S+)$/.exec(part);
+        if(asMatch) return { name:asMatch[1], alias:asMatch[2] };
+        return { name:part, alias:part };
+      });
+      nodes.push({type:'import', modules}); i++; continue;
+    }
+    {
+      const fm = /^from\s+(\S+)\s+import\s+(.+)$/.exec(text);
+      if(fm){
+        const modName = fm[1];
+        const rest = fm[2].trim();
+        const names = rest === '*' ? '*' : splitTopLevel(rest, ',').map(s=>s.trim());
+        nodes.push({type:'fromimport', module:modName, names}); i++; continue;
+      }
+    }
+
+    if(/^def\s+\w+\s*\(.*\)\s*:$/.test(text)){
+      const m = /^def\s+(\w+)\s*\((.*)\)\s*:$/.exec(text);
+      const fname = m[1];
+      const params = parseParams(m[2]);
+      i++;
+      const childIndent = peekChildIndent(lines, i, indent);
+      const r = parseBlock(lines, i, childIndent);
+      nodes.push({type:'funcdef', name:fname, params, body:r.nodes});
+      i = r.i;
+      continue;
+    }
+
+    if(/^if\b.*:$/.test(text)){
+      const branches = [];
+      let condText = text.replace(/^if\s+/, '').replace(/:$/, '');
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); branches.push({condText, body:r.nodes}); i = r.i;
+      while(true){
+        const j = nextMeaningful(lines, i);
+        if(j < lines.length && lines[j].indent === indent && /^elif\b.*:$/.test(lines[j].text)){
+          condText = lines[j].text.replace(/^elif\s+/, '').replace(/:$/, '');
+          i = j + 1;
+          childIndent = peekChildIndent(lines, i, indent);
+          r = parseBlock(lines, i, childIndent); branches.push({condText, body:r.nodes}); i = r.i;
+        } else break;
+      }
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'if', branches, elseBody});
+      continue;
+    }
+
+    if(/^while\b.*:$/.test(text)){
+      const condText = text.replace(/^while\s+/, '').replace(/:$/, '');
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); const body = r.nodes; i = r.i;
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'while', condText, body, elseBody});
+      continue;
+    }
+
+    if(/^for\b.*:$/.test(text)){
+      const m = /^for\s+([A-Za-z_]\w*)\s+in\s+(.+):$/.exec(text);
+      if(!m) throw new PyError('SyntaxError: invalid for statement');
+      const varName = m[1], iterText = m[2];
+      i++;
+      let childIndent = peekChildIndent(lines, i, indent);
+      let r = parseBlock(lines, i, childIndent); const body = r.nodes; i = r.i;
+      let elseBody = null;
+      const j2 = nextMeaningful(lines, i);
+      if(j2 < lines.length && lines[j2].indent === indent && lines[j2].text === 'else:'){
+        i = j2 + 1;
+        childIndent = peekChildIndent(lines, i, indent);
+        r = parseBlock(lines, i, childIndent); elseBody = r.nodes; i = r.i;
+      }
+      nodes.push({type:'for', varName, iterText, body, elseBody});
+      continue;
+    }
+
+    if(/^match\b.*:$/.test(text)){
+      const subjText = text.replace(/^match\s+/, '').replace(/:$/, '');
+      i++;
+      const childIndent = peekChildIndent(lines, i, indent);
+      const cases = [];
+      while(true){
+        const j = nextMeaningful(lines, i);
+        if(j >= lines.length || lines[j].indent !== childIndent || !/^case\b.*:$/.test(lines[j].text)) break;
+        let patText = lines[j].text.replace(/^case\s+/, '').replace(/:$/, '');
+        let guardText = null;
+        const guardIdx = topLevelIndexOf(patText, ' if ');
+        if(guardIdx > -1){ guardText = patText.slice(guardIdx + 4); patText = patText.slice(0, guardIdx); }
+        i = j + 1;
+        const caseChildIndent = peekChildIndent(lines, i, childIndent);
+        const r = parseBlock(lines, i, caseChildIndent);
+        cases.push({ patText: patText.trim(), guardText, body: r.nodes });
+        i = r.i;
+      }
+      nodes.push({type:'match', subjText, cases});
+      continue;
+    }
+
+    nodes.push({type:'simple', line:text});
+    i++;
+  }
+  return { nodes, i };
+}
+
+const MAX_ITER = 100000;
+function iterableToArray(v){
+  if(v.type === 'range' || v.type === 'list' || v.type === 'tuple') return v.value;
+  if(v.type === 'str') return Array.from(v.value).map(ch => mk('str', ch));
+  throw new PyError(`TypeError: '${pyTypeName(v)}' object is not iterable`);
+}
+function execBlock(nodes, env, io){
+  for(const node of nodes) execNode(node, env, io);
+}
+function execNode(node, env, io){
+  switch(node.type){
+    case 'simple': runSimpleStatement(node.line, env, io); return;
+    case 'pass': return;
+    case 'break': throw new BreakSignal();
+    case 'continue': throw new ContinueSignal();
+    case 'return': {
+      const src = node.exprSrc.trim();
+      let val;
+      if(!src) val = mk('none', null);
+      else {
+        const parts = splitTopLevel(src, ',');
+        val = parts.length > 1
+          ? mk('tuple', parts.map(p => evalNode(new Parser(tokenize(p)).parseProgram(), env, io)))
+          : evalNode(new Parser(tokenize(src)).parseProgram(), env, io);
+      }
+      throw new ReturnSignal(val);
+    }
+    case 'global': { node.names.forEach(n => env.declareGlobal(n)); return; }
+    case 'import': {
+      node.modules.forEach(m => {
+        if(!MODULE_LIB[m.name]) throw new PyError(`ModuleNotFoundError: No module named '${m.name}'`);
+        io.moduleAliases[m.alias] = m.name;
+      });
+      return;
+    }
+    case 'fromimport': {
+      const lib = MODULE_LIB[node.module];
+      if(!lib) throw new PyError(`ModuleNotFoundError: No module named '${node.module}'`);
+      if(node.names === '*'){ Object.keys(lib).forEach(fn => { io.importedFuncs[fn] = { module:node.module, func:fn }; }); }
+      else node.names.forEach(fn => {
+        if(!lib[fn]) throw new PyError(`ImportError: cannot import name '${fn}' from '${node.module}'`);
+        io.importedFuncs[fn] = { module:node.module, func:fn };
+      });
+      return;
+    }
+    case 'funcdef': {
+      env.set(node.name, mk('function', { name:node.name, params:node.params, body:node.body, closureEnv: env.globalScope() }));
+      return;
+    }
+    case 'if': {
+      for(const br of node.branches){
+        const v = evalNode(new Parser(tokenize(br.condText)).parseProgram(), env, io);
+        if(truthy(v)){ execBlock(br.body, env, io); return; }
+      }
+      if(node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'while': {
+      let broke = false, guard = 0;
+      while(truthy(evalNode(new Parser(tokenize(node.condText)).parseProgram(), env, io))){
+        guard++;
+        if(guard > MAX_ITER) throw new PyError('RuntimeError: loop safety limit reached (100000 iterations) — check your condition/updation');
+        try{ execBlock(node.body, env, io); }
+        catch(e){
+          if(e instanceof BreakSignal){ broke = true; break; }
+          if(e instanceof ContinueSignal){ continue; }
+          throw e;
+        }
+      }
+      if(!broke && node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'for': {
+      const iterVal = evalNode(new Parser(tokenize(node.iterText)).parseProgram(), env, io);
+      const items = iterableToArray(iterVal);
+      let broke = false;
+      for(const item of items){
+        env.set(node.varName, item);
+        try{ execBlock(node.body, env, io); }
+        catch(e){
+          if(e instanceof BreakSignal){ broke = true; break; }
+          if(e instanceof ContinueSignal){ continue; }
+          throw e;
+        }
+      }
+      if(!broke && node.elseBody) execBlock(node.elseBody, env, io);
+      return;
+    }
+    case 'match': {
+      const subjVal = evalNode(new Parser(tokenize(node.subjText)).parseProgram(), env, io);
+      for(const c of node.cases){
+        const trial = new Env(env);
+        let matched = false;
+        if(c.patText === '_'){ matched = true; }
+        else if(c.patText.includes('|')){
+          const opts = c.patText.split('|').map(s=>s.trim());
+          matched = opts.some(o => pyEquals(evalNode(new Parser(tokenize(o)).parseProgram(), trial, io), subjVal));
+        } else if(/^[A-Za-z_]\w*$/.test(c.patText) && !['True','False','None'].includes(c.patText)){
+          trial.vars[c.patText] = subjVal; matched = true;
+        } else {
+          matched = pyEquals(evalNode(new Parser(tokenize(c.patText)).parseProgram(), trial, io), subjVal);
+        }
+        if(matched && c.guardText){
+          matched = truthy(evalNode(new Parser(tokenize(c.guardText)).parseProgram(), trial, io));
+        }
+        if(matched){
+          for(const k in trial.vars) env.set(k, trial.vars[k]);
+          execBlock(c.body, env, io);
+          return;
+        }
+      }
+      return;
+    }
+  }
+}
+function runProgram(code){
+  const lines = prepLines(code);
+  const env = new Env();
+  const io = { out: '', moduleAliases: {}, importedFuncs: {} };
+  __callDepth = 0;
+  try{
+    const { nodes } = parseBlock(lines, 0, 0);
+    execBlock(nodes, env, io);
+  } catch(err){
+    if(err instanceof BreakSignal || err instanceof ContinueSignal){
+      io.out += "SyntaxError: 'break'/'continue' outside loop\n";
+    } else if(err instanceof ReturnSignal){
+      io.out += "SyntaxError: 'return' outside function\n";
+    } else {
+      io.out += (err instanceof PyError ? err.message : ('Error: ' + err.message)) + '\n';
+    }
+  }
+  return io.out.replace(/\n$/, '');
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.run-btn');
+  if(!btn) return;
+  const outId = btn.dataset.runTarget;
+  const outEl = document.getElementById(outId);
+  const code = btn.dataset.source
+    ? document.getElementById(btn.dataset.source).value
+    : 'print("Hello World!!")';
+
+  const result = runProgram(code);
+  outEl.textContent = result;
+
+  const isError = /^(SyntaxError|NameError|TypeError|ZeroDivisionError|ValueError|IndentationError|RuntimeError|Error):/m.test(result);
+  outEl.classList.remove('flash', 'flash-err');
+  void outEl.offsetWidth;
+  outEl.classList.add(isError ? 'flash-err' : 'flash');
+});
+
+document.querySelectorAll('.mode-switch').forEach(group => {
+  group.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      const parent = group.parentElement;
+      parent.querySelectorAll(':scope > .mode-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+});
+
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeLabel = document.getElementById('theme-label');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeIcon.textContent = isDark ? '🌙' : '☀️';
+  themeLabel.textContent = isDark ? 'dark' : 'light';
+});
+
+const progressFill = document.getElementById('progress-fill');
+function updateProgress(){
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+  progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+updateProgress();
+
+const sections = [...document.querySelectorAll('section[id]')];
+const tabLinks = [...document.querySelectorAll('#tabbar a')];
+const io2 = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      tabLinks.forEach(a => a.classList.remove('active'));
+      const link = tabLinks.find(a => a.getAttribute('href') === '#' + entry.target.id);
+      if(link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => io2.observe(s));
+
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const cards = entry.target.querySelectorAll('.feature, .exercise');
+      cards.forEach((card, i) => setTimeout(() => card.classList.add('show'), i * 70));
+      revealIO.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+sections.forEach(s => revealIO.observe(s));
+setTimeout(() => document.querySelectorAll('.feature, .exercise').forEach(c => c.classList.add('show')), 3000);
+</script>
+
+</body>
+</html>
